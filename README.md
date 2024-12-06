@@ -48,12 +48,18 @@
 git clone https://github.com/Lab-Semtle/semtle-web-client-0.2.git
 ```
 
-### 2. **패키지 설치**
+### 2. **브랜치 분기**
+```bash
+git checkout -b feature/#[이슈번호]
+git push origin feature/#[이슈번호]
+```
+
+### 3. **패키지 설치**
 ```bash
 npm install
 ```
 
-### 3. **개발 서버 실행**
+### 4. **개발 서버 실행**
 ```bash
 npm run dev
 ```

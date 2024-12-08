@@ -19,26 +19,26 @@
 ├── public/            # 정적 파일 (이미지, 폰트 등)
 ├── src/               # 소스 코드
 │   ├── app/           # Next.js App Router 관련 파일
-│   │   ├── about/       # "소개" 페이지
-│   │   │   ├── page.tsx # /about 경로의 컴포넌트
-│   │   ├── activities/  # "활동" 페이지
-│   │   ├── executive/   # "집행부" 페이지
-│   │   ├── history/     # "History" 페이지
-│   │   ├── login/       # 로그인 페이지
-│   │   ├── mypage/      # "마이페이지" 디렉토리
-│   │   ├── organization/           # "조직도" 페이지
-│   │   ├── projects/               # 프로젝트 관련 디렉토리
+│   │   ├── about/                  # [About] "소개" 페이지
+│   │   │   ├── page.tsx                # /about 경로의 컴포넌트
+│   │   ├── activities/             # [Activity] "활동" 페이지
+│   │   ├── executive/              # [Profile] "관리자" 페이지
+│   │   ├── history/                # [About] "History" 페이지
+│   │   ├── login/                  # [로그인] 페이지
+│   │   ├── mypage/                 # [Profile] "마이페이지" 디렉토리
+│   │   ├── organization/           # [About] "조직도" 페이지
+│   │   ├── projects/               # [Activity] 프로젝트 페이지 관련 디렉토리
 │   │   │   ├── page.tsx            # /projects 경로의 메인 페이지
-│   │   │   ├── completed/          # 완료된 프로젝트 관련 디렉토리
-│   │   │   │   ├── [projectID]/    # 동적 경로: 특정 완료된 프로젝트 상세 페이지
-│   │   │   │       ├── page.tsx    # /projects/completed/:projectID
-│   │   │   ├── recruit/            # 프로젝트 모집 관련 디렉토리
-│   │   │       ├── [projectID]/    # 동적 경로: 특정 모집 프로젝트 상세 페이지
-│   │   │           ├── page.tsx    # /projects/recruit/:projectID
-│   │   ├── recruiting/             # "가입안내" 페이지
-│   │   ├── regulations/            # "학회회칙" 페이지
-│   │   ├── schedule/               # "학회일정" 페이지
-│   │   ├── secret/                 # "Secret 노트" 페이지
+│   │   │   ├── completed/              # 완료된 프로젝트 관련 디렉토리
+│   │   │   │   ├── [projectID]/            # 동적 경로: 특정 완료된 프로젝트 상세 페이지
+│   │   │   │       ├── page.tsx            # /projects/completed/:projectID
+│   │   │   ├── recruit/                # 프로젝트 모집 관련 디렉토리
+│   │   │       ├── [projectID]/            # 동적 경로: 특정 모집 프로젝트 상세 페이지
+│   │   │           ├── page.tsx            # /projects/recruit/:projectID
+│   │   ├── recruiting/             # [가입안내] 페이지
+│   │   ├── regulations/            # [자료실] "학회회칙" 페이지
+│   │   ├── schedule/               # [Activity] "학회일정" 페이지
+│   │   ├── secret/                 # [자료실] "Secret 노트" 페이지
 │   │   ├── fonts/                  # 웹폰트 관련 파일
 │   │   ├── favicon.ico             # 웹사이트의 파비콘 설정 파일
 │   │   ├── global-error.tsx        # 전역 에러 페이지 (에러 발생 시 보여질 컴포넌트)
@@ -46,18 +46,18 @@
 │   │   ├── not-found.tsx           # 404 Not Found 페이지
 │   │   ├── page.tsx                # 메인 홈 페이지 ("/" 경로)
 │   ├── components/                 # 재사용 가능한 UI 컴포넌트 디렉토리
-│   │   ├── Button.tsx              # 재사용 가능한 버튼 컴포넌트
-│   │   ├── Footer.tsx              # 하단 공통 Footer 컴포넌트
-│   │   ├── Header.tsx              # 상단 공통 Header 컴포넌트
-│   │   ├── Loader.tsx              # 로딩 애니메이션 컴포넌트
-│   │   ├── Navigation.tsx          # 네비게이션 바 컴포넌트
+│   │   ├── Button.tsx                  # 재사용 가능한 버튼 컴포넌트
+│   │   ├── Footer.tsx                  # 하단 공통 Footer 컴포넌트
+│   │   ├── Header.tsx                  # 상단 공통 Header 컴포넌트
+│   │   ├── Loader.tsx                  # 로딩 애니메이션 컴포넌트
+│   │   ├── Navigation.tsx              # 네비게이션 바 컴포넌트
 │   ├── styles/                     # 전역 스타일 관리
-│   │   ├── global.css              # 프로젝트 전역 스타일 파일
+│   │   ├── global.css                  # 프로젝트 전역 스타일 파일
 │   ├── types/                      # TypeScript 타입 정의 디렉토리
-│   │   ├── api.ts                  # API 요청/응답에 사용되는 타입 정의
-│   │   ├── props.ts                # 컴포넌트 Props에 사용되는 타입 정의
+│   │   ├── api.ts                      # API 요청/응답에 사용되는 타입 정의
+│   │   ├── props.ts                    # 컴포넌트 Props에 사용되는 타입 정의
 │   ├── utils/                      # 유틸리티 함수 디렉토리
-│       ├── api.ts                  # API 호출 관련 함수
+│       ├── api.ts                      # API 호출 관련 함수
 |
 ├── .gitattributes     # Git 속성 관리 (예: 줄바꿈 설정, 파일 속성 제어)
 ├── .gitignore         # Git에 포함하지 않을 파일 설정

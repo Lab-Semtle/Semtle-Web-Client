@@ -1,9 +1,18 @@
-import Image from "next/image";
+'use client';
+import Image from 'next/image';
+// pages/index.tsx
+import Header from '@/components/Header';
+import Navigation from '@/components/Navigation';
 
-export default function Home() {
+export default function Page() {
   return (
-    <main>
-      <h2>Hello world</h2>
-    </main>
+    <div>
+      {/* 헤더 */}
+      <Header />
+      {/* 내비게이션 */}
+      <Navigation />
+      {/* 본문 */}
+
+    </div>
   );
 }

@@ -25,10 +25,8 @@ export default function Navigation() {
           <img src="/semtle_logo_square.jpg" alt="Logo" className="logoImage" />
           <label className="modeToggle">
             <input role="switch" type="checkbox" />
-            <span>Dark Mode</span>
           </label>
         </li>
-
         <li>
           <Link href="/">Home</Link>
         </li>
@@ -50,17 +48,34 @@ export default function Navigation() {
       </ul>
       {/* 드롭다운 메뉴 */}
       <div className={`nav-dropdown ${isDropdownOpen ? 'open' : ''}`}>
-        <ul>
+        <ul className="ulFirst">
           <li>
             <Link href="/service1">소개</Link>
-
-            {/* 링크 추가*/}
           </li>
           <li>
             <Link href="/service2">조직도</Link>
           </li>
           <li>
             <Link href="/service3">History</Link>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <Link href="/service1">활동</Link>
+          </li>
+          <li>
+            <Link href="/service2">프로젝트</Link>
+          </li>
+          <li>
+            <Link href="/service3">학회일정</Link>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <Link href="/service1">학회회칙</Link>
+          </li>
+          <li>
+            <Link href="/service2">Secret Note</Link>
           </li>
         </ul>
       </div>

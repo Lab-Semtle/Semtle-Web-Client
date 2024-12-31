@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 로고 스타일 정의 */
 .logoContainer {
   position: absolute; /* 로고를 내비게이션 바의 왼쪽 끝으로 배치 */
   left: 1rem; /* 왼쪽 여백 */
@@ -21,15 +22,7 @@
   background-color: #fff; /* 경계선과 구분되게 배경색 설정 */
 }
 
-.nav-container {
-  width: 100%;
-  background-color: #f8f9fa;
-  position: sticky;
-  top: 4rem;
-  border-bottom: 1px solid #ccc;
-  padding: 1rem;
-}
-
+/* 네비게이션 바 스타일 정의 */
 .nav-list {
   list-style: none;
   margin: 0;
@@ -39,8 +32,22 @@
   justify-content: flex-end;
 }
 .nav-list li:last-child {
-  margin-left: -3rem;
+  margin-left: -3.5rem;
 }
+.nav-container {
+  width: 100%; /* 화면 전체를 차지하도록 설정 */
+  background-color: #f8f9fa;
+  position: sticky;
+  top: 4rem;
+  border-bottom: 1px solid #ccc;
+  padding: 1rem 0; /* 상하 여백만 추가, 좌우 여백은 제거 */
+  display: flex;
+  justify-content: flex-end; /* 네비게이션 바 내 아이템들이 왼쪽 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+  z-index: 1000;
+}
+
+
 .nav-dropdown {
   position: absolute;
   top: 100%;
@@ -52,8 +59,11 @@
   overflow: hidden;
   max-height: 0px; /* 기본 높이 */
   transition: max-height 0.5s ease; /* 부드러운 애니메이션 효과 */
-  text-align: right; /* 내부 텍스트를 오른쪽 정렬 */
+  text-align: left; /* 왼쪽 정렬 */
   gap: 3rem;
+  display: flex; /* 전체 nav-dropdown을 가로로 배치 */
+  flex-direction: row; /* 기본적으로 가로 정렬 */
+  justify-content: flex-start; /* 좌측 정렬 */
 }
 
 .nav-dropdown.open {
@@ -65,9 +75,11 @@
   margin: 0;
   padding: 0;
   margin-bottom: 0.5rem;
-  display: block; /* 수직 정렬 */
-  text-align: right; /* 리스트 항목 오른쪽 정렬 */
+  display: flex; /* 수직 정렬 */
+  text-align: left; /* 리스트 항목 왼쪽 정렬 */
+  flex-direction: column;
 }
+
 .nav-dropdown Link {
   text-decoration: none;
   color: #000;
@@ -105,10 +117,6 @@
   margin-right: 0.5rem;
 }
 
-.modeToggle span {
-  margin-left: 0.5rem;
-}
-
 [type='checkbox'] {
   appearance: none;
   position: relative;
@@ -138,7 +146,7 @@
   border-color: gray;
 }
 
-[type="checkbox"]:focus-visible {
+[type='checkbox']:focus-visible {
   outline-offset: max(2px, 0.1em);
   outline: max(2px, 0.1em) solid tomato;
 }

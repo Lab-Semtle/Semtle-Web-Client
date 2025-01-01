@@ -2,17 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 로고 스타일 정의 */
-.logoContainer {
-  position: absolute; /* 로고를 내비게이션 바의 왼쪽 끝으로 배치 */
-  left: 1rem; /* 왼쪽 여백 */
-  top: 50%; /* 부모 요소 높이의 50% */
-  transform: translateY(-50%); /* 수직 중앙 정렬 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .logoImage {
   width: 2.5rem; /* 로고 크기 */
   height: 2.5rem;
@@ -21,99 +10,10 @@
   border: 2px solid #ccc; /* 테두리 추가 */
   background-color: #fff; /* 경계선과 구분되게 배경색 설정 */
 }
-
-/* 네비게이션 바 스타일 정의 */
-.nav-list {
-  list-style: none;
-  margin: 0;
-  padding: 1rem;
-  display: flex;
-  gap: 5rem;
-  justify-content: flex-end;
-}
-.nav-list li:last-child {
-  margin-left: -3.5rem;
-}
-.nav-container {
-  width: 100%; /* 화면 전체를 차지하도록 설정 */
-  background-color: #f8f9fa;
-  position: sticky;
-  top: 4rem;
-  border-bottom: 1px solid #ccc;
-  padding: 1rem 0; /* 상하 여백만 추가, 좌우 여백은 제거 */
-  display: flex;
-  justify-content: flex-end; /* 네비게이션 바 내 아이템들이 왼쪽 정렬 */
-  align-items: center; /* 세로 중앙 정렬 */
-  z-index: 1000;
-}
-
-
-.nav-dropdown {
-  position: absolute;
-  top: 100%;
-  right: 0; /* 부모의 오른쪽 끝에 맞춤 */
-  width: 100%; /* 드롭다운 크기를 내용에 맞게 조정 */
-  background-color: #fff;
-  border: 1px solid #ccc;
-  z-index: 1001;
-  overflow: hidden;
-  max-height: 0px; /* 기본 높이 */
-  transition: max-height 0.5s ease; /* 부드러운 애니메이션 효과 */
-  text-align: left; /* 왼쪽 정렬 */
-  gap: 3rem;
-  display: flex; /* 전체 nav-dropdown을 가로로 배치 */
-  flex-direction: row; /* 기본적으로 가로 정렬 */
-  justify-content: flex-start; /* 좌측 정렬 */
-}
-
-.nav-dropdown.open {
-  max-height: 300px; /* 드롭다운이 열릴 때 */
-}
-
-.nav-dropdown ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  margin-bottom: 0.5rem;
-  display: flex; /* 수직 정렬 */
-  text-align: left; /* 리스트 항목 왼쪽 정렬 */
-  flex-direction: column;
-}
-
-.nav-dropdown Link {
-  text-decoration: none;
-  color: #000;
-  margin-right: 0;
-  padding: 0.5rem 1rem; /* 링크 내부 여백 */
-  margin: 0.25rem; /* 링크 간 외부 여백 */
-  display: inline-block; /* 블록 처리 */
-}
-
-.nav-list li {
-  display: flex; /* 내부 요소를 플렉스 컨테이너로 만듦 */
-  align-items: center; /* 세로 중앙 정렬 */
-}
-
-.btn-login {
-  background-color: black; /* 버튼 배경색 */
-  color: white; /* 텍스트 색상 */
-  border: none; /* 테두리 제거 */
-  border-radius: 4px; /* 둥근 모서리 */
-  padding: 0.5rem 1rem; /* 버튼 여백 */
-  font-size: 1rem; /* 버튼 텍스트 크기 */
-  font-weight: bold; /* 글씨 굵게 */
-  cursor: pointer; /* 클릭 커서 */
-  transition: background-color 0.3s ease; /* 배경색 전환 효과 */
-}
-
-.btn-login:hover {
-  background-color: #333; /* 마우스를 올리면 밝아짐 */
-}
-/* ---------- Toggle 관련 스타일 ---------- */
 .modeToggle {
   display: flex;
   align-items: center;
-  margin-left: 0.5rem;
+  margin-left: -3rem;
   margin-right: 0.5rem;
 }
 
@@ -122,15 +22,16 @@
   position: relative;
   border: max(2px, 0.1em) solid gray;
   border-radius: 1.25em;
-  width: 2.25em;
-  height: 1.25em;
+  width: 3em; /* 크기 변경 */
+  height: 1.4em; /* 크기 변경 */
 }
+
 [type='checkbox']::before {
   content: '';
   position: absolute;
   left: 0;
-  width: 1em;
-  height: 1em;
+  width: 1.2em; /* 원 크기 변경 */
+  height: 1.2em; /* 원 크기 변경 */
   border-radius: 50%;
   transform: scale(0.8);
   background-color: gray;
@@ -138,9 +39,10 @@
 }
 
 [type='checkbox']:checked::before {
-  background-color: white;
-  left: 1rem;
+  background-color: gray;
+  left: 1.4em; /* 원이 오른쪽으로 이동하는 위치 조정 */
 }
+
 [type='checkbox']:checked {
   background-color: black;
   border-color: gray;
@@ -151,4 +53,100 @@
   outline: max(2px, 0.1em) solid tomato;
 }
 
-/* ---------- Toggle 관련 스타일 ---------- */
+/* Navigation Bar */
+nav {
+  background-color: #f3f4f6; /* Light gray */
+  width: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  z-index: 50;
+  transition: all 0.3s ease;
+}
+
+/* Flex container for the navigation bar items (logo, toggle, menu) */
+nav > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+}
+
+nav label {
+  margin-left: -3rem; /* 추가적인 여백을 없앰 */
+}
+
+/* Dropdown menu container - both menus will be side by side */
+.dropdown-container {
+  display: flex;
+  position: absolute;
+  top: 100%; /* top을 100%로 설정하여 부모 요소 바로 아래에 위치하게 함 */
+  left: 0;
+  width: 100%; /* 드롭다운 영역이 웹 가로 전체를 차지하도록 설정 */
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border-radius: 0.375rem;
+  max-height: 0; /* Initially hidden */
+  overflow: hidden; /* Hide the content when collapsed */
+  opacity: 0; /* Hide by default */
+  transition:
+    max-height 0.5s ease,
+    opacity 0.3s ease; /* Smooth transition for expanding */
+  justify-content: flex-start; /* 메뉴들 왼쪽 정렬 */
+  gap: 2rem; /* 메뉴들 간의 간격을 유지 (조정 가능) */
+}
+
+/* Dropdown menu for Items 1, 2, 3 */
+.dropdown-menu {
+  display: flex;
+  flex-direction: column; /* 세로로 정렬 */
+}
+
+.dropdown-menu ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.dropdown-menu li {
+  padding: 8px 16px;
+  font-size: 1rem;
+  color: #374151; /* Gray-700 */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-menu li:hover {
+  background-color: #f3f4f6; /* Light gray on hover */
+}
+
+/* Login button style */
+.btn-login {
+  padding: 8px 16px;
+  background-color: #3498db;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-login:hover {
+  background-color: #2980b9;
+}
+
+/* Flex container for navigation links */
+nav .flex {
+  display: flex;
+  align-items: center; /* Center the items vertically */
+  gap: 4rem;
+}
+
+/* Flex container for the right section (Join and Login) */
+nav .flex > ul:last-child {
+  display: flex;
+  gap: 1.5rem; /* Space between Join and Login */
+}

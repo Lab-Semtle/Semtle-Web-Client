@@ -65,14 +65,14 @@ export default function NavigationBar() {
               <>
                 <li>
                   <Link
-                    href="/join"
+                    href="/recruiting"
                     className="text-lg font-semibold text-gray-700"
                   >
                     Join
                   </Link>
                 </li>
                 <li>
-                  <Link href="/">
+                  <Link href="/login">
                     <button className="btn-login">Login</button>
                   </Link>
                 </li>
@@ -103,13 +103,14 @@ export default function NavigationBar() {
                   >
                     <ul>
                       <li className="cursor-pointer px-4 py-2 hover:bg-gray-200">
-                        개인정보관리
+                        <Link href="/mypage/${userid}">개인정보관리</Link>
                       </li>
                       <li className="cursor-pointer px-4 py-2 hover:bg-gray-200">
-                        내 활동관리
+                        <Link href="/mypage/${userid}/activities"></Link>내
+                        활동관리
                       </li>
                       <li className="cursor-pointer px-4 py-2 hover:bg-gray-200">
-                        시간표
+                        <Link href="/">시간표</Link>
                       </li>
                     </ul>
                   </div>
@@ -125,36 +126,36 @@ export default function NavigationBar() {
         <div className="dropdown-menu">
           <ul>
             <li>
-              <Link href="/">소개</Link>
+              <Link href="/about">소개</Link>
             </li>
             <li>
-              <Link href="/">조직도</Link>
+              <Link href="/organization">조직도</Link>
             </li>
             <li>
-              <Link href="/">History</Link>
-            </li>
-          </ul>
-        </div>
-        <div className="dropdown-menu ml-0">
-          <ul>
-            <li>
-              <Link href="/">활동</Link>
-            </li>
-            <li>
-              <Link href="/">프로젝트</Link>
-            </li>
-            <li>
-              <Link href="/">학회 일정</Link>
+              <Link href="/history">History</Link>
             </li>
           </ul>
         </div>
         <div className="dropdown-menu ml-0">
           <ul>
             <li>
-              <Link href="/">학회회칙</Link>
+              <Link href="/activities">활동</Link>
             </li>
             <li>
-              <Link href="/">Secret Note</Link>
+              <Link href="/projects">프로젝트</Link>
+            </li>
+            <li>
+              <Link href="/schedule">학회 일정</Link>
+            </li>
+          </ul>
+        </div>
+        <div className="dropdown-menu ml-0">
+          <ul>
+            <li>
+              <Link href="/regulations">학회회칙</Link>
+            </li>
+            <li>
+              <Link href="/secret">Secret Note</Link>
             </li>
           </ul>
         </div>

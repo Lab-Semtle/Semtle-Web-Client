@@ -39,7 +39,7 @@
   position: absolute;
   left: 0;
   width: 1.2em; /* 원 크기 변경 */
-  height: 1.2em; /* 원 크기 변경 */
+  height: 1.1em; /* 원 크기 변경 */
   border-radius: 50%;
   transform: scale(0.8);
   background-color: gray;
@@ -48,7 +48,7 @@
 
 [type='checkbox']:checked::before {
   background-color: gray;
-  left: 1.4em; /* 원이 오른쪽으로 이동하는 위치 조정 */
+  left: 1.45em; /* 원이 오른쪽으로 이동하는 위치 조정 */
 }
 
 [type='checkbox']:checked {

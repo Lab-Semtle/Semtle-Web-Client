@@ -10,6 +10,14 @@
   border: 2px solid #ccc; /* 테두리 추가 */
   background-color: #fff; /* 경계선과 구분되게 배경색 설정 */
 }
+/* Profile Image */
+.profile-image {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ccc;
+}
 .modeToggle {
   display: flex;
   align-items: center;
@@ -125,9 +133,10 @@ nav label {
 /* Login button style */
 .btn-login {
   padding: 8px 16px;
-  background-color: #3498db;
-  color: white;
+  background-color: rgb(125, 125, 125);
+  color: black;
   font-size: 1rem;
+  font-weight: 700;
   border: none;
   border-radius: 0.375rem;
   cursor: pointer;
@@ -135,7 +144,7 @@ nav label {
 }
 
 .btn-login:hover {
-  background-color: #2980b9;
+  background-color: #636363;
 }
 
 /* Flex container for navigation links */
@@ -149,4 +158,61 @@ nav .flex {
 nav .flex > ul:last-child {
   display: flex;
   gap: 1.5rem; /* Space between Join and Login */
+}
+
+/* 드롭다운 메뉴 스타일 */
+.profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+.profile-image:hover {
+  transform: scale(1.1); /* 살짝 커짐 */
+}
+
+/* 로그아웃 버튼 스타일 */
+.logout-btn {
+  padding: 4px 10px;
+  background-color: rgb(125, 125, 125);
+  color: black;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: #636363;
+}
+/* 드롭다운 메뉴 */
+nav .absolute {
+  position: absolute;
+  top: 100%; /* 버튼 아래로 위치 */
+  right: 0; /* 오른쪽에 위치 */
+  margin-top: 8px;
+  width: 150px;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 60; /* 다른 드롭다운 메뉴보다 우선순위가 높게 설정 */
+}
+
+nav .absolute ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+nav .absolute li {
+  padding: 10px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+nav .absolute li:hover {
+  background-color: #f3f4f6;
 }

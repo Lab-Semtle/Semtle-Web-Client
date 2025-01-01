@@ -9,7 +9,7 @@ export default function Page() {
       {/* 내비게이션 */}
       <Navigation />
       {/* 본문 */}
-
+      
     </div>
   );
 }

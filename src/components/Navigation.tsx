@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export default function NavigationBar() {
   // 로그인 상태를 true로 설정하여 로그인 상태를 가정
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // 로그인/로그아웃 토글 함수
   const toggleLogin = () => {

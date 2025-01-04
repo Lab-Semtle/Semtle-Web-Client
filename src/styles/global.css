@@ -133,7 +133,7 @@ nav label {
 /* Login button style */
 .btn-login {
   padding: 8px 16px;
-  background-color: rgb(125, 125, 125);
+  background-color: rgb(150, 149, 149);
   color: black;
   font-size: 1rem;
   font-weight: 700;
@@ -215,4 +215,123 @@ nav .absolute li {
 
 nav .absolute li:hover {
   background-color: #f3f4f6;
+}
+
+/* Footer 스타일 */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 396px;
+  background-color: #000; /* 검은색 배경 */
+  color: white;
+  padding: 4rem 4rem;
+  z-index: 50;
+  gap: 1rem;
+}
+
+.footer-content {
+  display: flex; /* 로고를 가로로 정렬 */
+  gap: 1rem; /* 로고들 간격을 1rem 추가 */
+}
+
+.footer-content img {
+  width: 35px;
+  height: 35px;
+  margin-bottom: 1.5rem;
+}
+
+.footer-text {
+  font-size: 1rem;
+}
+
+.footer-content2 {
+  display: flex; /* 가로로 배치 */
+  gap: 1rem; /* 요소 간 간격 */
+}
+
+.chatLink {
+  color: #3498db; /* 오픈채팅 주소 색상 (파란색) */
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.footer-content2 a:hover {
+  text-decoration: underline; /* 호버 시 밑줄 */
+}
+
+.footer-content3 {
+  display: flex;
+  gap: 2.2rem;
+}
+.footer-content4 {
+  display: flex;
+  gap: 4.75rem;
+}
+
+.footer-content5 {
+  display: flex;
+  gap: 2.6rem;
+}
+.footer-content6 {
+  display: flex;
+  gap: 4.6rem;
+}
+.footer-content-end {
+  display: flex;
+  gap: 2rem;
+  margin-top: 4rem;
+}
+.footer-content-end .footer-link:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* 팝업 스타일 */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7); /* 배경을 더 어두운 반투명으로 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* 팝업을 최상위에 표시 */
+}
+
+.popup-content {
+  background: #fff; /* 팝업의 배경을 흰색으로 설정 */
+  padding: 2rem;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+  color: #333; /* 텍스트 색상을 어두운 회색으로 설정 */
+}
+
+.popup h2 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.popup p {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.popup button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgb(150, 149, 149);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.popup button:hover {
+  background: #636363;
 }

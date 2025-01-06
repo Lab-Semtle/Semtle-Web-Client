@@ -84,51 +84,54 @@ nav label {
   margin-left: -3rem; /* 추가적인 여백을 없앰 */
 }
 
-/* Dropdown menu container - both menus will be side by side */
+/* 부모 요소에 마우스를 올렸을 때 자식 드롭다운 메뉴가 보이도록 */
+.group {
+  position: relative;
+}
+
 .dropdown-container {
-  display: flex;
   position: absolute;
-  top: 100%; /* top을 100%로 설정하여 부모 요소 바로 아래에 위치하게 함 */
-  left: 0;
-  width: 100%; /* 드롭다운 영역이 웹 가로 전체를 차지하도록 설정 */
-  background-color: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
   margin-top: 0.5rem;
-  border-radius: 0.375rem;
-  max-height: 0; /* Initially hidden */
-  overflow: hidden; /* Hide the content when collapsed */
-  opacity: 0; /* Hide by default */
-  transition:
-    max-height 0.5s ease,
-    opacity 0.3s ease; /* Smooth transition for expanding */
-  justify-content: flex-start; /* 메뉴들 왼쪽 정렬 */
-  gap: 2rem; /* 메뉴들 간의 간격을 유지 (조정 가능) */
-}
+  width: 7rem;
+  border-radius: 0.5rem;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.3s ease;
+  font-size: small;
+  align-items: center;
 
-/* Dropdown menu for Items 1, 2, 3 */
-.dropdown-menu {
   display: flex;
-  flex-direction: column; /* 세로로 정렬 */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; 
 }
 
-.dropdown-menu ul {
+/* 각 group 항목에 마우스를 올렸을 때 해당 드롭다운만 보이도록 */
+.group:hover .dropdown-container {
+  visibility: visible;
+  opacity: 1;
+}
+
+.dropdown-container ul {
+  list-style: none;
   padding: 0;
   margin: 0;
-  list-style: none;
 }
 
-.dropdown-menu li {
-  padding: 8px 16px;
-  font-size: 1rem;
-  color: #374151; /* Gray-700 */
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.dropdown-container li {
+  padding: 0.5rem 1rem;
 }
 
-.dropdown-menu li:hover {
-  background-color: #f3f4f6; /* Light gray on hover */
+/* 드롭다운 하위 링크 hover 상태 */
+.dropdown-container li:hover {
+  transform: scale(1.1); /* 글자를 10% 확대 */
+  transition: transform 0.3s ease; /* 확대되는 효과를 부드럽게 transition */
 }
+
 
 /* Login button style */
 .btn-login {

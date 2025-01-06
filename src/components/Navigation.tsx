@@ -20,7 +20,7 @@ export default function NavigationBar() {
   };
 
   const dropdownRef = useRef(null);
-  // 외부 클릭 시 드롭다운 닫기
+  // 외부 클릭 시 마이페이지 드롭다운 닫기
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -35,7 +35,7 @@ export default function NavigationBar() {
     };
   }, []);
   return (
-    <nav className="group fixed top-0 z-50 w-full bg-gray-100 shadow-md">
+    <nav className="fixed top-0 z-50 w-full bg-gray-100 shadow-md">
       <div className="flex items-center justify-between px-6 py-4">
         {/* Left Section: Logo and Toggle */}
         <div className="flex items-center gap-4">
@@ -54,9 +54,59 @@ export default function NavigationBar() {
             <Link href="/" className="text-lg font-semibold text-gray-700">
               Home
             </Link>
-            <li className="text-lg font-semibold text-gray-700">About</li>
-            <li className="text-lg font-semibold text-gray-700">Activity</li>
-            <li className="text-lg font-semibold text-gray-700">Archive</li>
+            <li className="group relative">
+              <button className="text-lg font-semibold text-gray-700">
+                About
+              </button>
+              <div className="dropdown-container">
+                <ul>
+                  <li>
+                    <Link href="/about">소개</Link>
+                  </li>
+                  <li>
+                    <Link href="/organization">조직도</Link>
+                  </li>
+                  <li>
+                    <Link href="/history">History</Link>
+                  </li>
+                </ul>
+              </div>
+            </li>
+
+            <li className="group relative">
+              <button className="text-lg font-semibold text-gray-700">
+                Activity
+              </button>
+              <div className="dropdown-container">
+                <ul>
+                  <li>
+                    <Link href="/activities">활동</Link>
+                  </li>
+                  <li>
+                    <Link href="/projects">프로젝트</Link>
+                  </li>
+                  <li>
+                    <Link href="/schedule">학회 일정</Link>
+                  </li>
+                </ul>
+              </div>
+            </li>
+
+            <li className="group relative">
+              <button className="text-lg font-semibold text-gray-700">
+                Archive
+              </button>
+              <div className="dropdown-container">
+                <ul>
+                  <li>
+                    <Link href="/regulations">학회회칙</Link>
+                  </li>
+                  <li>
+                    <Link href="/secret">Secret Note</Link>
+                  </li>
+                </ul>
+              </div>
+            </li>
           </ul>
 
           {/* Right Section: Join / Logout and Profile Image */}
@@ -117,46 +167,6 @@ export default function NavigationBar() {
                 )}
               </>
             )}
-          </ul>
-        </div>
-      </div>
-
-      {/* Dropdown Menu Container */}
-      <div className="dropdown-container group-hover:max-h-[200px] group-hover:opacity-100">
-        <div className="dropdown-menu">
-          <ul>
-            <li>
-              <Link href="/about">소개</Link>
-            </li>
-            <li>
-              <Link href="/organization">조직도</Link>
-            </li>
-            <li>
-              <Link href="/history">History</Link>
-            </li>
-          </ul>
-        </div>
-        <div className="dropdown-menu ml-0">
-          <ul>
-            <li>
-              <Link href="/activities">활동</Link>
-            </li>
-            <li>
-              <Link href="/projects">프로젝트</Link>
-            </li>
-            <li>
-              <Link href="/schedule">학회 일정</Link>
-            </li>
-          </ul>
-        </div>
-        <div className="dropdown-menu ml-0">
-          <ul>
-            <li>
-              <Link href="/regulations">학회회칙</Link>
-            </li>
-            <li>
-              <Link href="/secret">Secret Note</Link>
-            </li>
           </ul>
         </div>
       </div>

@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export default function NavigationBar() {
   // 로그인 상태를 true로 설정하여 로그인 상태를 가정
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   // 로그인/로그아웃 토글 함수
   const toggleLogin = () => {
@@ -152,14 +152,14 @@ export default function NavigationBar() {
                     className="z-60 absolute right-0 mt-2 w-48 rounded-lg bg-white shadow-lg"
                   >
                     <ul>
-                      <li className="cursor-pointer px-4 py-2 hover:bg-gray-200">
+                      <li>
                         <Link href="/mypage/${userid}">개인정보관리</Link>
                       </li>
-                      <li className="cursor-pointer px-4 py-2 hover:bg-gray-200">
+                      <li>
                         <Link href="/mypage/${userid}/activities"></Link>내
                         활동관리
                       </li>
-                      <li className="cursor-pointer px-4 py-2 hover:bg-gray-200">
+                      <li>
                         <Link href="/">시간표</Link>
                       </li>
                     </ul>

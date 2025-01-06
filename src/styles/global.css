@@ -107,7 +107,7 @@ nav label {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; 
+  justify-content: center;
 }
 
 /* 각 group 항목에 마우스를 올렸을 때 해당 드롭다운만 보이도록 */
@@ -131,7 +131,6 @@ nav label {
   transform: scale(1.1); /* 글자를 10% 확대 */
   transition: transform 0.3s ease; /* 확대되는 효과를 부드럽게 transition */
 }
-
 
 /* Login button style */
 .btn-login {
@@ -197,10 +196,13 @@ nav .absolute {
   margin-top: 8px;
   width: 150px;
   background-color: white;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   overflow: hidden;
   z-index: 60; /* 다른 드롭다운 메뉴보다 우선순위가 높게 설정 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 nav .absolute ul {
@@ -217,7 +219,8 @@ nav .absolute li {
 }
 
 nav .absolute li:hover {
-  background-color: #f3f4f6;
+  transform: scale(1.05);
+  transition: transform 0.1s ease;
 }
 
 /* Footer 스타일 */

@@ -5,7 +5,7 @@ import Link from 'next/link';
 //import Image from 'next/image';
 
 export default function NavigationBar() {
-  // 로그인 상태를 true로 설정하여 로그인 상태를 가정
+  // 로그인 상태
   const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   // 로그인/로그아웃 토글 함수
@@ -24,7 +24,7 @@ export default function NavigationBar() {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownVisible(false); // 드롭다운을 닫음
+        setIsDropdownVisible(false);
       }
     };
 
@@ -37,18 +37,14 @@ export default function NavigationBar() {
   return (
     <nav className="fixed top-0 z-50 w-full bg-gray-100 shadow-md">
       <div className="flex items-center justify-between px-6 py-4">
-        {/* Left Section: Logo and Toggle */}
         <div className="flex items-center gap-4">
-          {/* Circle Logo */}
           <img src="/semtle_logo_square.jpg" alt="Logo" className="logoImage" />
 
-          {/* Toggle Switch */}
           <label className="modeToggle">
             <input role="switch" type="checkbox" />
           </label>
         </div>
 
-        {/* Center Section: Navigation Menu (Home ~ Archive) */}
         <div className="relative flex gap-4">
           <ul className="flex gap-4">
             <Link href="/" className="text-lg font-semibold text-gray-700">
@@ -109,7 +105,6 @@ export default function NavigationBar() {
             </li>
           </ul>
 
-          {/* Right Section: Join / Logout and Profile Image */}
           <ul className="flex gap-2">
             {!isLoggedIn ? (
               <>
@@ -129,13 +124,11 @@ export default function NavigationBar() {
               </>
             ) : (
               <>
-                {/* Logout Button */}
                 <li>
                   <button onClick={toggleLogin} className="logout-btn">
                     Logout
                   </button>
                 </li>
-                {/* Profile Image */}
                 <li className="flex items-center">
                   <button onClick={toggleDropdown}>
                     <img
@@ -145,7 +138,6 @@ export default function NavigationBar() {
                     />
                   </button>
                 </li>
-                {/* Dropdown Menu */}
                 {isDropdownVisible && (
                   <div
                     ref={dropdownRef}

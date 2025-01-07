@@ -2,15 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 로고 이미지 스타일 */
 .logoImage {
-  width: 2.5rem; /* 로고 크기 */
+  width: 2.5rem;
   height: 2.5rem;
-  object-fit: cover; /* 이미지 비율 유지 */
-  border-radius: 50%; /* 동그라미 모양 */
-  border: 2px solid #ccc; /* 테두리 추가 */
-  background-color: #fff; /* 경계선과 구분되게 배경색 설정 */
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #ccc; 
+  background-color: #fff; 
 }
-/* Profile Image */
+/* 프로필 이미지 스타일 */
 .profile-image {
   width: 2rem;
   height: 2rem;
@@ -18,6 +19,7 @@
   object-fit: cover;
   border: 2px solid #ccc;
 }
+/* 화이트&다크 모드 토글 스타일*/
 .modeToggle {
   display: flex;
   align-items: center;
@@ -30,16 +32,16 @@
   position: relative;
   border: max(2px, 0.1em) solid gray;
   border-radius: 1.25em;
-  width: 3em; /* 크기 변경 */
-  height: 1.4em; /* 크기 변경 */
+  width: 3em; 
+  height: 1.4em;
 }
 
 [type='checkbox']::before {
   content: '';
   position: absolute;
   left: 0;
-  width: 1.2em; /* 원 크기 변경 */
-  height: 1.1em; /* 원 크기 변경 */
+  width: 1.2em; 
+  height: 1.1em;
   border-radius: 50%;
   transform: scale(0.8);
   background-color: gray;
@@ -48,7 +50,7 @@
 
 [type='checkbox']:checked::before {
   background-color: gray;
-  left: 1.45em; /* 원이 오른쪽으로 이동하는 위치 조정 */
+  left: 1.45em;
 }
 
 [type='checkbox']:checked {
@@ -61,7 +63,7 @@
   outline: max(2px, 0.1em) solid tomato;
 }
 
-/* Navigation Bar */
+/* 네비게이션 바 스타일 */
 nav {
   background-color: #f3f4f6; /* Light gray */
   width: 100%;
@@ -72,7 +74,7 @@ nav {
   transition: all 0.3s ease;
 }
 
-/* Flex container for the navigation bar items (logo, toggle, menu) */
+
 nav > div {
   display: flex;
   justify-content: space-between;
@@ -81,14 +83,14 @@ nav > div {
 }
 
 nav label {
-  margin-left: -3rem; /* 추가적인 여백을 없앰 */
+  margin-left: -3rem;
 }
 
-/* 부모 요소에 마우스를 올렸을 때 자식 드롭다운 메뉴가 보이도록 */
+
 .group {
   position: relative;
 }
-
+/* 드롭다운 메뉴 스타일 */
 .dropdown-container {
   position: absolute;
   left: 50%;
@@ -132,7 +134,7 @@ nav label {
   transition: transform 0.3s ease; /* 확대되는 효과를 부드럽게 transition */
 }
 
-/* Login button style */
+/* 로그인 버튼 스타일 */
 .btn-login {
   padding: 8px 16px;
   background-color: rgb(150, 149, 149);
@@ -149,17 +151,17 @@ nav label {
   background-color: #636363;
 }
 
-/* Flex container for navigation links */
+/* 네비게이션 상위 바 스타일 */
 nav .flex {
   display: flex;
-  align-items: center; /* Center the items vertically */
+  align-items: center;
   gap: 4rem;
 }
 
-/* Flex container for the right section (Join and Login) */
+/* 로그인 버튼과 Join 링크 사이 여백*/
 nav .flex > ul:last-child {
   display: flex;
-  gap: 1.5rem; /* Space between Join and Login */
+  gap: 1.5rem; 
 }
 
 /* 드롭다운 메뉴 스타일 */
@@ -169,10 +171,10 @@ nav .flex > ul:last-child {
   border-radius: 50%;
 }
 .profile-image:hover {
-  transform: scale(1.1); /* 살짝 커짐 */
+  transform: scale(1.1); 
 }
 
-/* 로그아웃 버튼 스타일 */
+/* 프로필 이미지 스타일 */
 .logout-btn {
   padding: 4px 10px;
   background-color: rgb(125, 125, 125);
@@ -188,17 +190,17 @@ nav .flex > ul:last-child {
 .logout-btn:hover {
   background-color: #636363;
 }
-/* 드롭다운 메뉴 */
+/* 프로필 이미지 클릭후 드롭다운 메뉴 */
 nav .absolute {
   position: absolute;
-  top: 100%; /* 버튼 아래로 위치 */
-  right: 0; /* 오른쪽에 위치 */
+  top: 100%; 
+  right: 0; 
   margin-top: 8px;
   width: 150px;
   background-color: white;
   border-radius: 8px;
   overflow: hidden;
-  z-index: 60; /* 다른 드롭다운 메뉴보다 우선순위가 높게 설정 */
+  z-index: 60; 
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -230,7 +232,7 @@ nav .absolute li:hover {
   left: 0;
   width: 100%;
   height: 396px;
-  background-color: #000; /* 검은색 배경 */
+  background-color: #000; 
   color: white;
   padding: 4rem 4rem;
   z-index: 50;
@@ -238,8 +240,8 @@ nav .absolute li:hover {
 }
 
 .footer-content {
-  display: flex; /* 로고를 가로로 정렬 */
-  gap: 1rem; /* 로고들 간격을 1rem 추가 */
+  display: flex; 
+  gap: 1rem; 
 }
 
 .footer-content img {
@@ -301,20 +303,20 @@ nav .absolute li:hover {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7); /* 배경을 더 어두운 반투명으로 설정 */
+  background: rgba(0, 0, 0, 0.7); 
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* 팝업을 최상위에 표시 */
+  z-index: 1000;
 }
 
 .popup-content {
-  background: #fff; /* 팝업의 배경을 흰색으로 설정 */
+  background: #fff; 
   padding: 2rem;
   border-radius: 8px;
   width: 300px;
   text-align: center;
-  color: #333; /* 텍스트 색상을 어두운 회색으로 설정 */
+  color: #333;
 }
 
 .popup h2 {

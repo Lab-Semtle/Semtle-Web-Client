@@ -8,8 +8,8 @@
   height: 2.5rem;
   object-fit: cover;
   border-radius: 50%;
-  border: 2px solid #ccc; 
-  background-color: #fff; 
+  border: 2px solid #ccc;
+  background-color: #fff;
 }
 /* 프로필 이미지 스타일 */
 .profile-image {
@@ -32,7 +32,7 @@
   position: relative;
   border: max(2px, 0.1em) solid gray;
   border-radius: 1.25em;
-  width: 3em; 
+  width: 3em;
   height: 1.4em;
 }
 
@@ -40,7 +40,7 @@
   content: '';
   position: absolute;
   left: 0;
-  width: 1.2em; 
+  width: 1.2em;
   height: 1.1em;
   border-radius: 50%;
   transform: scale(0.8);
@@ -74,7 +74,6 @@ nav {
   transition: all 0.3s ease;
 }
 
-
 nav > div {
   display: flex;
   justify-content: space-between;
@@ -85,7 +84,6 @@ nav > div {
 nav label {
   margin-left: -3rem;
 }
-
 
 .group {
   position: relative;
@@ -161,7 +159,7 @@ nav .flex {
 /* 로그인 버튼과 Join 링크 사이 여백*/
 nav .flex > ul:last-child {
   display: flex;
-  gap: 1.5rem; 
+  gap: 1.5rem;
 }
 
 /* 드롭다운 메뉴 스타일 */
@@ -171,7 +169,7 @@ nav .flex > ul:last-child {
   border-radius: 50%;
 }
 .profile-image:hover {
-  transform: scale(1.1); 
+  transform: scale(1.1);
 }
 
 /* 프로필 이미지 스타일 */
@@ -193,14 +191,14 @@ nav .flex > ul:last-child {
 /* 프로필 이미지 클릭후 드롭다운 메뉴 */
 nav .absolute {
   position: absolute;
-  top: 100%; 
-  right: 0; 
+  top: 100%;
+  right: 0;
   margin-top: 8px;
   width: 150px;
   background-color: white;
   border-radius: 8px;
   overflow: hidden;
-  z-index: 60; 
+  z-index: 60;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -231,17 +229,18 @@ nav .absolute li:hover {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 396px;
-  background-color: #000; 
+  height: 300px;
+  background-color: #000;
   color: white;
-  padding: 4rem 4rem;
+  padding: 3rem 4rem;
   z-index: 50;
   gap: 1rem;
+  font-size: small;
 }
 
 .footer-content {
-  display: flex; 
-  gap: 1rem; 
+  display: flex;
+  gap: 1rem;
 }
 
 .footer-content img {
@@ -271,25 +270,25 @@ nav .absolute li:hover {
 
 .footer-content3 {
   display: flex;
-  gap: 2.2rem;
+  gap: 1.9rem;
 }
 .footer-content4 {
   display: flex;
-  gap: 4.75rem;
+  gap: 3.95rem;
 }
 
 .footer-content5 {
   display: flex;
-  gap: 2.6rem;
+  gap: 2.25rem;
 }
 .footer-content6 {
   display: flex;
-  gap: 4.6rem;
+  gap: 3.8rem;
 }
 .footer-content-end {
   display: flex;
   gap: 2rem;
-  margin-top: 4rem;
+  margin-top: 2rem;
 }
 .footer-content-end .footer-link:hover {
   text-decoration: underline;
@@ -303,7 +302,7 @@ nav .absolute li:hover {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7); 
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -311,7 +310,7 @@ nav .absolute li:hover {
 }
 
 .popup-content {
-  background: #fff; 
+  background: #fff;
   padding: 2rem;
   border-radius: 8px;
   width: 300px;

@@ -1,17 +1,26 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
+import * as React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 // pages/index.tsx
 //import Navigation from '@/components/Navigation';
 //import Footer from '@/components/Footer';
 import { useState, useEffect } from 'react';
+
 // import {
 //   IoIosArrowForward,
 //   IoIosArrowBack,
 //   IoIosArrowUp,
 //   IoIosArrowDown,
 // } from 'react-icons/io';
-
 
 const FAQSection = () => {
   const faqs = [
@@ -167,13 +176,39 @@ export default function Page() {
 
   // 조회수 상위 3개의 게시글 추출
   const sortedPosts = topPosts.sort((a, b) => b.views - a.views).slice(0, 3);
+  const CarouselImages = ['example1.jpg', 'example2.jpg', 'example3.jpg'];
   return (
     <div>
       {/* 내비게이션 */}
       {/* <Navigation /> */}
       {/* 본문 */}
-      <ImageSlider slides={slides} />
-      <div className="aboutSemtle">
+      <div className="flex items-center justify-center">
+        <Carousel className="w-[90vw]">
+          <CarouselContent>
+            {CarouselImages.map((src, index) => (
+              <CarouselItem key={index}>
+                <div className="p-1">
+                  <Card>
+                    <CardContent className="flex items-center justify-center p-4">
+                      {' '}
+                      {/* padding 추가 */}
+                      <img
+                        src={src}
+                        alt={`Slide ${index + 1}`}
+                        className="h-[700px] w-full rounded-md object-cover"
+                      />
+                    </CardContent>
+                  </Card>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+      </div>
+
+      {/* <div className="aboutSemtle">
         <p className="aboutSemtleWord">Arch Semtle</p>
         <div className="aboutSemtleIntro">
           <p>
@@ -300,15 +335,15 @@ export default function Page() {
         />
         <div className="flex w-full justify-center">
           {' '}
-          {/* 이 부분에서 가운데 정렬 */}
+
           <button
             className="rounded-full bg-gray-400 px-6 py-2 font-semibold text-black transition-all hover:bg-gray-500"
-            // ml-12를 사용해서 오른쪽으로 약간 밀기
+
           >
             Join {'->'}
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* <Footer /> */}
     </div>

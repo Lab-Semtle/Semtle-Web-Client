@@ -1,102 +1,81 @@
 'use client';
-
+import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import AlertCard from '@/components/AlertCard';
 
 export default function Footer() {
-  const [showTermsPopup, setShowTermsPopup] = useState(false);
-  const [showPrivacyPopup, setShowPrivacyPopup] = useState(false);
-
-  const handleTermsClick = () => {
-    setShowTermsPopup(true);
-  };
-
-  const handlePrivacyClick = () => {
-    setShowPrivacyPopup(true);
-  };
-
-  const closePopup = () => {
-    setShowTermsPopup(false);
-    setShowPrivacyPopup(false);
-  };
   return (
-    <footer className="footer">
-      <div className="footer-content">
-        <Link href="/인스타주소">
-          <img src="/instagram_logo.webp" alt="Instagram" />
-        </Link>
-        <Link href="카페주소">
-          <img src="/naver_cafe_logo.jpg" alt="naver_cafe" />
-        </Link>
-      </div>
-
-      <div className="footer-content2">
-        <span>Contact Semtle</span>
-        <span>전화번호 |</span>
-        <Link
-          href="https://open.kakao.com/o/xxxxxxx"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="openChatLink"
-        >
-          오픈채팅주소
-        </Link>
-      </div>
-      <div className="footer-content3">
-        <span>Contact Dev.</span>
-        <span>디스코드 링크</span>
-      </div>
-      <div className="footer-content4">
-        <span>Github.</span>
-        <Link
-          href="https://github.com/XXX/xxxx"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="gitLink"
-        >
-          https://github.com/XXX/xxxx
-        </Link>
-      </div>
-      <div className="footer-content5">
-        <span>Developers.</span>
-        <span>
+    <Card className="rounded-none bg-black p-5 text-white">
+      <CardHeader>
+        <CardTitle className="flex gap-3">
+          <Link href="/인스타주소">
+            <Image
+              src="/instagram_logo.webp"
+              alt="Instagram"
+              width={35}
+              height={35}
+            />
+          </Link>
+          <Link href="카페주소">
+            <Image
+              src="/naver_cafe_logo.jpg"
+              alt="naver_cafe"
+              width={35}
+              height={35}
+            />
+          </Link>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p>
+          Contact Semtle
+          <span className="ml-10" />
+          전화번호{' | '} <Link href="">오픈채팅주소</Link>
+        </p>
+        <p>
+          Contact Dev.
+          <span className="ml-[60px]" />
+          <Link href="">디스코드 링크</Link>
+        </p>
+        <p>
+          Github.
+          <span className="ml-[100px]" />
+          <Link href="https://github.com/XXX/xxxx">
+            https://github.com/XXX/xxxx
+          </Link>
+        </p>
+        <p>
+          Develpoers. <span className="ml-[60px]" />
           김민서 박준영 한태현 허태환 국태근 김아름 박상빈 신동혁 이서용
-        </span>
-      </div>
-      <div className="footer-content6">
-        <span>Version</span>
-        <span>1.0 (2025)</span>
-      </div>
-      <div>
-        <ul className="footer-content-end">
-          <li>All Right Reserved</li>
-          <li>&copy; Archi Semtle</li>
-          <li className="footer-link" onClick={handleTermsClick}>
-            이용약관
-          </li>
-          <li className="footer-link" onClick={handlePrivacyClick}>
-            개인정보수집 및 처리
-          </li>
-        </ul>
-        {showTermsPopup && (
-          <div className="popup">
-            <div className="popup-content">
-              <h2>이용약관</h2>
-              <p>여기에 이용약관 내용이 들어갑니다.</p>
-              <button onClick={closePopup}>닫기</button>
-            </div>
-          </div>
-        )}
-        {showPrivacyPopup && (
-          <div className="popup">
-            <div className="popup-content">
-              <h2>개인정보수집 및 처리</h2>
-              <p>여기에 개인정보 처리방침 내용이 들어갑니다.</p>
-              <button onClick={closePopup}>닫기</button>
-            </div>
-          </div>
-        )}
-      </div>
-    </footer>
+        </p>
+        <p>
+          Version <span className="ml-[92px]" />
+          1.0 (2025)
+        </p>
+      </CardContent>
+      <CardFooter className="gap-4">
+        <p>All Right Reserved</p>
+        <p>&copy;Arch Semtle</p>
+        <AlertCard
+          TriggerText="이용약관"
+          TitleText="이용약관"
+          DescriptionText="여기 이용약관 내용을 삽입합니다."
+          ActionText="닫기"
+        />
+        <AlertCard
+          TriggerText="개인정보수집 및 처리"
+          TitleText="개인정보수집 및 처리"
+          DescriptionText="여기에 개인정보수집 및 처리 내용을 삽입합니다."
+          ActionText="닫기"
+        />
+      </CardFooter>
+    </Card>
   );
 }

@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -12,6 +13,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import CardImageLabelList from '@/components/CardImageLabelList';
+import NewsDirector from '@/components/NewsDirector';
 import {
   Accordion,
   AccordionContent,
@@ -30,7 +32,13 @@ import { Button } from '@/components/ui/button';
 //   IoIosArrowUp,
 //   IoIosArrowDown,
 // } from 'react-icons/io';
-
+type NewsData = {
+  imageSrc: string;
+  altText: string;
+  newsTitle: string;
+  newsContent: string;
+  isReverse: boolean; // 두 번째 게시글에만 반대로 배치될 필드
+};
 export default function Page() {
   const midImageStyle = {
     width: '100%' as const,
@@ -51,11 +59,42 @@ export default function Page() {
     '커뮤니케이션',
     '기타 활동',
   ];
-
   const CarouselImages = ['example1.jpg', 'example2.jpg', 'example3.jpg'];
+  const [newsData, setNewsData] = useState<NewsData[]>([]);
+  useEffect(() => {
+    const newsData = [
+      {
+        imageSrc: '/1.jpg',
+        altText: 'News Image 1',
+        newsTitle: '게시글 제목 1',
+        newsContent:
+          '게시글 1의 간략한 내용이 여기에 표시됩니다.게시글 1의 간략한 내용이 여기에 표시됩니다.게시글 1의 간략한 내용이 여기에 표시됩니다.',
+      },
+      {
+        imageSrc: '/2.jpg',
+        altText: 'News Image 2',
+        newsTitle: '게시글 제목 2',
+        newsContent:
+          '게시글 2의 간략한 내용이 여기에 표시됩니다.게시글 2의 간략한 내용이 여기에 표시됩니다.게시글 2의 간략한 내용이 여기에 표시됩니다.',
+      },
+      {
+        imageSrc: '/3.jpg',
+        altText: 'News Image 3',
+        newsTitle: '게시글 제목 3',
+        newsContent:
+          '게시글 3의 간략한 내용이 여기에 표시됩니다.게시글 3의 간략한 내용이 여기에 표시됩니다.게시글 3의 간략한 내용이 여기에 표시됩니다.',
+      },
+    ];
+    const formattedData = newsData.map((news, index) => ({
+      ...news,
+      isReverse: index === 1,
+    }));
+
+    setNewsData(formattedData);
+  }, [setNewsData]);
+
   return (
     <div>
-      {/* 내비게이션 */}
       {/* <Navigation /> */}
       {/* 본문 */}
       <div className="flex items-center justify-center">
@@ -66,8 +105,6 @@ export default function Page() {
                 <div className="p-1">
                   <Card>
                     <CardContent className="flex items-center justify-center p-4">
-                      {' '}
-                      {/* padding 추가 */}
                       <img
                         src={src}
                         alt={`Slide ${index + 1}`}
@@ -99,16 +136,27 @@ export default function Page() {
       </div>
 
       <CardImageLabelList
-        cardCount={4} // 4개의 카드를 생성
+        cardCount={4}
         imageSrcs={imageSrcs}
         altTexts={altTexts}
         contentTexts={contentTexts}
         isHiddens={isHidden}
       />
-      <div className="mt-20 flex flex-col items-center justify-center">
-        <Label className="mt-[100px] text-xl font-bold">
+
+      <div className="mb-10 mt-20 flex flex-col items-center justify-center">
+        <Label className="mb-[30px] mt-[100px] text-xl font-bold">
           학회 소식 바로보기
         </Label>
+        {newsData.map((news, index) => (
+          <NewsDirector
+            key={index}
+            imageSrc={news.imageSrc}
+            altText={news.altText}
+            newsTitle={news.newsTitle}
+            newsContent={news.newsContent}
+            isReverse={news.isReverse}
+          />
+        ))}
       </div>
 
       <div>

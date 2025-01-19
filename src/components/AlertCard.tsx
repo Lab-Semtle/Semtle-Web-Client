@@ -11,12 +11,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-interface AlertCardProps {
+type AlertCardProps = {
   TriggerText: string;
   TitleText: string;
   DescriptionText: string;
   ActionText: string;
-}
+};
 const AlertCard: React.FC<AlertCardProps> = ({
   TriggerText,
   TitleText,

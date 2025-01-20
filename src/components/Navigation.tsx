@@ -14,107 +14,189 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Button } from '@/components/ui/button';
 //import Image from 'next/image';
 const aboutSections = [
-  { title: '소개', href: '/about' },
+  {
+    title: '소개',
+    href: '/about',
+    description: '우리 조직의 비전과 사명, 그리고 주요 활동을 소개합니다.',
+  },
   {
     title: '조직도',
     href: '/organization',
+    description: '조직의 구성원들과 각 부서의 역할을 확인할 수 있습니다.',
   },
   {
     title: 'History',
     href: '/history',
+    description: '우리의 역사를 통해 성장과 발전 과정을 살펴보세요.',
   },
 ];
-
 const activitySections = [
   {
     title: '활동',
     href: '/activities',
+    description: '우리의 최근 활동과 프로젝트에 대해 알아보세요.',
   },
   {
     title: '프로젝트',
     href: '/projects',
+    description: '진행 중인 프로젝트와 그 성과를 확인해 보세요.',
   },
   {
     title: '학회 일정',
     href: '/schedule',
+    description: '다가오는 학회 일정과 이벤트를 확인할 수 있습니다.',
   },
 ];
-
 const archiveSections = [
   {
     title: '학회회칙',
     href: '/regulations',
+    description: '학회의 공식 규칙과 운영 방침을 확인할 수 있습니다.',
   },
   {
     title: 'Secret Note',
     href: '/secret',
+    description: '비공개 자료와 특별한 노트를 제공하는 페이지입니다.',
   },
 ];
+
 export default function NavigationBar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // 로그인 상태 관리
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [userProfile, setUserProfile] = useState({
+    name: 'Unknown',
+    image: '/profile-image.jpg',
+  });
 
-  const toggleLogin = () => {
-    setIsLoggedIn(!isLoggedIn);
+  const handleLogout = () => {
+    setIsLoggedIn(false);
   };
-
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-
-  const toggleDropdown = () => {
-    setIsDropdownVisible((prev) => !prev);
-  };
-
-  const dropdownRef = useRef(null);
-
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownVisible(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    // 예시로 API 호출
+    fetch('/api/getUserProfile')
+      .then((response) => response.json())
+      .then((data) => {
+        setUserProfile({
+          name: data.name,
+          image: data.image,
+        });
+      });
   }, []);
+
   return (
-    <NavigationMenu>
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <Link href="/" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Home
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-        {/* About Menu */}
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>About</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <MenuSection sections={aboutSections} />
-          </NavigationMenuContent>
-        </NavigationMenuItem>
+    <nav className="fixed top-0 z-50 flex h-[70px] w-full items-center bg-white shadow-md transition-all duration-300 ease-in-out">
+      <NavigationMenu>
+        <NavigationMenuList className="ml-5 flex items-center gap-2">
+          <Avatar>
+            <AvatarImage
+              className="h-10 w-10 rounded-full border-2 border-gray-300"
+              src="/semtle_logo_line.png"
+              alt="Arch Semtle Logo"
+            />
+            <AvatarFallback>LI</AvatarFallback>
+          </Avatar>
+          <Switch id="airplane-mode" />
+          <Label htmlFor="airplane-mode"></Label>
+        </NavigationMenuList>
+      </NavigationMenu>
 
-        {/* Activity Menu */}
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Activity</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <MenuSection sections={activitySections} />
-          </NavigationMenuContent>
-        </NavigationMenuItem>
+      <NavigationMenu className="ml-auto mr-4 flex items-center justify-end">
+        <NavigationMenuList className="gap-8">
+          <NavigationMenuItem>
+            <Link href="/" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Home
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
 
-        {/* Archive Menu */}
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Archive</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <MenuSection sections={archiveSections} />
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>About</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <MenuSection sections={aboutSections} />
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>Activity</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <MenuSection sections={activitySections} />
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>Archive</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <MenuSection sections={archiveSections} />
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+
+          {!isLoggedIn ? (
+            <>
+              <NavigationMenuItem>
+                <Link href="/reqruiting" className="mr-[-10] text-sm">
+                  Join
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="/login">
+                  <Button>Login</Button>
+                </Link>
+              </NavigationMenuItem>
+            </>
+          ) : (
+            <>
+              <NavigationMenuList className="ml-[-15] flex items-center justify-end gap-3">
+                <NavigationMenuItem>
+                  <Button onClick={handleLogout}>Logout</Button>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Avatar className="cursor-pointer">
+                        <AvatarImage
+                          className="h-8 w-8 rounded-full border-2 border-gray-900"
+                          src={userProfile.image}
+                          alt={userProfile.name}
+                        />
+                        <AvatarFallback>
+                          {userProfile.name.slice(0, 2)}
+                        </AvatarFallback>
+                      </Avatar>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-30">
+                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem>개인정보관리</DropdownMenuItem>
+                        <DropdownMenuItem>내 활동관리</DropdownMenuItem>
+                        <DropdownMenuItem>시간표</DropdownMenuItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </>
+          )}
+        </NavigationMenuList>
+      </NavigationMenu>
+    </nav>
+
     // <nav className="navBar">
     //   <div className="navBarLogoToggle">
     //     <div className="navBarLogo">

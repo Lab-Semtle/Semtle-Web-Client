@@ -1,204 +1,159 @@
-// 회원정보수정 페이지
+// 개인정보 수정 페이지
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import Image from 'next/image';
+import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 
 export default function Page() {
-  const [profileImage, setProfileImage] = useState<File | null>(null);
-  const [userData, setUserData] = useState({
-    name: '',
-    email: '',
-    studentId: '',
-    birthdate: '',
-    phone: '',
-  });
-  const [error, setError] = useState<string | null>(null);
-
-  const params = useParams();
-  const router = useRouter();
-  const userId = params?.memberId || '1'; // Default ID: 1
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch(`/api/members/${userId}`, {
-          method: 'GET',
-        });
-        if (!response.ok) {
-          setError('데이터를 불러오는데 실패했습니다.');
-          return;
-        }
-        const data = await response.json();
-        if (data.success) {
-          setUserData(data.data);
-        } else {
-          setError(data.message || '데이터를 불러오는데 실패했습니다.');
-        }
-      } catch (err) {
-        console.error('Error fetching user data: ', err);
-        setError('예기치 못한 오류가 발생했습니다.');
-      }
-    };
-
-    fetchUserData();
-  }, [userId]);
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setProfileImage(e.target.files[0]);
-    }
-  };
-
-  const handleImageRemove = () => {
-    setProfileImage(null);
-  };
-
-  const handleCancel = () => {
-    if (window.history.length > 1) {
-      router.back();
-    } else {
-      router.push('/');
-    }
-  };
+  const [birthDate, setBirthDate] = useState<Date | undefined>(undefined);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-6">
-      <div className="w-full max-w-3xl rounded-lg bg-white p-6 shadow-md">
-        <h1 className="mb-6 text-2xl font-bold">회원정보관리</h1>
-        <hr className="mb-6 border-gray-300" />
+      <div className="w-full max-w-lg space-y-6">
+        <h1 className="text-center text-2xl font-bold">회원정보관리</h1>
 
-        {error && (
-          <div className="mb-4 rounded-md bg-red-100 p-3 text-red-700">
-            {error}
-          </div>
-        )}
-
-        <div className="mb-6 border-b pb-6">
-          <div className="flex items-center space-x-6">
+        <div className="space-y-6">
+          <div className="flex flex-col items-center space-y-4">
             <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-gray-300">
-              {profileImage ? (
-                <Image
-                  src={URL.createObjectURL(profileImage)}
-                  alt="profile Img"
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <span className="text-gray-500">사진</span>
-              )}
+              <span className="text-gray-500">사진</span>
             </div>
-            <div>
-              <p className="mb-2 text-sm text-gray-500">
-                프로필 사진을 등록해주세요. <br />
-                이미지 파일 크기 최대 5MB 미만
-              </p>
-              <div className="flex space-x-2">
-                <label
-                  htmlFor="upload"
-                  className="cursor-pointer rounded-md bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600"
+          </div>
+
+          <Table className="mx-auto w-[70%]">
+            <TableBody>
+              <TableRow>
+                <TableCell className="w-1/2 font-medium">이름</TableCell>
+                <TableCell className="w-2/2">홍길동</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="w-1/2 font-medium">생년월일</TableCell>
+                <TableCell className="w-2/2">
+                  {birthDate ? format(birthDate, 'PPP') : 'January 1st, 2025'}
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="w-1/2 font-medium">전화번호</TableCell>
+                <TableCell className="w-2/2">010-1234-5678</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+
+          <div className="flex justify-center space-x-4">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="px-4 py-2 text-sm"
                 >
-                  등록
-                </label>
-                <input
-                  id="upload"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImageUpload}
-                />
-                <button
-                  onClick={handleImageRemove}
-                  className="rounded-md bg-gray-200 px-4 py-2 text-sm text-gray-700 hover:bg-gray-300"
-                >
-                  삭제
-                </button>
-              </div>
-            </div>
+                  수정하기
+                </Button>
+              </SheetTrigger>
+
+              <SheetContent
+                side="bottom"
+                className="flex flex-col items-center"
+              >
+                <SheetHeader className="text-center">
+                  <SheetTitle>회원정보 수정</SheetTitle>
+                  <SheetDescription>
+                    아래 항목을 수정하고 저장 버튼을 눌러주세요.
+                  </SheetDescription>
+                </SheetHeader>
+                <div className="grid w-[60%] gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-name" className="text-right">
+                      이름
+                    </Label>
+                    <Input
+                      id="edit-name"
+                      defaultValue="홍길동"
+                      className="col-span-3 w-full"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-birthDate" className="text-right">
+                      생년월일
+                    </Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            'col-span-3 w-full justify-start text-left font-normal',
+                            !birthDate && 'text-muted-foreground',
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {birthDate
+                            ? format(birthDate, 'PPP')
+                            : '날짜를 선택하세요'}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={birthDate}
+                          onSelect={setBirthDate}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-phone" className="text-right">
+                      전화번호
+                    </Label>
+                    <Input
+                      id="edit-phone"
+                      defaultValue="010-1234-5678"
+                      className="col-span-3 w-full"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="edit-profile" className="text-right">
+                      프로필 이미지
+                    </Label>
+                    <Input
+                      id="edit-profile"
+                      type="file"
+                      accept="image/*"
+                      className="col-span-3 w-full"
+                    />
+                  </div>
+                  {/* 저장 버튼 */}
+                  <div className="flex justify-center pt-4">
+                    <SheetClose asChild>
+                      <Button type="submit">저장</Button>
+                    </SheetClose>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
-
-        <form className="space-y-4">
-          {/* 이름 */}
-          <div className="flex items-center justify-start gap-x-6 py-2">
-            <span className="w-32 text-base font-medium text-gray-700">
-              이름
-            </span>
-            <span className="text-base text-gray-700">{userData.name}</span>
-          </div>
-
-          {/* 이메일 주소 */}
-          <div className="flex items-center justify-start gap-x-6 py-2">
-            <span className="w-32 text-base font-medium text-gray-700">
-              이메일 주소
-            </span>
-            <span className="text-base text-gray-700">{userData.email}</span>
-          </div>
-
-          {/* 비밀번호 */}
-          <div className="flex items-center justify-start gap-x-6 py-2">
-            <span className="w-32 text-base font-medium text-gray-700">
-              비밀번호
-            </span>
-            <button
-              type="button"
-              className="rounded-md bg-gray-200 px-4 py-2 text-sm text-gray-700 hover:bg-gray-300"
-            >
-              비밀번호 변경
-            </button>
-          </div>
-
-          {/* 학번 */}
-          <div className="flex items-center justify-start gap-x-6 py-2">
-            <span className="w-32 text-base font-medium text-gray-700">
-              학번
-            </span>
-            <span className="text-base text-gray-700">
-              {userData.studentId}
-            </span>
-          </div>
-
-          {/* 생년월일 */}
-          <div className="flex items-center justify-start gap-x-6 py-2">
-            <span className="w-32 text-base font-medium text-gray-700">
-              생년월일
-            </span>
-            <input
-              type="date"
-              defaultValue={userData.birthdate}
-              className="w-48 rounded-md border px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          {/* 전화번호 */}
-          <div className="flex items-center justify-start gap-x-6 py-2">
-            <span className="w-32 text-base font-medium text-gray-700">
-              전화번호
-            </span>
-            <input
-              type="tel"
-              defaultValue={userData.phone}
-              className="w-48 rounded-md border px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          {/* 버튼 */}
-          <div className="flex justify-center space-x-4">
-            <button
-              type="submit"
-              className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-            >
-              수정하기
-            </button>
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="rounded-md bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
-            >
-              취소
-            </button>
-          </div>
-        </form>
       </div>
     </div>
   );

@@ -4,25 +4,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-
-// 컴포넌트
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-
-// 아이콘
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import EyeIcon from '@/components/icons/LightBlubFillIcon';
 import EyeSlashIcon from '@/components/icons/LightBlulb';
 
-// LoginPage 컴포넌트 정의
 export default function LoginPage() {
   // 이메일, 비밀번호, 비밀번호 보기 상태, 에러 메시지 상태 관리
   const [email, setEmail] = useState('');
@@ -80,6 +67,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <Card className="w-full max-w-md">
+        {/* Semtle 아이콘 */}
         <CardHeader>
           <div className="flex justify-center">
             <Image
@@ -90,37 +78,37 @@ export default function LoginPage() {
               priority
             />
           </div>
-          <CardTitle>로그인</CardTitle>
-          <CardDescription>계정 정보를 입력해 주세요</CardDescription>
         </CardHeader>
+
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="email">이메일</Label>
+          <form onSubmit={handleSubmit} className="space-y-3">
+            {/* 이메일 입력 필드 */}
+            <div className="flex flex-col space-y-1">
               <Input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="example@g.kmou.ac.kr"
+                placeholder="학교 이메일"
                 required
               />
             </div>
-            <div className="relative flex flex-col space-y-1.5">
-              <Label htmlFor="password">비밀번호</Label>
+
+            {/* 비밀번호 입력 필드, 비밀번호 확인 아이콘 버튼 */}
+            <div className="flex items-center rounded-md border">
               <Input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="비밀번호를 입력하세요"
+                placeholder="비밀번호"
                 required
-                className="pr-10"
+                className="flex-1 border-none px-3 focus:outline-none focus:ring-0"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-[58%] -translate-y-1/2 text-gray-500"
+                className="px-3 text-gray-500"
               >
                 {showPassword ? (
                   <EyeSlashIcon
@@ -133,20 +121,30 @@ export default function LoginPage() {
                 )}
               </button>
             </div>
-            {error && <div className="text-sm text-red-500">{error}</div>}
-            <Button type="submit" className="w-full">
+
+            {/* 에러 메시지 라벨 및 비밀번호 찾기 링크 */}
+            <div className="mt-1 flex items-center justify-between">
+              <div className="h-5 text-sm text-red-500">{error || null}</div>
+              <Button
+                variant="link"
+                onClick={() => alert('비밀번호 재설정')}
+                className="text-sm"
+              >
+                비밀번호 찾기
+              </Button>
+            </div>
+            <Button type="submit" className="mt-2 w-full">
               로그인
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={handleRecruiting}
+              className="mt-2 w-full text-center"
+            >
+              가입하기
             </Button>
           </form>
         </CardContent>
-        <CardFooter className="flex justify-between">
-          <Button variant="outline" onClick={handleRecruiting}>
-            가입하기
-          </Button>
-          <Button variant="link" onClick={() => alert('비밀번호 재설정')}>
-            비밀번호를 잊으셨나요?
-          </Button>
-        </CardFooter>
       </Card>
     </div>
   );

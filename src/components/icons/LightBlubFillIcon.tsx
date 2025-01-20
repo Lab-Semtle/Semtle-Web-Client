@@ -1,3 +1,4 @@
+// 뜬 눈 아이콘
 export default function EyeIcon({
   className,
   width = 16,

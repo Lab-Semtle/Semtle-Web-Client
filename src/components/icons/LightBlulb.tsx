@@ -1,3 +1,4 @@
+// 감은 눈 아이콘
 export default function EyeSlashIcon({
   className,
   width = 16,
@@ -20,4 +21,4 @@ export default function EyeSlashIcon({
     </svg>
   );
 }
-// class="bi bi-lightbulb"
+// class = "bi bi-lightbulb"

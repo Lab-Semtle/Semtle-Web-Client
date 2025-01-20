@@ -97,7 +97,7 @@ export default function Page() {
     <div>
       {/* <Navigation /> */}
       {/* 본문 */}
-      <div className="flex items-center justify-center">
+      <div className="mt-[70px] flex items-center justify-center">
         <Carousel className="w-[90vw]">
           <CarouselContent>
             {CarouselImages.map((src, index) => (

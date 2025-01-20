@@ -183,9 +183,9 @@ export default function NavigationBar() {
                       <DropdownMenuLabel>My Account</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuGroup>
-                        <DropdownMenuItem>개인정보관리</DropdownMenuItem>
-                        <DropdownMenuItem>내 활동관리</DropdownMenuItem>
-                        <DropdownMenuItem>시간표</DropdownMenuItem>
+                        <DropdownMenuItem><Link href="/mypage/${userid}">개인정보관리</Link></DropdownMenuItem>
+                        <DropdownMenuItem><Link href="/mypage/${userid}/activity">내 활동관리</Link></DropdownMenuItem>
+                        <DropdownMenuItem><Link href="/개인시간표">시간표</Link></DropdownMenuItem>
                       </DropdownMenuGroup>
                     </DropdownMenuContent>
                   </DropdownMenu>

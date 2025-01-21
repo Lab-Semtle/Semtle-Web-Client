@@ -35,9 +35,15 @@ const CardImageLabel: React.FC<CardImageLabelProps> = ({
           </CardTitle>
         </CardHeader>
         <CardContent
-          className={`flex flex-1 flex-col items-center gap-4 p-2 text-center text-sm text-gray-800${contentTitle ? '' : 'justify-center'}`}
+          className={`flex flex-1 flex-col items-center gap-4 p-2 text-center text-sm text-gray-800 ${
+            contentTitle ? 'mt-5' : 'justify-center'
+          }`}
         >
-          <CardTitle>{contentTitle}</CardTitle>
+          {contentTitle && (
+            <CardTitle className="text-lg font-semibold">
+              {contentTitle}
+            </CardTitle>
+          )}
           <CardDescription>{contentText}</CardDescription>
         </CardContent>
       </Card>

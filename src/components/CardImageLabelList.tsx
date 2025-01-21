@@ -20,6 +20,7 @@ const CardImageLabelList: React.FC<CardListProps> = ({
 }) => {
   const cards = [];
 
+
   for (let i = 0; i < cardCount; i++) {
     cards.push(
       <CardImageLabel
@@ -33,8 +34,19 @@ const CardImageLabelList: React.FC<CardListProps> = ({
     );
   }
 
+  const rows = [];
+  for (let i = 0; i < cards.length; i += 4) {
+    rows.push(cards.slice(i, i + 4));
+  }
+
   return (
-    <div className="mt-10 flex flex-wrap justify-center gap-4">{cards}</div>
+    <div className="mt-10">
+      {rows.map((row, index) => (
+        <div key={index} className="flex justify-center gap-4 mb-4">
+          {row}
+        </div>
+      ))}
+    </div>
   );
 };
 

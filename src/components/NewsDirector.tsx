@@ -8,7 +8,7 @@ type NewsDirectorProps = {
   altText: string;
   newsTitle: string;
   newsContent: string;
-  isReverse?: boolean;
+  index: number;
 };
 
 const NewsDirector: React.FC<NewsDirectorProps> = ({
@@ -16,8 +16,10 @@ const NewsDirector: React.FC<NewsDirectorProps> = ({
   altText,
   newsTitle,
   newsContent,
-  isReverse = false,
+  index,
 }) => {
+  const isReverse = index % 2 === 1; // 짝수 인덱스일 때 반대 방향으로 출력
+
   return (
     <div
       className={`mb-10 flex items-start gap-4 ${isReverse ? 'flex-row-reverse' : 'flex-row'}`}
@@ -28,12 +30,8 @@ const NewsDirector: React.FC<NewsDirectorProps> = ({
         </CardHeader>
       </Card>
 
-      <div className="mt-3 flex flex-col">
-        <Label
-          className={`text-lg font-semibold ${isReverse ? 'ml-[46.5rem]' : ''}`}
-        >
-          {newsTitle}
-        </Label>
+      <div className="mt-3 flex flex-col justify-center">
+        <Label className="text-lg font-semibold">{newsTitle}</Label>
         <Label className="mt-2 text-sm text-muted-foreground">
           {newsContent}
         </Label>
@@ -43,3 +41,4 @@ const NewsDirector: React.FC<NewsDirectorProps> = ({
 };
 
 export default NewsDirector;
+

@@ -37,7 +37,7 @@ type NewsData = {
   altText: string;
   newsTitle: string;
   newsContent: string;
-  isReverse: boolean; // 두 번째 게시글에만 반대로 배치될 필드
+  index: number; // 두 번째 게시글에만 반대로 배치될 필드
 };
 export default function Page() {
   const midImageStyle = {
@@ -87,7 +87,7 @@ export default function Page() {
     ];
     const formattedData = newsData.map((news, index) => ({
       ...news,
-      isReverse: index === 1,
+      index,
     }));
 
     setNewsData(formattedData);
@@ -154,7 +154,7 @@ export default function Page() {
             altText={news.altText}
             newsTitle={news.newsTitle}
             newsContent={news.newsContent}
-            isReverse={news.isReverse}
+            index={index}
           />
         ))}
       </div>

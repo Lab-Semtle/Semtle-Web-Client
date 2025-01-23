@@ -9,6 +9,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel';
+import ButtonLink from '@/components/ButtonLink';
 
 export default function About() {
   const eventData = [
@@ -46,10 +47,17 @@ export default function About() {
     { id: 1, src: '/logo1.png', alt: 'Logo 1' },
     { id: 2, src: '/logo2.png', alt: 'Logo 2' },
   ];
+  const buttonLinks = [
+    { buttonName: 'xx@xx.com', link: '/join' },
+    { buttonName: '카카오톡 오픈채팅', link: '/오픈채팅' },
+    { buttonName: '인스타 DM', link: '/인스타DM' },
+    { buttonName: 'Github', link: '/깃허브링크' },
+    { buttonName: 'Discord', link: '/디스코드링크' },
+    { buttonName: '카카오톡', link: '/개발팀카톡' },
+  ];
 
   return (
     <>
-      {/* 임시 네비게이션 바 */}
       <nav
         style={{
           height: '70px',
@@ -58,7 +66,6 @@ export default function About() {
         }}
       ></nav>
 
-      {/* 본문 콘텐츠 */}
       <main>
         <div className="mx-auto mt-[100px] flex w-full flex-col items-center gap-5 text-center">
           <Label className="w-full max-w-[800px] text-[30px] font-bold">
@@ -216,12 +223,56 @@ export default function About() {
               value="contact"
               className="mx-auto w-full max-w-[850px]"
             >
-              <h2>hello4</h2>
+              <Label className="text-[26px] font-bold">오시는 길</Label>
+              <p className="mt-10 text-[17px] leading-8">아치 셈틀 주소</p>
+              <div className="mb-20 mt-8 flex flex-wrap justify-center gap-6">
+                <Image
+                  src="/map.jpg"
+                  alt="Semtle location"
+                  width={800}
+                  height={400}
+                ></Image>
+              </div>
+              <Label className="text-[26px] font-bold">문의하기</Label>
+              <p className="mb-3 mt-2 text-[17px]">
+                더 궁금한 사항이 있거나 후원을 원하신다면 언제든 연락해 주세요!
+              </p>
+              <div className="mb-16">
+                {buttonLinks.map((button, index) => {
+                  if (index < 3) {
+                    return (
+                      <ButtonLink
+                        key={index}
+                        buttonName={button.buttonName}
+                        link={button.link}
+                      />
+                    );
+                  }
+                })}
+              </div>
+              <Label className="text-[26px] font-bold">개발팀 문의하기</Label>
+              <p className="mb-3 mt-2 text-[17px]">
+                더 궁금한 사항이 있거나 후원을 원하신다면 언제든 연락해
+                주세요!(예시)
+              </p>
+              <div className="mb-20">
+                {buttonLinks.map((button, index) => {
+                  if (index > 2) {
+                    return (
+                      <ButtonLink
+                        key={index}
+                        buttonName={button.buttonName}
+                        link={button.link}
+                      />
+                    );
+                  }
+                })}
+              </div>
             </TabsContent>
           </Tabs>
         </div>
       </main>
-      {/* 임시 푸터 */}
+
       <footer
         style={{
           height: '300px',

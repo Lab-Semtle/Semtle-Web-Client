@@ -48,7 +48,7 @@ export default function About() {
     { id: 2, src: '/logo2.png', alt: 'Logo 2' },
   ];
   const buttonLinks = [
-    { buttonName: 'xx@xx.com', link: '/join' },
+    { buttonName: 'xogusdl@xsdfx.com', link: '/join' },
     { buttonName: '카카오톡 오픈채팅', link: '/오픈채팅' },
     { buttonName: '인스타 DM', link: '/인스타DM' },
     { buttonName: 'Github', link: '/깃허브링크' },

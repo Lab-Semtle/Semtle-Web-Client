@@ -1,56 +1,100 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Upload, X, Bold, Italic, List, ImageIcon, Save } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useState } from 'react';
+import { Upload, X, Bold, Italic, List, ImageIcon, Save } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { marked } from 'marked';
 
 interface PostFormData {
-  title: string
-  category: string
-  content: string
-  image?: File
+  title: string;
+  category: string;
+  content: string;
+  image?: File;
 }
 
 export default function CreatePost() {
   const [formData, setFormData] = useState<PostFormData>({
-    title: "",
-    category: "",
-    content: "",
-  })
-  const [imagePreview, setImagePreview] = useState<string>("")
-  const [isDraft, setIsDraft] = useState(false)
+    title: '',
+    category: '',
+    content: '',
+  });
+  const [imagePreview, setImagePreview] = useState<string>('');
+  const [isDraft, setIsDraft] = useState(false);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     if (file) {
-      setFormData((prev) => ({ ...prev, image: file }))
-      const reader = new FileReader()
+      setFormData((prev) => ({ ...prev, image: file }));
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const handleImageRemove = () => {
-    setFormData((prev) => ({ ...prev, image: undefined }))
-    setImagePreview("")
-  }
+    setFormData((prev) => ({ ...prev, image: undefined }));
+    setImagePreview('');
+  };
 
   const handleTextFormat = (format: string) => {
-    console.log("Format text:", format)
-  }
+    const textarea = document.getElementById(
+      'post-content'
+    ) as HTMLTextAreaElement;
+    const { selectionStart, selectionEnd, value } = textarea;
+
+    if (selectionStart !== selectionEnd) {
+      const selectedText = value.slice(selectionStart, selectionEnd);
+      let formattedText = '';
+
+      // 포맷 옵션에 따른 변환
+      if (format === 'bold') {
+        formattedText = `**${selectedText}**`; // Markdown 형식 예: **굵게**
+      } else if (format === 'italic') {
+        formattedText = `*${selectedText}*`; // Markdown 형식 예: *기울임*
+      } else if (format === 'list') {
+        formattedText = `- ${selectedText.replace(/\n/g, '\n- ')}`; // 목록
+      }
+
+      // 새로운 텍스트로 업데이트
+      const newText =
+        value.slice(0, selectionStart) +
+        formattedText +
+        value.slice(selectionEnd);
+
+      // 상태 업데이트 및 커서 위치 재설정
+      setFormData((prev) => ({ ...prev, content: newText }));
+      setTimeout(() => {
+        textarea.setSelectionRange(
+          selectionStart,
+          selectionStart + formattedText.length
+        );
+      }, 0);
+    }
+  };
 
   const handleSubmit = async (draft: boolean) => {
-    setIsDraft(draft)
-    console.log("Submit form:", { ...formData, isDraft: draft })
-  }
+    setIsDraft(draft);
+    console.log('Submit form:', { ...formData, isDraft: draft });
+  };
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
@@ -62,7 +106,9 @@ export default function CreatePost() {
             <Input
               id="title"
               value={formData.title}
-              onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, title: e.target.value }))
+              }
               placeholder="제목을 입력하세요"
             />
           </div>
@@ -73,7 +119,11 @@ export default function CreatePost() {
             <div className="flex items-start gap-4">
               <div className="flex-1 aspect-video bg-gray-100 rounded-lg overflow-hidden relative">
                 {imagePreview ? (
-                  <img src={imagePreview || "/placeholder.svg"} alt="Preview" className="w-full h-full object-cover" />
+                  <img
+                    src={imagePreview || '/placeholder.svg'}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-400">
                     <ImageIcon className="w-12 h-12" />
@@ -106,7 +156,9 @@ export default function CreatePost() {
             <Label>게시물 유형</Label>
             <Select
               value={formData.category}
-              onValueChange={(value) => setFormData((prev) => ({ ...prev, category: value }))}
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, category: value }))
+              }
             >
               <SelectTrigger>
                 <SelectValue placeholder="유형 선택" />
@@ -120,7 +172,7 @@ export default function CreatePost() {
             </Select>
           </div>
 
-          {/* 내용 */}
+          {/* 내용 입력 */}
           <div className="space-y-2">
             <Label>게시물 내용</Label>
             <div className="border rounded-lg">
@@ -128,7 +180,11 @@ export default function CreatePost() {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="ghost" size="sm" onClick={() => handleTextFormat("bold")}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleTextFormat('bold')}
+                      >
                         <Bold className="w-4 h-4" />
                       </Button>
                     </TooltipTrigger>
@@ -136,7 +192,11 @@ export default function CreatePost() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="ghost" size="sm" onClick={() => handleTextFormat("italic")}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleTextFormat('italic')}
+                      >
                         <Italic className="w-4 h-4" />
                       </Button>
                     </TooltipTrigger>
@@ -144,7 +204,11 @@ export default function CreatePost() {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="ghost" size="sm" onClick={() => handleTextFormat("list")}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleTextFormat('list')}
+                      >
                         <List className="w-4 h-4" />
                       </Button>
                     </TooltipTrigger>
@@ -153,13 +217,33 @@ export default function CreatePost() {
                 </TooltipProvider>
               </div>
               <Textarea
+                id="post-content"
                 value={formData.content}
-                onChange={(e) => setFormData((prev) => ({ ...prev, content: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, content: e.target.value }))
+                }
                 placeholder="내용을 입력하세요"
                 className="min-h-[300px] border-0 rounded-none focus-visible:ring-0"
               />
+              {/* 미리보기 */}
+              <Label>미리보기</Label>
+              <div
+                className="border rounded-lg p-4 bg-gray-100"
+                dangerouslySetInnerHTML={{
+                  __html: marked.parse(formData.content),
+                }}
+              />
             </div>
           </div>
+
+          {/* 미리보기 */}
+          {/* <div className="space-y-2">
+            <Label>미리보기</Label>
+            <div
+              className="border rounded-lg p-4 bg-gray-100"
+              dangerouslySetInnerHTML={{ __html: marked.parse(formData.content) }}
+            />
+          </div> */}
         </CardContent>
         <CardFooter className="flex justify-end gap-2 p-6">
           <Button variant="outline" onClick={() => handleSubmit(true)}>
@@ -170,6 +254,5 @@ export default function CreatePost() {
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }
-

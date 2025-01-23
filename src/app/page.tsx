@@ -143,21 +143,22 @@ export default function Page() {
         isHiddens={isHidden}
       />
 
-      <div className="mb-10 mt-20 flex flex-col items-center justify-center">
-        <Label className="mb-[30px] mt-[100px] text-xl font-bold">
-          학회 소식 바로보기
-        </Label>
-        {newsData.map((news, index) => (
-          <NewsDirector
-            key={index}
-            imageSrc={news.imageSrc}
-            altText={news.altText}
-            newsTitle={news.newsTitle}
-            newsContent={news.newsContent}
-            index={index}
-          />
-        ))}
-      </div>
+<div className="mb-10 mt-20 flex flex-col items-center justify-center max-w-[900px] mx-auto">
+  <Label className="mb-[30px] mt-[100px] text-xl font-bold">
+    학회 소식 바로보기
+  </Label>
+  {newsData.map((news, index) => (
+    <NewsDirector
+      key={index}
+      imageSrc={news.imageSrc}
+      altText={news.altText}
+      newsTitle={news.newsTitle}
+      newsContent={news.newsContent}
+      index={index}
+    />
+  ))}
+</div>
+
 
       <div>
         <Image

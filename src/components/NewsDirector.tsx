@@ -16,23 +16,35 @@ const NewsDirector: React.FC<NewsDirectorProps> = ({
   altText,
   newsTitle,
   newsContent,
-  index,
+  index = 0, // 기본값 추가
 }) => {
-  const isReverse = index % 2 === 1; // 짝수 인덱스일 때 반대 방향으로 출력
-
   return (
     <div
-      className={`mb-10 flex items-start gap-4 ${isReverse ? 'flex-row-reverse' : 'flex-row'}`}
+      className={`mb-10 flex ${index % 2 === 1 ? 'flex-row-reverse' : 'flex-row'} items-center gap-6`}
     >
-      <Card className="w-[200px]">
-        <CardHeader className="p-2">
-          <Image src={imageSrc} alt={altText} width={200} height={120} />
+      {/* 이미지 카드 */}
+      <Card className="w-[350px]">
+        {' '}
+        {/* 카드 너비 확대 */}
+        <CardHeader className="p-0">
+          <Image
+            src={imageSrc}
+            alt={altText}
+            width={300}
+            height={180}
+            className="h-full w-full object-cover" // 너비와 높이를 꽉 채워서 표시
+          />
         </CardHeader>
       </Card>
 
-      <div className="mt-3 flex flex-col justify-center">
-        <Label className="text-lg font-semibold">{newsTitle}</Label>
-        <Label className="mt-2 text-sm text-muted-foreground">
+      {/* 텍스트 영역 */}
+      <div className="flex flex-col gap-2">
+        <Label
+          className={`${index % 2 === 1 ? 'ml-[32rem]' : ''} text-left text-lg font-semibold`}
+        >
+          {newsTitle}
+        </Label>
+        <Label className="text-left text-sm text-muted-foreground">
           {newsContent}
         </Label>
       </div>
@@ -41,4 +53,3 @@ const NewsDirector: React.FC<NewsDirectorProps> = ({
 };
 
 export default NewsDirector;
-

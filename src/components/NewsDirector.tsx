@@ -16,35 +16,33 @@ const NewsDirector: React.FC<NewsDirectorProps> = ({
   altText,
   newsTitle,
   newsContent,
-  index = 0, // 기본값 추가
+  index = 0,
 }) => {
   return (
     <div
-      className={`mb-10 flex ${index % 2 === 1 ? 'flex-row-reverse' : 'flex-row'} items-center gap-6`}
+      className={`mb-10 flex ${index % 2 === 1 ? 'flex-row-reverse' : 'flex-row'} items-start gap-6`}
     >
       {/* 이미지 카드 */}
-      <Card className="w-[350px]">
-        {' '}
-        {/* 카드 너비 확대 */}
+      <Card className="flex-shrink-0 w-[250px]">
         <CardHeader className="p-0">
           <Image
             src={imageSrc}
             alt={altText}
-            width={300}
-            height={180}
-            className="h-full w-full object-cover" // 너비와 높이를 꽉 채워서 표시
+            width={350} // 고정된 너비
+            height={200} // 고정된 높이
+            className="object-cover w-full h-full"
           />
         </CardHeader>
       </Card>
 
       {/* 텍스트 영역 */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 flex-grow">
         <Label
-          className={`${index % 2 === 1 ? 'ml-[31.5rem]' : ''} text-left text-lg font-semibold`}
+          className={`text-left text-lg font-semibold ${index % 2 === 1 ? 'ml-[31.5rem]' : ''} whitespace-nowrap`}
         >
           {newsTitle}
         </Label>
-        <Label className="text-left text-sm text-muted-foreground">
+        <Label className="text-left text-sm text-muted-foreground break-words">
           {newsContent}
         </Label>
       </div>

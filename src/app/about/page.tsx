@@ -7,27 +7,27 @@ export default function About() {
   const eventData = [
     {
       imageSrc: '/example1.jpg',
-      altText: 'Image 1',
-      newsTitle: 'Title 1',
-      newsContent: 'Content 1',
+      altText: 'MT Image',
+      newsTitle: 'MT',
+      newsContent: '우리 동아리의 MT는 새로운 멤버와 친목을 다지고, 함께 즐기는 다양한 액티비티로 구성됩니다. 매년 참가자들은 서로를 더욱 잘 이해하며, 강한 팀워크를 만들어가요.',
     },
     {
       imageSrc: '/example2.jpg',
-      altText: 'Image 2',
-      newsTitle: 'Title 2',
-      newsContent: 'Content 2',
+      altText: 'E-Sports Image',
+      newsTitle: 'E-Sports',
+      newsContent: '기술과 협동을 중시하는 E-Sports 활동은 동아리의 중요한 부분입니다. 대회와 팀 경기를 통해 실력을 키우고, 서로 협력하는 법을 배우며, 경쟁의 재미를 느껴보세요.',
     },
     {
       imageSrc: '/example3.jpg',
-      altText: 'Image 3',
-      newsTitle: 'Title 3',
-      newsContent: 'Content 3',
+      altText: 'Conference Image',
+      newsTitle: '개총 / 종총',
+      newsContent: '새로운 학기의 시작과 마무리를 기념하는 개강총회와 종강총회는 우리 동아리의 중요한 행사입니다. 모두가 함께 모여 한 해를 되돌아보고, 다가오는 학기를 준비하는 시간입니다.',
     },
     {
       imageSrc: '/example4.jpg',
-      altText: 'Image 4',
-      newsTitle: 'Title 4',
-      newsContent: 'Content 4',
+      altText: 'Etc Image',
+      newsTitle: '기타 활동',
+      newsContent: '스터디, 워크숍, 세미나 등 다양한 활동을 통해 서로 배우고 성장하는 시간을 가집니다. 이러한 활동은 동아리 내에서뿐만 아니라, 기술 분야의 트렌드를 따라가는데도 중요한 기회를 제공합니다.',
     },
   ];
   return (
@@ -68,7 +68,7 @@ export default function About() {
             </TabsList>
 
             <TabsContent value="event">
-              <Label className="text-[26px] font-bold">행사</Label>
+              <Label className="mb-[10px] text-[26px] font-bold">행사</Label>
               {eventData.map((data, index) => (
                 <NewsDirector
                   key={index}

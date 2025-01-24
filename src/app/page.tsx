@@ -129,7 +129,7 @@ export default function Page() {
 
       <div className="mt-20 flex flex-col items-center justify-center">
         <Label className="text-xl font-bold">Arch Semtle</Label>
-        <div className="text-l mt-[50px] space-y-4 text-center font-bold">
+        <div className="text-l mt-8 space-y-4 text-center font-bold">
           <Label className="text-lg font-bold">
             아치 셈틀은 다양한 기술과 아이디어를 탐구하며, 함께 성장하는 것을
             목표로 하는 학회입니다.

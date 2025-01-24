@@ -51,8 +51,8 @@ export default function ActivitiesPage() {
 
     setActivities((prev) =>
       [...prev, ...newActivities].sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-      )
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+      ),
     );
     setLoading(false);
   };
@@ -69,7 +69,7 @@ export default function ActivitiesPage() {
           setPage((prev) => prev + 1);
         }
       },
-      { threshold: 1.0 }
+      { threshold: 1.0 },
     );
 
     if (loader.current) {
@@ -89,20 +89,20 @@ export default function ActivitiesPage() {
   }, []);
 
   const filteredActivities = activities.filter(
-    (activity) => category === 'all' || activity.category === category
+    (activity) => category === 'all' || activity.category === category,
   );
 
   const handleSelect = (id: number) => {
     setSelectedIds((prev) =>
       prev.includes(id)
         ? prev.filter((selectedId) => selectedId !== id)
-        : [...prev, id]
+        : [...prev, id],
     );
   };
 
   const handleDelete = () => {
     setActivities((prev) =>
-      prev.filter((activity) => !selectedIds.includes(activity.id))
+      prev.filter((activity) => !selectedIds.includes(activity.id)),
     );
     setSelectedIds([]);
   };
@@ -115,8 +115,8 @@ export default function ActivitiesPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
-      <div className="flex items-center justify-between mb-6">
+    <div className="container mx-auto max-w-4xl p-4">
+      <div className="mb-6 flex items-center justify-between">
         {/* 새 게시물 버튼 숨김처리시 hidden 클래스 추가하면됨 */}
         <Button
           onClick={() => console.log('Create new post')}
@@ -126,9 +126,7 @@ export default function ActivitiesPage() {
         </Button>
 
         <div
-          className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 
-          bg-white dark:bg-gray-800 shadow-lg rounded-lg px-4 py-2 flex items-center gap-4
-          transition-all duration-200 ${selectedIds.length > 0 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full pointer-events-none'}`}
+          className={`fixed left-1/2 top-4 z-50 flex -translate-x-1/2 transform items-center gap-4 rounded-lg bg-white px-4 py-2 shadow-lg transition-all duration-200 dark:bg-gray-800 ${selectedIds.length > 0 ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-full opacity-0'}`}
         >
           <span className="text-sm font-medium">
             {selectedIds.length}개 선택됨
@@ -145,7 +143,7 @@ export default function ActivitiesPage() {
         </div>
       </div>
 
-      <div className="flex items-center gap-4 mb-6">
+      <div className="mb-6 flex items-center gap-4">
         <div className="flex-1">
           <div className="flex gap-2">
             <Select value={category} onValueChange={setCategory}>
@@ -159,9 +157,9 @@ export default function ActivitiesPage() {
                 <SelectItem value="기타">기타</SelectItem>
               </SelectContent>
             </Select>
-            <div className="flex-1 relative">
+            <div className="relative flex-1">
               <Input placeholder="검색어를 입력하세요" className="pl-10" />
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-500" />
             </div>
             <Button variant="secondary">검색</Button>
           </div>
@@ -181,21 +179,21 @@ export default function ActivitiesPage() {
                     className="ml-2 mr-2"
                   />
                 </div>
-                <div className="w-[380px] h-[240px] bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                <div className="h-[240px] w-[380px] flex-shrink-0 overflow-hidden rounded-lg bg-gray-100">
                   <img
                     src={activity.image || '/placeholder.svg'}
                     alt=""
-                    className="w-full h-full object-contain"
+                    className="h-full w-full object-contain"
                   />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-semibold mb-6 mt-3">
+                <div className="min-w-0 flex-1">
+                  <h3 className="mb-6 mt-3 text-lg font-semibold">
                     {activity.title}
                   </h3>
-                  <p className="text-gray-600 mb-20 line-clamp-3">
+                  <p className="mb-20 line-clamp-3 text-gray-600">
                     {activity.content}
                   </p>
-                  <div className="flex justify-between items-center">
+                  <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-500">
                       {format(new Date(activity.date), 'yyyy.MM.dd')}
                     </span>
@@ -209,7 +207,7 @@ export default function ActivitiesPage() {
           </Card>
         ))}
         {loading && (
-          <div className="text-center py-4">
+          <div className="py-4 text-center">
             <div className="animate-pulse">Loading more activities...</div>
           </div>
         )}
@@ -217,10 +215,10 @@ export default function ActivitiesPage() {
       </div>
       <button
         onClick={scrollToTop}
-        className={`fixed bottom-8 right-8 bg-white text-primary-foreground p-3 rounded-full shadow-lg transition-all duration-300 group hover:bg-semtleColor ${
+        className={`hover:bg-semtleColor group fixed bottom-8 right-8 rounded-full bg-white p-3 text-primary-foreground shadow-lg transition-all duration-300 ${
           showScrollTop
-            ? 'opacity-100 translate-y-0'
-            : 'opacity-0 translate-y-10 pointer-events-none'
+            ? 'translate-y-0 opacity-100'
+            : 'pointer-events-none translate-y-10 opacity-0'
         }`}
         aria-label="페이지 상단으로 이동"
       >
@@ -234,7 +232,7 @@ export default function ActivitiesPage() {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="transition-all duration-300 group-hover:fill-semtleColor group-hover:stroke-white"
+          className="group-hover:fill-semtleColor transition-all duration-300 group-hover:stroke-white"
         >
           <path d="m18 15-6-6-6 6" />
         </svg>

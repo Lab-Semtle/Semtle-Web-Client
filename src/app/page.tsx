@@ -165,7 +165,7 @@ export default function Page() {
           />
         ))}
         {/* 후에 ButtonLink 클래스로 치환 */}
-        <Link href="/activity">
+        <Link href="/activities">
           <Button className="ml-[820px]">더보기</Button>
         </Link>
       </div>

@@ -5,7 +5,6 @@ import { format } from "date-fns"
 import { ArrowLeft, ArrowRight, Pencil, Trash2, ListFilter } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface PostDetailProps {
   post?: {
@@ -21,13 +20,11 @@ interface PostDetailProps {
 export default function PostDetail({ post }: PostDetailProps) {
   const defaultPost = {
     id: 1,
-    title: "2024 세미나: AI와 미래 기술",
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-
-    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.`,
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-8IGODrhnELJBw7gGPWTMCElexKMvEl.png",
+    title: "2025 셈틀",
+    content: `이건 글이다 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 
+    이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다.
+    이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다.이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. `,
+    image: "/semtle_logo_2022_square.jpg",
     date: new Date().toISOString(),
     category: "세미나",
   }
@@ -49,10 +46,9 @@ export default function PostDetail({ post }: PostDetailProps) {
       <Card className="border-none shadow-none">
         <CardContent className="p-0">
           <div className="space-y-6">
-            {/* Title */}
+            
             <h1 className="text-3xl font-bold text-center">{currentPost.title}</h1>
 
-            {/* Post Info */}
             <div className="flex justify-between items-center text-sm text-gray-500 border-b pb-4">
               <div className="flex items-center gap-4">
                 <span>작성일: {format(new Date(currentPost.date), "yyyy.MM.dd")}</span>
@@ -61,7 +57,7 @@ export default function PostDetail({ post }: PostDetailProps) {
             </div>
 
             <div className="aspect-video w-full bg-gray-100 rounded-lg overflow-hidden">
-              <img src={currentPost.image || "/placeholder.svg"} alt="" className="w-full h-full object-cover" />
+              <img src={currentPost.image || "/placeholder.svg"} alt="" className="w-full h-full object-contain rounded-lg" />
             </div>
 
             <div className="min-h-[200px] whitespace-pre-line">{currentPost.content}</div>

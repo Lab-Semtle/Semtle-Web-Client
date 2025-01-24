@@ -32,10 +32,10 @@ export default function ActivitiesPage() {
 
     const newActivities = Array.from({ length: 5 }, (_, i) => ({
       id: pageNum * 5 + i,
-      title: `Activity ${pageNum * 5 + i + 1}`,
+      title: `활동 ${pageNum * 5 + i + 1}`,
       content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      image: `https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-r9PxyW9Tt5x5zUBIMUnpXOl6yjhPIs.png`,
+        "이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. 이건 글이다. ",
+      image: "/semtle_logo_2022_square.jpg",
       date: new Date(2024, 0, pageNum * 5 + i + 1).toISOString(),
       category: ["전체", "세미나", "행사", "기타"][Math.floor(Math.random() * 4)],
     }))
@@ -82,8 +82,8 @@ export default function ActivitiesPage() {
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <div className="flex items-center justify-between mb-6">
-        {/* 새 게시물 버튼 숨김처리시 opacity값 0 */}
-        <Button onClick={() => console.log("Create new post")} className="gap-2 opacity-100">
+        {/* 새 게시물 버튼 숨김처리시 hidden 클래스 추가하면됨 */}
+        <Button onClick={() => console.log("Create new post")} className="gap-2">
           <Plus className="h-4 w-4" />새 게시물 작성하기
         </Button>
 
@@ -129,11 +129,11 @@ export default function ActivitiesPage() {
             <CardContent className="p-0">
               <div className="flex gap-4 p-4">
                 <div className="flex items-center">
-                    {/* 체크박스 숨김처리시 opacity값 0 */}
+                    {/* 체크박스 숨김처리시 hidden 클래스 추가하면됨 */}
                     <Checkbox
                     checked={selectedIds.includes(activity.id)}
                     onCheckedChange={() => handleSelect(activity.id)}
-                    className="ml-2 mr-4 opacity-100"
+                    className="ml-2 mr-4"
                   />
                 </div>
                 <div className="w-[120px] h-[120px] bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">

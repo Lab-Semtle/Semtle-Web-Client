@@ -26,7 +26,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-//import Image from 'next/image';
+
 const aboutSections = [
   {
     title: '소개',
@@ -104,10 +104,10 @@ export default function NavigationBar() {
     }
   }, []);
 
-  const handleLogin=()=>{
+  const handleLogin = () => {
     setIsLoggedIn(true);
-    localStorage.setItem('isLoggedIn','true');
-  }
+    localStorage.setItem('isLoggedIn', 'true');
+  };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
@@ -183,9 +183,9 @@ export default function NavigationBar() {
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link href="/login">
-                  <Button onClick={handleLogin}>Login</Button>
-                </Link>
+                <Button onClick={handleLogin}>
+                  <Link href="/login">Login</Link>
+                </Button>
               </NavigationMenuItem>
             </>
           ) : (

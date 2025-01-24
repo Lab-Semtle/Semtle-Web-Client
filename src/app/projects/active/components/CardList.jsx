@@ -1,11 +1,15 @@
 const CardList = ({ cards }) => {
   return (
-    <div className="grid grid-cols-3 gap-4 p-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
       {cards.map((card) => (
-        <div key={card.id} className="border p-4 grid grid-cols-2 gap-4">
+        <div key={card.id} className="border p-4 grid grid-cols-1 gap-4">
           {/* 왼쪽 이미지 영역 */}
           <div className="col-span-1">
-            <img src={card.image} alt={card.title} className="w-full h-40 object-cover" />
+            <img 
+              src={card.image} 
+              alt={card.title} 
+              className="w-full h-40 object-cover rounded-md" 
+            />
           </div>
 
           {/* 오른쪽 텍스트 영역 */}
@@ -24,9 +28,9 @@ const CardList = ({ cards }) => {
                 </span>
               ))}
             </div>
-            <h3 className="text-lg font-bold mt-2">{card.title}</h3>
-            <p className="text-gray-600">게시 일자: {card.postDate}</p>
-            <p className="text-gray-600">마감 일자: {card.deadline}</p>
+            <h3 className="text-lg font-bold mt-2 truncate">{card.title}</h3>
+            <p className="text-gray-600 truncate">게시 일자: {card.postDate}</p>
+            <p className="text-gray-600 truncate">마감 일자: {card.deadline}</p>
           </div>
         </div>
       ))}
@@ -35,4 +39,3 @@ const CardList = ({ cards }) => {
 };
 
 export default CardList;
-

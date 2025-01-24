@@ -22,8 +22,8 @@ const CardList = ({ cards, onDelete }) => {
 
   return (
     <div>
-       {/* 선택된 카드 삭제 버튼 */}
-       {selectedCards.length > 0 && (
+      {/* 선택된 카드 삭제 버튼 */}
+      {selectedCards.length > 0 && (
         <div className="mb-4 flex items-center">
           <button
             className="bg-red-500 text-white px-4 py-2 rounded-md mr-4"
@@ -41,10 +41,8 @@ const CardList = ({ cards, onDelete }) => {
         {cards.map((card) => (
           <div
             key={card.id}
-            className={`border p-4 flex flex-col h-96 cursor-pointer transition-all duration-200 ${
-              selectedCards.includes(card.id)
-                ? "bg-blue-100" // 선택된 카드의 배경색 변경
-                : ""
+            className={`border p-4 flex flex-col h-full cursor-pointer transition-all duration-200 ${
+              selectedCards.includes(card.id) ? "bg-blue-100" : ""
             }`}
             onDoubleClick={() => handleCardDoubleClick(card.id)} // 더블클릭 시 카드 선택/해제
           >
@@ -53,7 +51,7 @@ const CardList = ({ cards, onDelete }) => {
               <img
                 src={card.image}
                 alt={card.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover max-h-48"
               />
             </div>
 
@@ -76,9 +74,10 @@ const CardList = ({ cards, onDelete }) => {
                   </span>
                 ))}
               </div>
-              {/* 제목과 설명 */}
-              <h3 className="text-lg font-bold mt-2">{card.title}</h3>
-              <p className="text-gray-600 mt-2">{card.description}</p>
+              {/* 제목 */}
+              <h3 className="text-lg font-bold mt-2 truncate">{card.title}</h3>
+              {/* 설명 (여러 줄로 표시하고 최대 3줄까지 보여주고, 초과 시 ... 표시) */}
+              <p className="text-gray-600 mt-2 line-clamp-3">{card.description}</p>
             </div>
           </div>
         ))}

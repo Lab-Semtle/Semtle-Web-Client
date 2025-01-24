@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState } from 'react';
+import Image from 'next/image';
 
 const CardList = ({ cards, onDelete }) => {
   const [selectedCards, setSelectedCards] = useState([]);
@@ -26,7 +27,7 @@ const CardList = ({ cards, onDelete }) => {
       {selectedCards.length > 0 && (
         <div className="mb-4 flex items-center">
           <button
-            className="bg-red-500 text-white px-4 py-2 rounded-md mr-4"
+            className="mr-4 rounded-md bg-red-500 px-4 py-2 text-white"
             onClick={handleDeleteSelected}
           >
             선택된 카드 삭제
@@ -37,29 +38,29 @@ const CardList = ({ cards, onDelete }) => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
+      <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-3">
         {cards.map((card) => (
           <div
             key={card.id}
-            className={`border p-4 flex flex-col h-full cursor-pointer transition-all duration-200 ${
-              selectedCards.includes(card.id) ? "bg-blue-100" : ""
+            className={`flex h-full cursor-pointer flex-col border p-4 transition-all duration-200 ${
+              selectedCards.includes(card.id) ? 'bg-blue-100' : ''
             }`}
             onDoubleClick={() => handleCardDoubleClick(card.id)} // 더블클릭 시 카드 선택/해제
           >
             {/* 이미지 영역 (위 절반) */}
             <div className="h-1/2 w-full">
-              <img
+              <Image
                 src={card.image}
                 alt={card.title}
-                className="w-full h-full object-cover max-h-48"
+                className="h-full max-h-48 w-full object-cover"
               />
             </div>
 
             {/* 텍스트 영역 (아래 절반) */}
-            <div className="flex-1 p-4 flex flex-col justify-between">
+            <div className="flex flex-1 flex-col justify-between p-4">
               {/* 키워드 박스 */}
               <div className="mb-2">
-                <span className="bg-blue-500 text-white px-4 py-1 rounded-full">
+                <span className="rounded-full bg-blue-500 px-4 py-1 text-white">
                   #{card.projectType}
                 </span>
               </div>
@@ -68,16 +69,18 @@ const CardList = ({ cards, onDelete }) => {
                 {card.category.map((category, index) => (
                   <span
                     key={index}
-                    className="inline-block bg-gray-300 text-gray-700 px-4 py-1 rounded-full mr-2 mb-2"
+                    className="mb-2 mr-2 inline-block rounded-full bg-gray-300 px-4 py-1 text-gray-700"
                   >
                     #{category}
                   </span>
                 ))}
               </div>
               {/* 제목 */}
-              <h3 className="text-lg font-bold mt-2 truncate">{card.title}</h3>
+              <h3 className="mt-2 truncate text-lg font-bold">{card.title}</h3>
               {/* 설명 (여러 줄로 표시하고 최대 3줄까지 보여주고, 초과 시 ... 표시) */}
-              <p className="text-gray-600 mt-2 line-clamp-3">{card.description}</p>
+              <p className="mt-2 line-clamp-3 text-gray-600">
+                {card.description}
+              </p>
             </div>
           </div>
         ))}

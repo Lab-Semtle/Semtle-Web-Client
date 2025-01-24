@@ -1,15 +1,22 @@
-"use client"; // 클라이언트 컴포넌트 선언
+'use client'; // 클라이언트 컴포넌트 선언
 
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationNext, PaginationLink } from "@/components/ui/pagination";
+import { useEffect, useState } from 'react';
+// import { Button } from "@/components/ui/button";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationLink,
+} from '@/components/ui/pagination';
 
-import Header from "./components/Header";
-import FilterBar from "./components/FilterBar";
-import CardList from "./components/CardList";
+import Header from './components/Header';
+import FilterBar from './components/FilterBar';
+import CardList from './components/CardList';
 
 export default function Completed() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  //  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [cards, setCards] = useState([]);
   const [filteredCards, setFilteredCards] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,12 +25,12 @@ export default function Completed() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/result");
+        const response = await fetch('/api/result');
         const data = await response.json();
         setCards(data);
         setFilteredCards(data);
       } catch (error) {
-        console.error("Failed to fetch projects:", error);
+        console.error('Failed to fetch projects:', error);
       }
     };
     fetchData();
@@ -31,7 +38,7 @@ export default function Completed() {
 
   const handleFilter = (filter) => {
     const filtered = cards.filter((card) =>
-      card.title.includes(filter.searchTerm)
+      card.title.includes(filter.searchTerm),
     );
     setFilteredCards(filtered);
     setCurrentPage(1);
@@ -43,12 +50,14 @@ export default function Completed() {
 
   const handleDelete = (selectedCardIds) => {
     setCards(cards.filter((card) => !selectedCardIds.includes(card.id)));
-    setFilteredCards(filteredCards.filter((card) => !selectedCardIds.includes(card.id)));
+    setFilteredCards(
+      filteredCards.filter((card) => !selectedCardIds.includes(card.id)),
+    );
   };
 
   const paginatedCards = filteredCards.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   const totalPages = Math.ceil(filteredCards.length / itemsPerPage);
@@ -56,7 +65,9 @@ export default function Completed() {
   return (
     <>
       <Header />
-      <h2 className="text-4xl font-bold text-center mt-8 mb-8">프로젝트 결과</h2>
+      <h2 className="mb-8 mt-8 text-center text-4xl font-bold">
+        프로젝트 결과
+      </h2>
       <FilterBar onFilter={handleFilter} />
       <CardList cards={paginatedCards} onDelete={handleDelete} />
 

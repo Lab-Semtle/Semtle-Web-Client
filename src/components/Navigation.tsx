@@ -1,10 +1,9 @@
 'use client';
-
 import { useState, useEffect } from 'react';
+import { redirect } from 'next/navigation';
 import * as React from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-//import { Icons } from '@/components/icons';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -77,15 +76,13 @@ const archiveSections = [
 
 export default function NavigationBar() {
   // 로그인 상태 관리
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const [userProfile, setUserProfile] = useState({
     name: 'Unknown',
     image: '/profile-image.jpg',
   });
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-  };
   useEffect(() => {
     // 예시로 API 호출
     fetch('/api/getUserProfile')
@@ -97,6 +94,35 @@ export default function NavigationBar() {
         });
       });
   }, []);
+
+  useEffect(() => {
+    const storedLoginStatus = localStorage.getItem('isLoggedIn');
+    if (storedLoginStatus === 'true') {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
+
+  const handleLogin=()=>{
+    setIsLoggedIn(true);
+    localStorage.setItem('isLoggedIn','true');
+  }
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    localStorage.removeItem('isLoggedIn');
+    redirect('/');
+  };
+
+  // Secret Note 페이지를 클릭할 때 로그인 상태 확인 후 리다이렉트
+  const handleSecretPage = (title: string, href: string) => {
+    if (title === 'Secret Note' && !isLoggedIn) {
+      redirect('/login'); // 로그인되지 않으면 로그인 페이지로 리다이렉트
+    } else {
+      redirect(href); // 로그인되었으면 해당 페이지로 이동
+    }
+  };
 
   return (
     <nav className="fixed top-0 z-50 flex h-[70px] w-full items-center bg-white shadow-md transition-all duration-300 ease-in-out">
@@ -142,7 +168,10 @@ export default function NavigationBar() {
           <NavigationMenuItem>
             <NavigationMenuTrigger>Archive</NavigationMenuTrigger>
             <NavigationMenuContent>
-              <MenuSection sections={archiveSections} />
+              <MenuSection
+                sections={archiveSections}
+                onClickSection={handleSecretPage}
+              />
             </NavigationMenuContent>
           </NavigationMenuItem>
 
@@ -155,7 +184,7 @@ export default function NavigationBar() {
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Link href="/login">
-                  <Button>Login</Button>
+                  <Button onClick={handleLogin}>Login</Button>
                 </Link>
               </NavigationMenuItem>
             </>
@@ -206,23 +235,36 @@ export default function NavigationBar() {
     </nav>
   );
 }
-const MenuSection = ({ sections }: { sections: typeof aboutSections }) => {
+const MenuSection = ({
+  sections,
+  onClickSection,
+}: {
+  sections: typeof aboutSections;
+  onClickSection?: (title: string, href: string) => void;
+}) => {
   return (
     <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
       {sections.map((section) => (
-        <ListItem key={section.title} title={section.title} href={section.href}>
+        <ListItem
+          key={section.title}
+          title={section.title}
+          href={section.href}
+          onClick={() => onClickSection?.(section.title, section.href)} // onClickSection이 있으면 호출
+        >
           {section.description}
         </ListItem>
       ))}
     </ul>
   );
 };
+
 const ListItem = ({
   className,
   title,
   children,
+  onClick,
   ...props
-}: React.ComponentPropsWithoutRef<'a'>) => {
+}: React.ComponentPropsWithoutRef<'a'> & { onClick: () => void }) => {
   return (
     <li>
       <NavigationMenuLink asChild>
@@ -232,6 +274,7 @@ const ListItem = ({
             className,
           )}
           {...props}
+          onClick={onClick}
         >
           <div className="text-sm font-medium leading-none">{title}</div>
           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">

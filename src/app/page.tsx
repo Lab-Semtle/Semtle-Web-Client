@@ -4,13 +4,11 @@ import Link from 'next/link';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from '@/components/ui/carousel';
 import CardImageLabelList from '@/components/CardImageLabelList';
 import NewsDirector from '@/components/NewsDirector';
@@ -62,6 +60,13 @@ export default function Page() {
   const CarouselImages = ['/example1.jpg', '/example2.jpg', '/example3.jpg'];
   const [newsData, setNewsData] = useState<NewsData[]>([]);
 
+  const [progress, setProgress] = React.useState(13);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => setProgress(66), 500);
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     const newsData = [
       {
@@ -99,29 +104,29 @@ export default function Page() {
       {/* <Navigation /> */}
       {/* 본문 */}
       <div className="mt-[70px] flex items-center justify-center">
-        <Carousel className="w-[90vw]">
+        <Carousel className="w-full">
           <CarouselContent>
             {CarouselImages.map((src, index) => (
               <CarouselItem key={index}>
-                <div className="p-1">
-                  <Card>
-                    <CardContent className="flex items-center justify-center p-4">
-                      <Image
-                        src={src}
-                        alt={`Slide ${index + 1}`}
-                        width={1200}
-                        height={700}
-                      />
-                    </CardContent>
-                  </Card>
+                <div className="relative">
+                  <Image
+                    src={src}
+                    alt={`Slide ${index + 1}`}
+                    width={1000}
+                    height={500}
+                    className="h-auto w-full object-cover"
+                  />
+                  <Progress
+                    value={progress}
+                    className="absolute bottom-1 left-1/2 w-[30%] -translate-x-1/2 bg-white/50"
+                  />
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
         </Carousel>
       </div>
+
       <div className="mt-20 flex flex-col items-center justify-center">
         <Label className="text-xl font-bold">Arch Semtle</Label>
         <div className="text-l mt-[50px] space-y-4 text-center font-bold">

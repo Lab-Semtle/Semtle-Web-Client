@@ -59,8 +59,9 @@ export default function Page() {
     '커뮤니케이션',
     '기타 활동',
   ];
-  const CarouselImages = ['example1.jpg', 'example2.jpg', 'example3.jpg'];
+  const CarouselImages = ['/example1.jpg', '/example2.jpg', '/example3.jpg'];
   const [newsData, setNewsData] = useState<NewsData[]>([]);
+
   useEffect(() => {
     const newsData = [
       {
@@ -105,10 +106,11 @@ export default function Page() {
                 <div className="p-1">
                   <Card>
                     <CardContent className="flex items-center justify-center p-4">
-                      <img
+                      <Image
                         src={src}
                         alt={`Slide ${index + 1}`}
-                        className="h-[700px] w-full rounded-md object-cover"
+                        width={1200}
+                        height={700}
                       />
                     </CardContent>
                   </Card>
@@ -143,22 +145,21 @@ export default function Page() {
         isHiddens={isHidden}
       />
 
-<div className="mb-10 mt-20 flex flex-col items-center justify-center max-w-[900px] mx-auto">
-  <Label className="mb-[30px] mt-[100px] text-xl font-bold">
-    학회 소식 바로보기
-  </Label>
-  {newsData.map((news, index) => (
-    <NewsDirector
-      key={index}
-      imageSrc={news.imageSrc}
-      altText={news.altText}
-      newsTitle={news.newsTitle}
-      newsContent={news.newsContent}
-      index={index}
-    />
-  ))}
-</div>
-
+      <div className="mx-auto mb-10 mt-20 flex max-w-[900px] flex-col items-center justify-center">
+        <Label className="mb-[30px] mt-[100px] text-xl font-bold">
+          학회 소식 바로보기
+        </Label>
+        {newsData.map((news, index) => (
+          <NewsDirector
+            key={index}
+            imageSrc={news.imageSrc}
+            altText={news.altText}
+            newsTitle={news.newsTitle}
+            newsContent={news.newsContent}
+            index={index}
+          />
+        ))}
+      </div>
 
       <div>
         <Image
@@ -170,32 +171,34 @@ export default function Page() {
         />
       </div>
       <div className="mt-10 flex flex-col items-center justify-center">
-        <Label className="mt-[100px] text-xl font-bold">FAQ</Label>
+        <Label className="mt-[100px] text-[27px] font-bold">FAQ</Label>
       </div>
 
       <div className="mt-8 flex items-center justify-center">
-        <Accordion type="single" collapsible className="w-[700px]">
+        <Accordion type="single" collapsible className="w-[1000px]">
           <AccordionItem value="item-1">
-            <AccordionTrigger>
+            <AccordionTrigger className="text-lg font-bold">
               신입 학회원 모집은 어떻게 진행되나요?
             </AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent className="text-[17px] italic">
               신입 학회원 모집은 매년 초에 진행되며, 자세한 정보는 학회 공지를
               통해 안내됩니다.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
-            <AccordionTrigger>학회 세미나는 언제 시작되나요?</AccordionTrigger>
-            <AccordionContent>
+            <AccordionTrigger className="text-lg font-bold">
+              학회 세미나는 언제 시작되나요?
+            </AccordionTrigger>
+            <AccordionContent className="text-[17px] italic">
               학회 세미나는 매 학기 초에 시작되며, 세미나 일정은 학회
               웹사이트에서 확인할 수 있습니다.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-3">
-            <AccordionTrigger>
+            <AccordionTrigger className="text-lg font-bold">
               대회 수상 소식은 어디에서 확인할 수 있나요?
             </AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent className="text-[17px] italic">
               대회 수상 소식은 학회의 공식 웹사이트와 소셜 미디어 채널에서 확인
               가능합니다.
             </AccordionContent>
@@ -217,7 +220,7 @@ export default function Page() {
           />
           <div className="absolute bottom-[-60px] right-0 mb-4">
             <Link href="/recruiting">
-              <Button>Join {'->'}</Button>
+              <Button>Join</Button>
             </Link>
           </div>
         </div>

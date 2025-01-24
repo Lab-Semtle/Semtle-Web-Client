@@ -42,7 +42,7 @@ const NewsDirector: React.FC<NewsDirectorProps> = ({
         >
           {newsTitle}
         </Label>
-        <Label className="text-left text-sm text-muted-foreground break-words">
+        <Label className="text-left text-[17px] text-muted-foreground break-words">
           {newsContent}
         </Label>
       </div>

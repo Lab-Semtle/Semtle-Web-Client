@@ -123,7 +123,7 @@ export default function ActivitiesPage() {
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-6">
         {filteredActivities.map((activity) => (
           <Card key={activity.id} className="overflow-hidden">
             <CardContent className="p-0">
@@ -133,15 +133,15 @@ export default function ActivitiesPage() {
                     <Checkbox
                     checked={selectedIds.includes(activity.id)}
                     onCheckedChange={() => handleSelect(activity.id)}
-                    className="ml-2 mr-4"
+                    className="ml-2 mr-2"
                   />
                 </div>
-                <div className="w-[120px] h-[120px] bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                  <img src={activity.image || "/placeholder.svg"} alt="" className="w-full h-full object-cover" />
+                <div className="w-[380px] h-[240px] bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                  <img src={activity.image || "/placeholder.svg"} alt="" className="w-full h-full object-contain" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-semibold mb-2">{activity.title}</h3>
-                  <p className="text-gray-600 mb-2 line-clamp-2">{activity.content}</p>
+                  <h3 className="text-lg font-semibold mb-6 mt-3">{activity.title}</h3>
+                  <p className="text-gray-600 mb-20 line-clamp-3">{activity.content}</p>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-500">{format(new Date(activity.date), "yyyy.MM.dd")}</span>
                     <span className="text-sm text-gray-500">{activity.category}</span>

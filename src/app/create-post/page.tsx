@@ -57,7 +57,7 @@ export default function CreatePost() {
 
   const handleTextFormat = (format: string) => {
     const textarea = document.getElementById(
-      'post-content'
+      'post-content',
     ) as HTMLTextAreaElement;
     const { selectionStart, selectionEnd, value } = textarea;
 
@@ -85,7 +85,7 @@ export default function CreatePost() {
       setTimeout(() => {
         textarea.setSelectionRange(
           selectionStart,
-          selectionStart + formattedText.length
+          selectionStart + formattedText.length,
         );
       }, 0);
     }
@@ -97,7 +97,7 @@ export default function CreatePost() {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
+    <div className="container mx-auto max-w-4xl p-4">
       <Card>
         <CardContent className="space-y-6 p-6">
           {/* 게시물 제목 */}
@@ -117,16 +117,16 @@ export default function CreatePost() {
           <div className="space-y-2">
             <Label>게시물 이미지</Label>
             <div className="flex items-start gap-4">
-              <div className="flex-1 aspect-video bg-gray-100 rounded-lg overflow-hidden relative">
+              <div className="relative aspect-video flex-1 overflow-hidden rounded-lg bg-gray-100">
                 {imagePreview ? (
                   <img
                     src={imagePreview || '/placeholder.svg'}
                     alt="Preview"
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400">
-                    <ImageIcon className="w-12 h-12" />
+                  <div className="flex h-full w-full items-center justify-center text-gray-400">
+                    <ImageIcon className="h-12 w-12" />
                   </div>
                 )}
               </div>
@@ -134,16 +134,16 @@ export default function CreatePost() {
                 <Button variant="outline" className="relative">
                   <input
                     type="file"
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                     onChange={handleImageUpload}
                     accept="image/*"
                   />
-                  <Upload className="w-4 h-4 mr-2" />
+                  <Upload className="mr-2 h-4 w-4" />
                   업로드
                 </Button>
                 {imagePreview && (
                   <Button variant="outline" onClick={handleImageRemove}>
-                    <X className="w-4 h-4 mr-2" />
+                    <X className="mr-2 h-4 w-4" />
                     삭제
                   </Button>
                 )}
@@ -175,8 +175,8 @@ export default function CreatePost() {
           {/* 내용 입력 */}
           <div className="space-y-2">
             <Label>게시물 내용</Label>
-            <div className="border rounded-lg">
-              <div className="border-b p-2 flex gap-2">
+            <div className="rounded-lg border">
+              <div className="flex gap-2 border-b p-2">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -185,7 +185,7 @@ export default function CreatePost() {
                         size="sm"
                         onClick={() => handleTextFormat('bold')}
                       >
-                        <Bold className="w-4 h-4" />
+                        <Bold className="h-4 w-4" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>굵게</TooltipContent>
@@ -197,7 +197,7 @@ export default function CreatePost() {
                         size="sm"
                         onClick={() => handleTextFormat('italic')}
                       >
-                        <Italic className="w-4 h-4" />
+                        <Italic className="h-4 w-4" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>기울임</TooltipContent>
@@ -209,7 +209,7 @@ export default function CreatePost() {
                         size="sm"
                         onClick={() => handleTextFormat('list')}
                       >
-                        <List className="w-4 h-4" />
+                        <List className="h-4 w-4" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>목록</TooltipContent>
@@ -223,12 +223,12 @@ export default function CreatePost() {
                   setFormData((prev) => ({ ...prev, content: e.target.value }))
                 }
                 placeholder="내용을 입력하세요"
-                className="min-h-[300px] border-0 rounded-none focus-visible:ring-0"
+                className="min-h-[300px] rounded-none border-0 focus-visible:ring-0"
               />
               {/* 미리보기 */}
               <Label>미리보기</Label>
               <div
-                className="border rounded-lg p-4 bg-gray-100"
+                className="rounded-lg border bg-gray-100 p-4"
                 dangerouslySetInnerHTML={{
                   __html: marked.parse(formData.content),
                 }}
@@ -247,7 +247,7 @@ export default function CreatePost() {
         </CardContent>
         <CardFooter className="flex justify-end gap-2 p-6">
           <Button variant="outline" onClick={() => handleSubmit(true)}>
-            <Save className="w-4 h-4 mr-2" />
+            <Save className="mr-2 h-4 w-4" />
             임시저장
           </Button>
           <Button onClick={() => handleSubmit(false)}>업로드</Button>

@@ -24,7 +24,7 @@ const CardImageLabel: React.FC<CardImageLabelProps> = ({
 }) => {
   return (
     <div className="relative">
-      <Card className="mb-4 flex h-[300px] w-[250px] flex-col overflow-hidden rounded-lg bg-gray-100">
+      <Card className="flex h-[300px] w-[250px] flex-col overflow-hidden rounded-lg bg-gray-100">
         <CardHeader className="flex-1 p-0">
           <CardTitle className="h-[170px] w-full">
             <img
@@ -48,8 +48,8 @@ const CardImageLabel: React.FC<CardImageLabelProps> = ({
         </CardContent>
       </Card>
       {isHidden && (
-        <div className="absolute bottom-[-25px] w-full text-center text-base text-gray-800">
-          <CardDescription className="text-center text-base font-bold text-lg text-gray-800">
+        <div className="absolute bottom-[-25px] w-full text-center text-base font-bold text-gray-800">
+          <CardDescription className="mt-2 text-center text-base font-bold text-gray-800">
             {isHidden}
           </CardDescription>
         </div>

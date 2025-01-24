@@ -20,7 +20,7 @@ const CardImageLabelList: React.FC<CardListProps> = ({
 }) => {
   const cards = [];
 
-
+  // 카드들을 4개씩 나누어 줄 바꿈
   for (let i = 0; i < cardCount; i++) {
     cards.push(
       <CardImageLabel
@@ -34,6 +34,7 @@ const CardImageLabelList: React.FC<CardListProps> = ({
     );
   }
 
+  // 카드들을 4개씩 묶기 위한 로직
   const rows = [];
   for (let i = 0; i < cards.length; i += 4) {
     rows.push(cards.slice(i, i + 4));
@@ -42,7 +43,7 @@ const CardImageLabelList: React.FC<CardListProps> = ({
   return (
     <div className="mt-10">
       {rows.map((row, index) => (
-        <div key={index} className="flex justify-center gap-4 mb-4">
+        <div key={index} className="mb-4 flex justify-center gap-4">
           {row}
         </div>
       ))}

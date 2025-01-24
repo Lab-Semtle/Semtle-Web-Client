@@ -145,8 +145,8 @@ export default function Page() {
         isHiddens={isHidden}
       />
 
-      <div className="mx-auto mb-10 mt-20 flex max-w-[900px] flex-col items-center justify-center">
-        <Label className="mb-[30px] mt-[100px] text-xl font-bold">
+      <div className="mx-auto mb-24 mt-20 flex max-w-[900px] flex-col items-center justify-center">
+        <Label className="mb-[50px] mt-[100px] text-[27px] font-bold">
           학회 소식 바로보기
         </Label>
         {newsData.map((news, index) => (
@@ -159,6 +159,10 @@ export default function Page() {
             index={index}
           />
         ))}
+        {/* 후에 ButtonLink 클래스로 치환 */}
+        <Link href="/activity">
+          <Button className="ml-[820px]">더보기</Button>
+        </Link>
       </div>
 
       <div>

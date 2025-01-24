@@ -64,12 +64,12 @@ export default function PostDetail({ post }: PostDetailProps) {
 
             <div className="flex justify-between items-center pt-6 border-t">
               <div className="flex gap-2">
-                {/* 삭제버튼 숨김처리시 opacity값 0 */}
+                {/* 삭제버튼 숨김처리시 hidden 클래스 추가하면 됨 */}
                 <Button variant="destructive" onClick={handleDelete}>
                   <Trash2 className="w-4 h-4 mr-2 opacity-100" />
                   삭제
                 </Button>
-                {/* 수정버튼 숨김처리시 opacity값 0 */}
+                {/* 수정버튼 숨김처리시 ohidden 클래스 추가하면 됨 */}
                 <Button variant="outline" onClick={handleModify}>
                   <Pencil className="w-4 h-4 mr-2 opacity-100" />
                   수정

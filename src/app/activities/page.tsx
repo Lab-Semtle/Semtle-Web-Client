@@ -25,6 +25,7 @@ export default function ActivitiesPage() {
   const [selectedIds, setSelectedIds] = useState<number[]>([])
   const loader = useRef(null)
   const [category, setCategory] = useState("all")
+  const [showScrollTop, setShowScrollTop] = useState(false)
 
   const fetchActivities = async (pageNum: number) => {
     setLoading(true)
@@ -68,6 +69,15 @@ export default function ActivitiesPage() {
     return () => observer.disconnect()
   }, [loading])
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   const filteredActivities = activities.filter((activity) => category === "all" || activity.category === category)
 
   const handleSelect = (id: number) => {
@@ -77,6 +87,13 @@ export default function ActivitiesPage() {
   const handleDelete = () => {
     setActivities((prev) => prev.filter((activity) => !selectedIds.includes(activity.id)))
     setSelectedIds([])
+  }
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
   }
 
   return (
@@ -125,6 +142,7 @@ export default function ActivitiesPage() {
 
       <div className="space-y-6">
         {filteredActivities.map((activity) => (
+          
           <Card key={activity.id} className="overflow-hidden">
             <CardContent className="p-0">
               <div className="flex gap-4 p-4">
@@ -158,6 +176,27 @@ export default function ActivitiesPage() {
         )}
         <div ref={loader} className="h-4" />
       </div>
+      <button
+        onClick={scrollToTop}
+        className={`fixed bottom-8 right-8 bg-primary text-primary-foreground p-3 rounded-full shadow-lg transition-all duration-300 hover:bg-primary/90 ${
+          showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
+        }`}
+        aria-label="페이지 상단으로 이동"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="m18 15-6-6-6 6"/>
+        </svg>
+      </button>
     </div>
   )
 }

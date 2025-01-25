@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -80,7 +81,7 @@ export default function NavigationBar() {
 
   const [userProfile, setUserProfile] = useState({
     name: 'Unknown',
-    image: '/profile-image.jpg',
+    image: '/default_profile.png',
   });
 
   useEffect(() => {
@@ -115,12 +116,13 @@ export default function NavigationBar() {
     redirect('/');
   };
 
-  // Secret Note 페이지를 클릭할 때 로그인 상태 확인 후 리다이렉트
+  const router = useRouter();
+
   const handleSecretPage = (title: string, href: string) => {
     if (title === 'Secret Note' && !isLoggedIn) {
-      redirect('/login'); // 로그인되지 않으면 로그인 페이지로 리다이렉트
+      redirect('/login');
     } else {
-      redirect(href); // 로그인되었으면 해당 페이지로 이동
+      router.push(href);
     }
   };
 

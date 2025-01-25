@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import * as React from 'react';
+import Autoplay from 'embla-carousel-autoplay';
 import { useEffect, useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
@@ -19,7 +20,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-
+import ButtonLink from '@/components/ButtonLink';
 // pages/index.tsx
 //import Navigation from '@/components/Navigation';
 //import Footer from '@/components/Footer';
@@ -99,12 +100,15 @@ export default function Page() {
     setNewsData(formattedData);
   }, [setNewsData]);
 
+  const plugin = React.useRef(
+    Autoplay({ delay: 3000, stopOnInteraction: true }),
+  );
   return (
     <div>
       {/* <Navigation /> */}
       {/* 본문 */}
       <div className="mt-[70px] flex items-center justify-center">
-        <Carousel className="w-full">
+        <Carousel plugins={[plugin.current]} className="w-full">
           <CarouselContent>
             {CarouselImages.map((src, index) => (
               <CarouselItem key={index}>
@@ -215,7 +219,7 @@ export default function Page() {
         </Accordion>
       </div>
 
-      <div className="mt-20 flex flex-col items-center justify-center">
+      <div className="mb-[150px] mt-20 flex flex-col items-center justify-center">
         <Label className="mb-8 mt-[100px] text-xl font-bold">
           학회 가입 및 문의
         </Label>
@@ -225,12 +229,10 @@ export default function Page() {
             alt="Join Image"
             width={1000}
             height={150}
-            style={{ width: '1000px', height: '150px' }}
+            style={{ width: '1000px', height: '550px' }}
           />
-          <div className="absolute bottom-[-60px] right-0 mb-4">
-            <Link href="/recruiting">
-              <Button>Join</Button>
-            </Link>
+          <div className="absolute bottom-[-60px] right-[-16px] mb-4">
+            <ButtonLink link="/recruiting" buttonName="Join" />
           </div>
         </div>
       </div>

@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Search, Plus, Trash2 } from 'lucide-react';
+import Image from 'next/image';
 
 interface Activity {
   id: number;
@@ -180,7 +181,7 @@ export default function ActivitiesPage() {
                   />
                 </div>
                 <div className="h-[240px] w-[380px] flex-shrink-0 overflow-hidden rounded-lg bg-gray-100">
-                  <img
+                  <Image
                     src={activity.image || '/placeholder.svg'}
                     alt=""
                     className="h-full w-full object-contain"

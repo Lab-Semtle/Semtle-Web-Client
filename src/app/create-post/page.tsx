@@ -21,6 +21,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { marked } from 'marked';
+import Image from 'next/image';
 
 interface PostFormData {
   title: string;
@@ -119,7 +120,7 @@ export default function CreatePost() {
             <div className="flex items-start gap-4">
               <div className="relative aspect-video flex-1 overflow-hidden rounded-lg bg-gray-100">
                 {imagePreview ? (
-                  <img
+                  <Image
                     src={imagePreview || '/placeholder.svg'}
                     alt="Preview"
                     className="h-full w-full object-cover"

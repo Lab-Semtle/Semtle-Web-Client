@@ -181,7 +181,7 @@ export default function ActivitiesPage() {
                   />
                 </div>
                 <div className="h-[240px] w-[380px] flex-shrink-0 overflow-hidden rounded-lg bg-gray-100">
-                  <Image
+                  <img
                     src={activity.image || '/placeholder.svg'}
                     alt=""
                     className="h-full w-full object-contain"

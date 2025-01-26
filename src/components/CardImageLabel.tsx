@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 import {
   Card,
@@ -24,12 +25,14 @@ const CardImageLabel: React.FC<CardImageLabelProps> = ({
 }) => {
   return (
     <div className="relative">
-      <Card className="flex h-[300px] w-[250px] flex-col overflow-hidden rounded-lg bg-gray-100">
+      <Card className="mb-2 flex h-[300px] w-[250px] flex-col overflow-hidden rounded-lg bg-gray-100">
         <CardHeader className="flex-1 p-0">
           <CardTitle className="h-[170px] w-full">
-            <img
+            <Image
               src={imageSrc}
               alt={altText}
+              width={700}
+              height={400}
               className="h-full w-full rounded-t-lg object-cover"
             />
           </CardTitle>
@@ -48,8 +51,8 @@ const CardImageLabel: React.FC<CardImageLabelProps> = ({
         </CardContent>
       </Card>
       {isHidden && (
-        <div className="absolute bottom-[-25px] w-full text-center text-base font-bold text-gray-800">
-          <CardDescription className="mt-2 text-center text-base font-bold text-gray-800">
+        <div className="absolute bottom-[-25px] w-full">
+          <CardDescription className="mt-2 text-center text-[17px] font-bold text-black">
             {isHidden}
           </CardDescription>
         </div>

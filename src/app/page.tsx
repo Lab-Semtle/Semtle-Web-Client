@@ -44,7 +44,7 @@ export default function Page() {
     height: '200px' as const,
     objectFit: 'cover' as const,
   };
-  const imageSrcs = ['1.jpg', '2.jpg', '3.jpg', '4.jpg'];
+  const imageSrcs = ['/1.jpg', '/2.jpg', '/3.jpg', '/4.jpg'];
   const altTexts = ['Image 1', 'Image 2', 'Image 3', 'Image 4'];
   const contentTexts = [
     '매 학기 20여개에 이르는 다양한 분야의 세션과 스터디를 통해 서로 가르치고 배우며 여러 컴퓨터 분야에 대한 지식을 넓힐 수 있습니다.',

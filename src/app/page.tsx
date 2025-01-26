@@ -168,9 +168,9 @@ export default function Page() {
           />
         ))}
         {/* 후에 ButtonLink 클래스로 치환 */}
-        <Link href="/activities">
-          <Button className="ml-[820px]">더보기</Button>
-        </Link>
+        <div className="ml-[740px]">
+          <ButtonLink link="/activities" buttonName="더보기" />
+        </div>
       </div>
 
       <div>
@@ -189,7 +189,7 @@ export default function Page() {
       <div className="mt-8 flex items-center justify-center">
         <Accordion type="single" collapsible className="w-[1000px]">
           <AccordionItem value="item-1">
-            <AccordionTrigger className="text-lg font-bold">
+            <AccordionTrigger className="text-lg font-bold hover:no-underline">
               신입 학회원 모집은 어떻게 진행되나요?
             </AccordionTrigger>
             <AccordionContent className="text-[17px] italic">
@@ -198,7 +198,7 @@ export default function Page() {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
-            <AccordionTrigger className="text-lg font-bold">
+            <AccordionTrigger className="text-lg font-bold hover:no-underline">
               학회 세미나는 언제 시작되나요?
             </AccordionTrigger>
             <AccordionContent className="text-[17px] italic">
@@ -207,7 +207,7 @@ export default function Page() {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-3">
-            <AccordionTrigger className="text-lg font-bold">
+            <AccordionTrigger className="text-lg font-bold hover:no-underline">
               대회 수상 소식은 어디에서 확인할 수 있나요?
             </AccordionTrigger>
             <AccordionContent className="text-[17px] italic">

@@ -1,7 +1,7 @@
 import { Label } from '@/components/ui/label';
 import CardImageLabelList from '@/components/CardImageLabelList';
 
-export default function Organization() {
+export default function OrganizationPage() {
   const cardCount = 8;
   const imageSrcs = [
     '/default_profile.png',

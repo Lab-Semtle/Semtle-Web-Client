@@ -52,14 +52,19 @@ const activitySections = [
     description: '우리의 최근 활동과 프로젝트에 대해 알아보세요.',
   },
   {
-    title: '프로젝트',
-    href: '/projects',
-    description: '진행 중인 프로젝트와 그 성과를 확인해 보세요.',
-  },
-  {
     title: '학회 일정',
     href: '/schedule',
     description: '다가오는 학회 일정과 이벤트를 확인할 수 있습니다.',
+  },
+  {
+    title: '프로젝트 홍보',
+    href: '/projects',
+    description: '홍보 중인 프로젝트를 확인해 보세요.',
+  },
+  {
+    title: '프로젝트 모집',
+    href: '/projects',
+    description: '모집 중인 프로젝트를 확인해 보세요.',
   },
 ];
 const archiveSections = [
@@ -138,8 +143,8 @@ export default function NavigationBar() {
             />
             <AvatarFallback>LI</AvatarFallback>
           </Avatar>
-          <Switch id="airplane-mode" />
-          <Label htmlFor="airplane-mode"></Label>
+          <Switch id="darkandwhtie-mode" />
+          <Label htmlFor="darkandwhtie-mode"></Label>
         </NavigationMenuList>
       </NavigationMenu>
 

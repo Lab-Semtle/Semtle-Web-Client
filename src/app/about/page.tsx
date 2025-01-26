@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/carousel';
 import ButtonLink from '@/components/ButtonLink';
 
-export default function About() {
+export default function AboutPage() {
   const eventData = [
     {
       imageSrc: '/example1.jpg',

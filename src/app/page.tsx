@@ -1,11 +1,9 @@
 'use client';
 import Image from 'next/image';
-import Link from 'next/link';
 import * as React from 'react';
 import Autoplay from 'embla-carousel-autoplay';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Label } from '@/components/ui/label';
-import { Progress } from '@/components/ui/progress';
 import {
   Carousel,
   CarouselContent,
@@ -19,24 +17,16 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Button } from '@/components/ui/button';
 import ButtonLink from '@/components/ButtonLink';
-// pages/index.tsx
-//import Navigation from '@/components/Navigation';
-//import Footer from '@/components/Footer';
+import SlideIndicator from '@/components/SlideIndicator';
 
-// import {
-//   IoIosArrowForward,
-//   IoIosArrowBack,
-//   IoIosArrowUp,
-//   IoIosArrowDown,
-// } from 'react-icons/io';
 type NewsData = {
   imageSrc: string;
   altText: string;
   newsTitle: string;
   newsContent: string;
-  index: number; // 두 번째 게시글에만 반대로 배치될 필드
+  index: number;
+  postId: number;
 };
 export default function Page() {
   const midImageStyle = {
@@ -58,15 +48,22 @@ export default function Page() {
     '커뮤니케이션',
     '기타 활동',
   ];
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const carouselRef = useRef<HTMLDivElement | null>(null);
   const CarouselImages = ['/example1.jpg', '/example2.jpg', '/example3.jpg'];
-  const [newsData, setNewsData] = useState<NewsData[]>([]);
 
-  const [progress, setProgress] = React.useState(13);
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index);
+  };
 
-  React.useEffect(() => {
-    const timer = setTimeout(() => setProgress(66), 500);
-    return () => clearTimeout(timer);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % CarouselImages.length);
+    }, 3000);
+    return () => clearInterval(interval);
   }, []);
+
+  const [newsData, setNewsData] = useState<NewsData[]>([]);
 
   useEffect(() => {
     const newsData = [
@@ -76,6 +73,7 @@ export default function Page() {
         newsTitle: '게시글 제목 1',
         newsContent:
           '게시글 1의 간략한 내용이 여기에 표시됩니다.게시글 1의 간략한 내용이 여기에 표시됩니다.게시글 1의 간략한 내용이 여기에 표시됩니다.',
+        postId: 1,
       },
       {
         imageSrc: '/2.jpg',
@@ -83,6 +81,7 @@ export default function Page() {
         newsTitle: '게시글 제목 2',
         newsContent:
           '게시글 2의 간략한 내용이 여기에 표시됩니다.게시글 2의 간략한 내용이 여기에 표시됩게시글 2의 간략한 내용이 여기에 표시됩니다.니다.게시글 2의 간략한 내용이 여기에 표시됩니다.게시글 2의 간략한 내용이 여기에 표시됩니다.',
+        postId: 2,
       },
       {
         imageSrc: '/3.jpg',
@@ -90,6 +89,7 @@ export default function Page() {
         newsTitle: '게시글 제목 3',
         newsContent:
           '게시글 3의 간략한 내용이 여기에 표시됩니다.게시글 3의 간략한 내용이 여기에 표시됩니다.게시글 3의 간략한 내용이 여기에 표시됩니다.',
+        postId: 3,
       },
     ];
     const formattedData = newsData.map((news, index) => ({
@@ -101,14 +101,18 @@ export default function Page() {
   }, [setNewsData]);
 
   const plugin = React.useRef(
-    Autoplay({ delay: 3000, stopOnInteraction: true }),
+    Autoplay({ delay: 3000, stopOnInteraction: false }),
   );
   return (
     <div>
       {/* <Navigation /> */}
       {/* 본문 */}
       <div className="flex h-screen items-center justify-center">
-        <Carousel plugins={[plugin.current]} className="h-full w-full">
+        <Carousel
+          plugins={[plugin.current]}
+          ref={carouselRef}
+          className="h-full w-full"
+        >
           <CarouselContent>
             {CarouselImages.map((src, index) => (
               <CarouselItem key={index} className="relative h-full w-full">
@@ -118,16 +122,19 @@ export default function Page() {
                     alt={`Slide ${index + 1}`}
                     fill
                     style={{ objectFit: 'cover' }}
-                  />
-                  <Progress
-                    value={progress}
-                    className="absolute bottom-1 left-1/2 w-[30%] -translate-x-1/2 rounded-full bg-white/50"
+                    priority
                   />
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
         </Carousel>
+        {/* 슬라이드 인디케이터 */}
+        <SlideIndicator
+          totalSlides={CarouselImages.length}
+          currentIndex={currentIndex}
+          onClick={goToSlide}
+        />
       </div>
 
       <div className="mt-20 flex flex-col items-center justify-center">
@@ -165,10 +172,10 @@ export default function Page() {
             newsTitle={news.newsTitle}
             newsContent={news.newsContent}
             index={index}
+            postId={news.postId}
           />
         ))}
-        {/* 후에 ButtonLink 클래스로 치환 */}
-        <div className="ml-[740px]">
+        <div className="ml-[750px]">
           <ButtonLink link="/activities" buttonName="더보기" />
         </div>
       </div>

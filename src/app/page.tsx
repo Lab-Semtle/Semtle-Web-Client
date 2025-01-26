@@ -107,22 +107,21 @@ export default function Page() {
     <div>
       {/* <Navigation /> */}
       {/* 본문 */}
-      <div className="mt-[70px] flex items-center justify-center">
-        <Carousel plugins={[plugin.current]} className="w-full">
+      <div className="flex h-screen items-center justify-center">
+        <Carousel plugins={[plugin.current]} className="h-full w-full">
           <CarouselContent>
             {CarouselImages.map((src, index) => (
-              <CarouselItem key={index}>
-                <div className="relative">
+              <CarouselItem key={index} className="relative h-full w-full">
+                <div className="relative h-[100vh] w-full">
                   <Image
                     src={src}
                     alt={`Slide ${index + 1}`}
-                    width={1000}
-                    height={500}
-                    className="h-auto w-full object-cover"
+                    fill
+                    style={{ objectFit: 'cover' }}
                   />
                   <Progress
                     value={progress}
-                    className="absolute bottom-1 left-1/2 w-[30%] -translate-x-1/2 bg-white/50"
+                    className="absolute bottom-1 left-1/2 w-[30%] -translate-x-1/2 rounded-full bg-white/50"
                   />
                 </div>
               </CarouselItem>
@@ -132,7 +131,7 @@ export default function Page() {
       </div>
 
       <div className="mt-20 flex flex-col items-center justify-center">
-        <Label className="text-xl font-bold">Arch Semtle</Label>
+        <Label className="text-[26px] font-bold">Arch Semtle</Label>
         <div className="text-l mt-8 space-y-4 text-center font-bold">
           <Label className="text-lg font-bold">
             아치 셈틀은 다양한 기술과 아이디어를 탐구하며, 함께 성장하는 것을

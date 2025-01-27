@@ -1,14 +1,11 @@
 'use client';
 import Image from 'next/image';
 import * as React from 'react';
-import Autoplay from 'embla-carousel-autoplay';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import { Label } from '@/components/ui/label';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from '@/components/ui/carousel';
 import CardImageLabelList from '@/components/CardImageLabelList';
 import NewsDirector from '@/components/NewsDirector';
 import {
@@ -18,7 +15,6 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import ButtonLink from '@/components/ButtonLink';
-import SlideIndicator from '@/components/SlideIndicator';
 
 type NewsData = {
   imageSrc: string;
@@ -29,6 +25,15 @@ type NewsData = {
   postId: number;
 };
 export default function Page() {
+  const settings = {
+    dots: true,
+    infinite: true,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    pauseOnHover: true,
+  };
   const midImageStyle = {
     width: '100%' as const,
     height: '200px' as const,
@@ -48,20 +53,8 @@ export default function Page() {
     '커뮤니케이션',
     '기타 활동',
   ];
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const carouselRef = useRef<HTMLDivElement | null>(null);
+
   const CarouselImages = ['/example1.jpg', '/example2.jpg', '/example3.jpg'];
-
-  const goToSlide = (index: number) => {
-    setCurrentIndex(index);
-  };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % CarouselImages.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
 
   const [newsData, setNewsData] = useState<NewsData[]>([]);
 
@@ -100,41 +93,26 @@ export default function Page() {
     setNewsData(formattedData);
   }, [setNewsData]);
 
-  const plugin = React.useRef(
-    Autoplay({ delay: 3000, stopOnInteraction: false }),
-  );
   return (
     <div>
       {/* <Navigation /> */}
       {/* 본문 */}
-      <div className="flex h-screen items-center justify-center">
-        <Carousel
-          plugins={[plugin.current]}
-          ref={carouselRef}
-          className="h-full w-full"
-        >
-          <CarouselContent>
-            {CarouselImages.map((src, index) => (
-              <CarouselItem key={index} className="relative h-full w-full">
-                <div className="relative h-[100vh] w-full">
-                  <Image
-                    src={src}
-                    alt={`Slide ${index + 1}`}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    priority
-                  />
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
-        {/* 슬라이드 인디케이터 */}
-        <SlideIndicator
-          totalSlides={CarouselImages.length}
-          currentIndex={currentIndex}
-          onClick={goToSlide}
-        />
+      <div>
+        <Slider {...settings}>
+          {/* CarouselImages 배열을 사용하여 이미지 렌더링 */}
+          {CarouselImages.map((src, index) => (
+            <div key={index}>
+              <div className="relative h-[100vh] w-full">
+                <Image
+                  src={src}
+                  alt={`Slide ${index + 1}`}
+                  fill
+                  style={{ objectFit: 'cover' }}
+                />
+              </div>
+            </div>
+          ))}
+        </Slider>
       </div>
 
       <div className="mt-20 flex flex-col items-center justify-center">

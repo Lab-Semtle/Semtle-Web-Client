@@ -57,14 +57,14 @@ const activitySections = [
     description: '다가오는 학회 일정과 이벤트를 확인할 수 있습니다.',
   },
   {
-    title: '프로젝트 홍보',
-    href: '/projects',
-    description: '홍보 중인 프로젝트를 확인해 보세요.',
+    title: '프로젝트 아카이브',
+    href: '/projects/completed',
+    description: '완료되어 홍보 중인 프로젝트를 확인해 보세요.',
   },
   {
-    title: '프로젝트 모집',
-    href: '/projects',
-    description: '모집 중인 프로젝트를 확인해 보세요.',
+    title: '프로젝트 참여하기',
+    href: '/projects/active',
+    description: '여러분을 모집 중인 프로젝트를 확인해 보세요.',
   },
 ];
 const archiveSections = [
@@ -226,9 +226,6 @@ export default function NavigationBar() {
                           <Link href="/mypage/${userid}/activity">
                             내 활동관리
                           </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Link href="/개인시간표">시간표</Link>
                         </DropdownMenuItem>
                       </DropdownMenuGroup>
                     </DropdownMenuContent>

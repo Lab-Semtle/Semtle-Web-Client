@@ -178,7 +178,7 @@ export default function NavigationBar() {
           {!isLoggedIn ? (
             <>
               <NavigationMenuItem>
-                <Link href="/reqruiting" className="mr-[-10] text-sm">
+                <Link href="/recruiting" className="mr-[-10] text-sm">
                   Join
                 </Link>
               </NavigationMenuItem>

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { redirect } from 'next/navigation';
 import * as React from 'react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/tailwind-utils';
 import {
   NavigationMenu,
   NavigationMenuContent,

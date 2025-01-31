@@ -1,7 +1,7 @@
 import React from 'react';
 // import GlobalLayout from '@/components/GlobalLayout';
-import Footer from '@/components/Footer';
-import NavigationBar from '@/components/Navigation';
+import Footer from '@/components/layouts/Footer';
+import NavigationBar from '@/components/layouts/Navigation';
 
 export default function GlobalLayout({
   children,

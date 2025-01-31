@@ -1,15 +1,17 @@
-// 기본 응답 구조
+/* API 응답 타입 정의 */
+
+// 기본 응답 타입 정의
 export interface ApiResponse {
   status: number;
   code: string;
 }
 
-// 에러 타입
+// 에러 응답 타입 정의
 export type ApiResponseError = ApiResponse & {
   message: string;
 };
 
-// 성공 응답 타입 (제네릭 사용)
+// 성공 응답 타입 정의 (제네릭 사용)
 export type ApiResponseWithData<T> = ApiResponse & {
   data: T;
 };
@@ -27,6 +29,7 @@ export const isApiResponseError = (
   );
 };
 
+// 토큰 정보 (인증 및 세션 관리)
 export interface Tokens {
   accessToken: string;
   refreshToken: string;

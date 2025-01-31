@@ -15,10 +15,12 @@ import {
   CardDescription,
   CardFooter,
 } from '@/components/ui/card';
-import { loginApi } from '@/services/auth';
-import { resetPasswordApi } from '@/services/auth';
+import { loginApi } from '@/services/authAPI';
+import { resetPasswordApi } from '@/services/authAPI';
+import { signIn } from '@/lib/authClient';
+import { signInWithCredentials } from '@/lib/authServerAction';
 
-export default function LoginPage() {
+export default function SignInPage() {
   const [email, setEmail] = useState('@g.kmou.ac.kr'); // 초기값 설정
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -107,7 +109,8 @@ export default function LoginPage() {
   };
 
   // 로그인 버튼 클릭 시 동작
-  const handleSubmit = async (e: React.FormEvent) => {
+  // next-auth 핸들러
+  const handleLogin = async (e) => {
     e.preventDefault();
     setEmailError(null);
     setPasswordError(null);
@@ -119,11 +122,33 @@ export default function LoginPage() {
     const passwordError = validatePassword(password, emailUsername);
     setPasswordError(passwordError);
 
-    // 모든 검증이 통과되었을 경우에만 API 호출
+    // 모든 검증이 통과되었을 경우에만 API 호출?
     if (!emailError && !passwordError) {
-      await login();
+      const formData = new FormData(e.currentTarget);
+      await signIn('credentials', {
+        email: formData.get('email'),
+        password: formData.get('password'),
+      });
     }
   };
+
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setEmailError(null);
+  //   setPasswordError(null);
+
+  //   const emailError = validateEmail(email);
+  //   setEmailError(emailError);
+
+  //   const emailUsername = email.split('@')[0];
+  //   const passwordError = validatePassword(password, emailUsername);
+  //   setPasswordError(passwordError);
+
+  //   // 모든 검증이 통과되었을 경우에만 API 호출
+  //   if (!emailError && !passwordError) {
+  //     await login();
+  //   }
+  // };
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 sm:px-6 lg:px-8">
@@ -156,7 +181,11 @@ export default function LoginPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form
+              action={signInWithCredentials}
+              onSubmit={handleLogin}
+              className="space-y-4"
+            >
               {/* 이메일 입력 */}
               <div className="flex flex-col space-y-1">
                 <Input

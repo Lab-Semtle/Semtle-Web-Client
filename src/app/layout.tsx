@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import localFont from 'next/font/local';
 import '@/app/global.css';
-import { Providers } from '@/lib/Providers';
+import { Providers } from '@/lib/msw-providers';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',

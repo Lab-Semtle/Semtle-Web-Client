@@ -15,6 +15,8 @@ import {
   CardDescription,
   CardFooter,
 } from '@/components/ui/card';
+import { loginApi } from '@/services/auth';
+import { resetPasswordApi } from '@/services/auth';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('@g.kmou.ac.kr'); // 초기값 설정
@@ -73,29 +75,14 @@ export default function LoginPage() {
   };
 
   // login API
-  const login = async () => {
+  const login = async (email: string, password: string) => {
     try {
-      const response = await fetch('api/members/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await loginApi(email, password);
 
-      if (response.status === 404 || response.status === 401) {
-        const result = await response.json();
-        showErrorToast(result.message); // 오류 메시지 표시
-        return;
-      }
-
-      if (response.status !== 200) {
-        throw new Error('예상치 못한 서버 오류');
-      }
-
-      const result = await response.json();
-      if (result.success) {
+      if (response.data.success) {
         router.push('/');
+      } else {
+        showErrorToast(response.data.message || '로그인 실패');
       }
     } catch (err) {
       console.error('로그인 중 에러 발생:', err);
@@ -106,19 +93,12 @@ export default function LoginPage() {
   // 비밀번호 재설정 API 요청 함수
   const resetPassword = async () => {
     try {
-      const response = await fetch('/members/repassword', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
+      const response = await resetPasswordApi(email);
 
-      const result = await response.json();
-      if (result.success) {
+      if (response.data.success) {
         showErrorToast('비밀번호 재설정 성공');
       } else {
-        showErrorToast('비밀번호 재설정 실패');
+        showErrorToast(response.data.message || '비밀번호 재설정 실패');
       }
     } catch (err) {
       console.error('비밀번호 재설정 중 에러 발생:', err);

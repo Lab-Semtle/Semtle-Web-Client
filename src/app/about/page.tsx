@@ -96,7 +96,7 @@ export default function AboutPage() {
   };
   return (
     <>
-      <main>
+      <main className="dark:text-[#c7c7c7]">
         <div className="mx-auto mt-[150px] flex w-full flex-col items-center gap-5 text-center">
           <Label className="w-full max-w-[800px] text-[30px] font-bold">
             About Us.
@@ -109,7 +109,7 @@ export default function AboutPage() {
           </Label>
 
           <Tabs defaultValue="event" className="w-full">
-            <TabsList className="mx-auto mb-10 mt-10 flex w-[85%] max-w-[336px] justify-center">
+            <TabsList className="mx-auto mb-10 mt-10 flex w-[85%] max-w-[350px] justify-center gap-1">
               <TabsTrigger value="event" className="text-[17px]">
                 행사
               </TabsTrigger>

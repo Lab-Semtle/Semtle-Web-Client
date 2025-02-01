@@ -94,7 +94,7 @@ export default function NavigationBar() {
     const newMode = !isDarkMode;
     setIsDarkMode(newMode);
     if (newMode) {
-      document.documentElement.classList.add('dark'); 
+      document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
@@ -152,7 +152,7 @@ export default function NavigationBar() {
   };
 
   return (
-    <nav className="fixed top-0 z-50 flex h-[70px] w-full items-center bg-white shadow-md transition-all duration-300 ease-in-out dark:bg-black">
+    <nav className="fixed top-0 z-50 flex h-[70px] w-full items-center border-b border-gray-200 bg-white shadow-md transition-all duration-300 ease-in-out dark:border-gray-700 dark:bg-gray-950">
       <NavigationMenu>
         <NavigationMenuList className="ml-5 flex items-center gap-2">
           <Avatar>

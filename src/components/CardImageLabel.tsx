@@ -10,7 +10,7 @@ import {
 
 type CardImageLabelProps = {
   imageSrc: string;
-  altText: string;
+  altText?: string;
   contentTitle?: string;
   contentText: string;
   isHidden?: string;
@@ -25,12 +25,12 @@ const CardImageLabel: React.FC<CardImageLabelProps> = ({
 }) => {
   return (
     <div className="relative">
-      <Card className="mb-2 flex h-[300px] w-[250px] flex-col overflow-hidden rounded-lg bg-gray-100">
+      <Card className="dark:bg-[#011222] mb-2 flex h-[300px] w-[250px] flex-col overflow-hidden rounded-lg bg-gray-100">
         <CardHeader className="flex-1 p-0">
           <CardTitle className="h-[170px] w-full">
             <Image
               src={imageSrc}
-              alt={altText}
+              alt={altText!}
               width={700}
               height={400}
               className="h-full w-full rounded-t-lg object-cover"

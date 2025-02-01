@@ -9,7 +9,7 @@ type ButtonLinkProps = {
 const ButtonLink: React.FC<ButtonLinkProps> = ({ buttonName, link }) => {
   return (
     <Link href={link}>
-      <Button className="mr-4 h-[30px] w-[170px]">{buttonName}</Button>{' '}
+      <Button className="h-[30px] w-[170px]">{buttonName}</Button>{' '}
     </Link>
   );
 };

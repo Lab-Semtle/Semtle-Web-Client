@@ -1,72 +1,176 @@
 import { Label } from '@/components/ui/label';
-import CardImageLabelList from '@/components/CardImageLabelList';
+import ProfileCardList from '@/components/ProfileCardList';
 
+// //NOTE - 아치셈틀 집행부 Data Fetching
+// async function fetchBoardMember() {
+//   const res = await fetch('example/api/member');
+//   if (!res.ok) {
+//     throw new Error('Failed to load data...');
+//   }
+//   const boardMembers: BoardMember[] = await res.json();
+//   return boardMembers;
+// }
+// //NOTE - 아치셈틀 페이지 Developers Data Fetching
+// async function fetchDeveloper() {
+//   const res = await fetch('example/api/developer');
+//   if (!res.ok) {
+//     throw new Error('Failed to load data...');
+//   }
+//   const boardDevelopers: BoardDeveloper[] = await res.json();
+//   return boardDevelopers;
+// }
 export default function OrganizationPage() {
-  const cardCount = 8;
-  const imageSrcs = [
-    '/default_profile.png',
-    '/default_profile.png',
-    '/default_profile.png',
-    '/default_profile.png',
-    '/default_profile.png',
-    '/default_profile.png',
-    '/default_profile.png',
-    '/default_profile.png',
+  const boardMembers = [
+    {
+      id: 1,
+      role: '회장',
+      name: '이름 홍길동',
+      student_id: '00000000',
+      profile_image: '',
+    },
+    {
+      id: 2,
+      role: '회장',
+      name: '이름 홍길동',
+      student_id: '00000000',
+      profile_image: '',
+    },
+    {
+      id: 3,
+      role: '회장',
+      name: '이름 홍길동',
+      student_id: '00000000',
+      profile_image: '',
+    },
+    {
+      id: 4,
+      role: '회장',
+      name: '이름 홍길동',
+      student_id: '00000000',
+      profile_image: '',
+    },
+    {
+      id: 5,
+      role: '회장',
+      name: '이름 홍길동',
+      student_id: '00000000',
+      profile_image: '',
+    },
+
+    {
+      id: 6,
+      role: '회장',
+      name: '이름 홍길동',
+      student_id: '00000000',
+      profile_image: '',
+    },
+    {
+      id: 7,
+      role: '회장',
+      name: '이름 홍길동',
+      student_id: '00000000',
+      profile_image: '',
+    },
+    {
+      id: 8,
+      role: '회장',
+      name: '이름 홍길동',
+      student_id: '00000000',
+      profile_image: '',
+    },
   ];
-  const altTexts = [
-    'Card 1',
-    'Card 2',
-    'Card 3',
-    'Card 4',
-    'Card 1',
-    'Card 2',
-    'Card 3',
-    'Card 4',
-  ];
-  const contentTitles = [
-    '[회장]',
-    '[부회장]',
-    '[집행부]',
-    '[집행부]',
-    '[집행부]',
-    '[집행부]',
-    '[집행부]',
-    '[집행부]',
-  ];
-  const contentTexts = [
-    '이름 홍길동 | 학번 00000000',
-    '이름 홍길동 | 학번 00000000',
-    '이름 홍길동 | 학번 00000000',
-    '이름 홍길동 | 학번 00000000',
-    '이름 홍길동 | 학번 00000000',
-    '이름 홍길동 | 학번 00000000',
-    '이름 홍길동 | 학번 00000000',
-    '이름 홍길동 | 학번 00000000',
+  const boardDevelopers = [
+    {
+      id: 1,
+      role: '개발팀 팀장',
+      name: '이름 홍길동',
+      student_id: '00000000',
+      profile_image: '',
+    },
+    {
+      id: 2,
+      role: '회장',
+      name: '이름 홍길동',
+      student_id: '00000000',
+      profile_image: '',
+    },
+    {
+      id: 3,
+      role: '회장',
+      name: '이름 홍길동',
+      student_id: '00000000',
+      profile_image: '',
+    },
+    {
+      id: 4,
+      role: '회장',
+      name: '이름 홍길동',
+      student_id: '00000000',
+      profile_image: '',
+    },
+    {
+      id: 5,
+      role: '회장',
+      name: '이름 홍길동',
+      student_id: '00000000',
+      profile_image: '',
+    },
+
+    {
+      id: 6,
+      role: '회장',
+      name: '이름 홍길동',
+      student_id: '00000000',
+      profile_image: '',
+    },
+    {
+      id: 7,
+      role: '회장',
+      name: '이름 홍길동',
+      student_id: '00000000',
+      profile_image: '',
+    },
+    {
+      id: 8,
+      role: '회장',
+      name: '이름 홍길동',
+      student_id: '00000000',
+      profile_image: '',
+    },
+    {
+      id: 9,
+      role: '회장',
+      name: '이름 홍길동',
+      student_id: '00000000',
+      profile_image: '',
+    },
   ];
 
   return (
     <>
-      {/* 임시 네비게이션 바 */}
-      <nav
-        style={{
-          height: '70px',
-          width: '100%',
-          backgroundColor: 'black',
-        }}
-      ></nav>
-
       {/* 본문 콘텐츠 */}
-      <main className="mt-[100px] flex flex-col items-center">
-        <Label className="text-[30px] font-bold">조직 구성원</Label>
-        <div className="my-2 mt-[40px] w-[1100px] border-b-2 border-gray-400"></div>
-        <div className="my-2 mb-[30px] w-[1100px] border-b-2 border-gray-400"></div>
-        <CardImageLabelList
-          cardCount={cardCount}
-          imageSrcs={imageSrcs}
-          altTexts={altTexts}
-          contentTitles={contentTitles}
-          contentTexts={contentTexts}
-        />
+      <main>
+        <section className="mt-[150px] flex flex-col items-center">
+          <Label className="text-[30px] font-bold">조직 구성원</Label>
+          <div className="mb-[40px] mt-[40px] w-[85vh] text-center">
+            우리 학회의 집행부 조직원들은 학회의 운영과 발전을 위해 각자의
+            역할을 수행하며 협력하고 있습니다. 회장단을 비롯해 기획, 홍보, 교육,
+            대외협력 등의 다양한 부서가 있으며, 모든 구성원이 학회원들의 원활한
+            활동을 지원하고 학회의 성장을 위해 노력하고 있습니다.
+          </div>
+          <ProfileCardList profiles={boardMembers} />
+        </section>
+        <section className="mb-[50px] mt-[150px] flex flex-col items-center">
+          <Label className="text-[30px] font-bold">개발팀</Label>
+          <div className="mb-[40px] mt-[40px] w-[85vh] text-center">
+            홈페이지 개발팀은 우리 학회의 온라인 플랫폼을 구축하고 관리하는
+            역할을 맡고 있습니다. Next.js와 TypeScript를 기반으로 개발을
+            진행하며, 학회원들이 쉽고 편리하게 정보를 접할 수 있도록 최적화된
+            UI/UX를 제공합니다. 또한, 지속적인 유지보수와 새로운 기능 개발을
+            통해 학회의 디지털 환경을 더욱 발전시키고 있습니다.
+          </div>
+          <ProfileCardList profiles={boardDevelopers} />
+        </section>
       </main>
     </>
   );

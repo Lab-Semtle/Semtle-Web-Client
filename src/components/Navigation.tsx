@@ -81,6 +81,26 @@ const archiveSections = [
 ];
 
 export default function NavigationBar() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme === 'dark') {
+      setIsDarkMode(true);
+      document.documentElement.classList.add('dark');
+    }
+  }, []);
+  const toggleDarkMode = () => {
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+    if (newMode) {
+      document.documentElement.classList.add('dark'); 
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
   // 로그인 상태 관리
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -132,18 +152,22 @@ export default function NavigationBar() {
   };
 
   return (
-    <nav className="fixed top-0 z-50 flex h-[70px] w-full items-center bg-white shadow-md transition-all duration-300 ease-in-out">
+    <nav className="fixed top-0 z-50 flex h-[70px] w-full items-center bg-white shadow-md transition-all duration-300 ease-in-out dark:bg-black">
       <NavigationMenu>
         <NavigationMenuList className="ml-5 flex items-center gap-2">
           <Avatar>
             <AvatarImage
-              className="h-10 w-10 rounded-full border-2 border-gray-300"
+              className="not-dark h-10 w-10 rounded-full"
               src="/semtle_logo_line.png"
               alt="Arch Semtle Logo"
             />
             <AvatarFallback>LI</AvatarFallback>
           </Avatar>
-          <Switch id="darkandwhtie-mode" />
+          <Switch
+            id="darkandwhtie-mode"
+            onClick={toggleDarkMode}
+            checked={isDarkMode}
+          />
           <Label htmlFor="darkandwhtie-mode"></Label>
         </NavigationMenuList>
       </NavigationMenu>

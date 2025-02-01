@@ -10,12 +10,38 @@ import {
 } from '@/components/ui/card';
 import AlertCard from '@/components/AlertCard';
 
+// //NOTE - Footer Data Fetching
+// async function fetchContactData() {
+//   const res = await fetch('example/api/contact');
+//   if (!res.ok) {
+//     throw new Error('Failed to load data...');
+//   }
+//   const ContactData: ContactData[] = await res.json();
+//   return ContactData;
+// }
+const ContactData = {
+  address: '서울특별시 강남구 학회길 123',
+  map_location: {
+    latitude: 37.5665,
+    longitude: 126.978,
+  },
+  general_contact: {
+    Email: 'example@univ.ac.kr',
+    Kakao: 'https://example.com/kakao',
+    Instagram: 'https://example.com/instagram',
+  },
+  dev_contact: {
+    Github: 'https://github.com/example',
+    Discord: 'https://discord.gg/example',
+    Kakao: 'https://example.com/devkakao',
+  },
+};
 export default function Footer() {
   return (
     <Card className="rounded-none bg-black p-5 text-white">
       <CardHeader>
         <CardTitle className="flex gap-3">
-          <Link href="/인스타주소">
+          <Link href={ContactData.general_contact.Instagram}>
             <Image
               src="/instagram_logo.webp"
               alt="Instagram"
@@ -37,18 +63,23 @@ export default function Footer() {
         <p>
           Contact Semtle
           <span className="ml-10" />
-          전화번호{' | '} <Link href="">오픈채팅주소</Link>
+          전화번호{' | '}{' '}
+          <Link href={ContactData.general_contact.Kakao}>
+            {ContactData.general_contact.Kakao}
+          </Link>
         </p>
         <p>
           Contact Dev.
           <span className="ml-[60px]" />
-          <Link href="">디스코드 링크</Link>
+          <Link href={ContactData.dev_contact.Discord}>
+            {ContactData.dev_contact.Discord}
+          </Link>
         </p>
         <p>
           Github.
           <span className="ml-[100px]" />
-          <Link href="https://github.com/XXX/xxxx">
-            https://github.com/XXX/xxxx
+          <Link href={ContactData.dev_contact.Github}>
+            {ContactData.dev_contact.Github}
           </Link>
         </p>
         <p>

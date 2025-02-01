@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import '@/app/global.css';
 import GlobalLayout from '@/components/GlobalLayout';
+import { ThemeProvider } from 'next-themes';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -25,11 +26,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="kr">
+    <html lang="kr" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <GlobalLayout>{children}</GlobalLayout>
+        {/* ThemeProvider를 GlobalLayout 내부에 넣지 않고 최상단에서 감싸도록 설정 */}
+        <ThemeProvider attribute="class" defaultTheme="system">
+          <GlobalLayout>{children}</GlobalLayout>
+        </ThemeProvider>
       </body>
     </html>
   );

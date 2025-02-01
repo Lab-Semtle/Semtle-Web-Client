@@ -11,6 +11,36 @@ import {
 } from '@/components/ui/carousel';
 import ButtonLink from '@/components/ButtonLink';
 
+//NOTE - 행사탭 Data Fetching
+// async function fetchEventTab() {
+//   const res = await fetch('example/api/event', { cache: 'force-cache' });
+//   if (!res.ok) {
+//     throw new Error('Failed to load data...');
+//   }
+//   const eventData: EventData[] = await res.json();
+//   return eventData;
+// }
+// //NOTE - 프로젝트탭 Data Fetching
+// async function fetchProjectTab() {
+//   const res = await fetch('example/api/project', { cache: 'force-cache' });
+//   if (!res.ok) {
+//     throw new Error('Failed to load data...');
+//   }
+//   const projectTab: ProjectTabData = await res.json();
+//   return projectTab;
+// }
+// //NOTE - 교류&후원탭 Data Fetching
+// async function fetchSupportTab() {
+//   const res = await fetch('example/api/support');
+//   if (!res.ok) {
+//     throw new Error('Failed to load data...');
+//   }
+//   const supportTab: SupportTab[] = await res.json();
+//   return supportTab;
+// }
+//NOTE - Contact탭 Data Fetching
+//NOTE - 푸터에서 사용되는 fetchContactData() 함수를 끌어다 쓰거나,
+//NOTE - 여기서 함수를쓰고, 푸터에서 데이터페칭 로직을 끌어다 쓸것
 export default function AboutPage() {
   const eventData = [
     {
@@ -44,22 +74,30 @@ export default function AboutPage() {
   ];
   const projectImages = ['/project1.jpg', '/project1.jpg', '/project1.jpg'];
   const supportLogo = [
-    { id: 1, src: '/logo1.png', alt: 'Logo 1' },
-    { id: 2, src: '/logo2.png', alt: 'Logo 2' },
+    { logo: '/logo1.png', type: 'Logo 1' },
+    { logo: '/logo2.png', type: 'Logo 2' },
   ];
-  const buttonLinks = [
-    { buttonName: 'xogusdl@xsdfx.com', link: '/join' },
-    { buttonName: '카카오톡 오픈채팅', link: '/오픈채팅' },
-    { buttonName: '인스타 DM', link: '/인스타DM' },
-    { buttonName: 'Github', link: '/깃허브링크' },
-    { buttonName: 'Discord', link: '/디스코드링크' },
-    { buttonName: '카카오톡', link: '/개발팀카톡' },
-  ];
-
+  const contactData = {
+    address: '부산광역시 영도구 태종로 727 공학1관(B1) 3층 308호실',
+    mapLocation: {
+      latitude: 37.5665,
+      longitude: 126.978,
+    },
+    generalContact: {
+      Email: 'example@example.com',
+      Kakao: 'https://example.com/kakao',
+      Instagram: 'https://example.com/instagram',
+    },
+    devContact: {
+      Github: 'https://github.com/example',
+      Discord: 'https://discord.com/invite/example',
+      Kakao: 'https://example.com/devkakao',
+    },
+  };
   return (
     <>
       <main>
-        <div className="mx-auto mt-[100px] flex w-full flex-col items-center gap-5 text-center">
+        <div className="mx-auto mt-[150px] flex w-full flex-col items-center gap-5 text-center">
           <Label className="w-full max-w-[800px] text-[30px] font-bold">
             About Us.
           </Label>
@@ -71,7 +109,7 @@ export default function AboutPage() {
           </Label>
 
           <Tabs defaultValue="event" className="w-full">
-            <TabsList className="mx-auto mb-10 mt-10 flex w-[80%] max-w-[330px] justify-center">
+            <TabsList className="mx-auto mb-10 mt-10 flex w-[85%] max-w-[336px] justify-center">
               <TabsTrigger value="event" className="text-[17px]">
                 행사
               </TabsTrigger>
@@ -85,10 +123,10 @@ export default function AboutPage() {
                 Contact
               </TabsTrigger>
             </TabsList>
-
+            {/* 행사 탭 */}
             <TabsContent
               value="event"
-              className="mx-auto mb-28 w-full max-w-[850px]"
+              className="mx-auto mb-28 w-full max-w-[900px]"
             >
               <div className="mb-12">
                 <Label className="text-[26px] font-bold">행사</Label>
@@ -97,7 +135,6 @@ export default function AboutPage() {
                 <NewsDirector
                   key={index}
                   imageSrc={data.imageSrc}
-                  altText={data.altText}
                   newsTitle={data.newsTitle}
                   newsContent={data.newsContent}
                   index={index}
@@ -105,161 +142,26 @@ export default function AboutPage() {
               ))}
             </TabsContent>
 
+            {/* 프로젝트 탭 */}
             <TabsContent
               value="project"
               className="mx-auto mt-6 w-full max-w-[900px]"
             >
-              <Label className="text-[26px] font-bold">프로젝트</Label>
-              <Carousel className="mb-12 mt-6 w-full">
-                <CarouselContent className="-ml-1">
-                  {projectImages.map((imageSrc, index) => (
-                    <CarouselItem
-                      key={index}
-                      className="pl-4 md:basis-1/2 lg:basis-1/3"
-                    >
-                      <div className="p-2">
-                        <Card>
-                          <CardContent className="flex aspect-[2/3] items-center justify-center p-3">
-                            <Image
-                              src={imageSrc}
-                              alt={`Project image ${index + 1}`}
-                              width={500}
-                              height={300}
-                              objectFit="cover"
-                              objectPosition="center"
-                            />
-                          </CardContent>
-                        </Card>
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-              </Carousel>
-              <div className="mb-20">
-                <p className="text-[17px] leading-8">
-                  우리는 다양한 기술 프로젝트를 통해 실제 문제를 해결하고, 협업
-                  능력을 키우며 창의적인 아이디어를 실현하고 있습니다. 최신
-                  기술을 적용한 웹 개발, 앱 개발, 그리고 머신 러닝 프로젝트 등
-                  다양한 분야에서 활동하고 있습니다. 각 프로젝트는 팀워크와 문제
-                  해결 능력을 향상시킬 수 있는 기회를 제공합니다. 함께 성장하며,
-                  더 나은 세상을 위한 기술을 만들어 가고 있습니다.
-                </p>
-              </div>
+              <ProjectTab projectImages={projectImages} />
             </TabsContent>
-
+            {/* 교류 & 후원 탭 */}
             <TabsContent
               value="support"
               className="mx-auto w-full max-w-[850px]"
             >
-              <Label className="text-[26px] font-bold">교류</Label>
-              <br />
-              <p className="mt-10 text-[17px] leading-8">
-                우리 동아리는 다양한 집단과의 협력과 네트워킹을 통해 서로의
-                강점을 극대화하며 새로운 기회를 만들어가고 있습니다. 이러한
-                소통은 우리의 시야를 넓히고, 동아리 활동에 새로운 동력을
-                제공합니다. 함께하는 모든 순간이 우리를 더 단단하고 창의적으로
-                만들며, 서로의 가치를 존중하는 가운데 지속 가능한 성장을
-                추구합니다.
-              </p>
-              <div className="mb-20 mt-14 flex flex-wrap justify-center gap-6">
-                {supportLogo.map((logo) => (
-                  <Card
-                    key={logo.id}
-                    className="flex h-[150px] w-[300px] items-center justify-center overflow-hidden shadow-md" // flex 설정 추가
-                  >
-                    <CardContent className="flex h-full w-full items-center justify-center p-0">
-                      <Image
-                        src={logo.src}
-                        alt={logo.alt}
-                        width={250}
-                        height={150}
-                        objectFit="cover"
-                        objectPosition="center"
-                      />
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-              <Label className="text-[26px] font-bold">후원</Label>
-              <p className="mt-10 text-[17px] leading-8">
-                우리를 후원해주는 집단들은 우리의 성장과 발전을 위해 지속적인
-                지원을 아끼지 않고 있습니다. 이들 후원은 동아리 활동을 더욱
-                풍성하게 만들어주며, 다양한 프로젝트와 행사에서 중요한 역할을
-                합니다. 또한, 후원자들과의 협력을 통해 실무 경험을 쌓고,
-                실질적인 기술력 향상에 도움을 받고 있습니다. 우리 동아리는 이들
-                후원자들과의 파트너십을 소중히 여기며, 상호 발전을 위한 지속적인
-                교류를 이어가고 있습니다.
-              </p>
-              <div className="mb-28 mt-14 flex flex-wrap justify-center gap-6">
-                {supportLogo.map((logo) => (
-                  <Card
-                    key={logo.id}
-                    className="flex h-[150px] w-[300px] items-center justify-center overflow-hidden shadow-md" // flex 설정 추가
-                  >
-                    <CardContent className="flex h-full w-full items-center justify-center p-0">
-                      <Image
-                        src={logo.src}
-                        alt={logo.alt}
-                        width={250}
-                        height={150}
-                        objectFit="cover"
-                        objectPosition="center"
-                      />
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+              <SupportTab supportLogo={supportLogo} />
             </TabsContent>
-
+            {/* Contact 탭 */}
             <TabsContent
               value="contact"
               className="mx-auto w-full max-w-[850px]"
             >
-              <Label className="text-[26px] font-bold">오시는 길</Label>
-              <p className="mt-10 text-[17px] leading-8">아치 셈틀 주소</p>
-              <div className="mb-20 mt-8 flex flex-wrap justify-center gap-6">
-                <Image
-                  src="/map.jpg"
-                  alt="Semtle location"
-                  width={800}
-                  height={400}
-                ></Image>
-              </div>
-              <Label className="text-[26px] font-bold">문의하기</Label>
-              <p className="mb-3 mt-2 text-[17px]">
-                더 궁금한 사항이 있거나 후원을 원하신다면 언제든 연락해 주세요!
-              </p>
-              <div className="mb-16">
-                {buttonLinks.map((button, index) => {
-                  if (index < 3) {
-                    return (
-                      <ButtonLink
-                        key={index}
-                        buttonName={button.buttonName}
-                        link={button.link}
-                      />
-                    );
-                  }
-                })}
-              </div>
-              <Label className="text-[26px] font-bold">개발팀 문의하기</Label>
-              <p className="mb-3 mt-2 text-[17px]">
-                더 궁금한 사항이 있거나 후원을 원하신다면 언제든 연락해
-                주세요!(예시)
-              </p>
-              <div className="mb-20">
-                {buttonLinks.map((button, index) => {
-                  if (index > 2) {
-                    return (
-                      <ButtonLink
-                        key={index}
-                        buttonName={button.buttonName}
-                        link={button.link}
-                      />
-                    );
-                  }
-                })}
-              </div>
+              <ContactTab contact={contactData} />
             </TabsContent>
           </Tabs>
         </div>
@@ -267,3 +169,178 @@ export default function AboutPage() {
     </>
   );
 }
+//NOTE - 프로젝트탭 컴포넌트
+interface ProjectTabProps {
+  projectImages: string[];
+}
+const ProjectTab: React.FC<ProjectTabProps> = ({ projectImages }) => {
+  return (
+    <div>
+      <Label className="text-[26px] font-bold">프로젝트</Label>
+      <Carousel className="mb-12 mt-6 w-full">
+        <CarouselContent className="-ml-1">
+          {projectImages.map((imageSrc, index) => (
+            <CarouselItem
+              key={index}
+              className="pl-4 md:basis-1/2 lg:basis-1/3"
+            >
+              <div className="p-2">
+                <Card>
+                  <CardContent className="flex aspect-[2/3] items-center justify-center p-3">
+                    <Image
+                      src={imageSrc}
+                      alt={`Project image ${index + 1}`}
+                      width={500}
+                      height={300}
+                      objectFit="cover"
+                      objectPosition="center"
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
+      <div className="mb-20">
+        <p className="text-[17px] leading-8">
+          우리는 다양한 기술 프로젝트를 통해 실제 문제를 해결하고, 협업 능력을
+          키우며 창의적인 아이디어를 실현하고 있습니다. 최신 기술을 적용한 웹
+          개발, 앱 개발, 그리고 머신 러닝 프로젝트 등 다양한 분야에서 활동하고
+          있습니다. 각 프로젝트는 팀워크와 문제 해결 능력을 향상시킬 수 있는
+          기회를 제공합니다. 함께 성장하며, 더 나은 세상을 위한 기술을 만들어
+          가고 있습니다.
+        </p>
+      </div>
+    </div>
+  );
+};
+//NOTE - 교류&후원탭 컴포넌트
+interface supportLogo {
+  logo: string;
+  type: string;
+}
+interface SupportTab {
+  supportLogo: supportLogo[];
+}
+const SupportTab: React.FC<SupportTab> = ({ supportLogo }) => {
+  return (
+    <div>
+      <Label className="text-[26px] font-bold">교류</Label>
+      <br />
+      <p className="mt-10 text-[17px] leading-8">
+        우리 동아리는 다양한 집단과의 협력과 네트워킹을 통해 서로의 강점을
+        극대화하며 새로운 기회를 만들어가고 있습니다. 이러한 소통은 우리의
+        시야를 넓히고, 동아리 활동에 새로운 동력을 제공합니다. 함께하는 모든
+        순간이 우리를 더 단단하고 창의적으로 만들며, 서로의 가치를 존중하는
+        가운데 지속 가능한 성장을 추구합니다.
+      </p>
+      <div className="mb-20 mt-14 flex flex-wrap justify-center gap-6">
+        {supportLogo.map((partner, index) => (
+          <Card
+            key={index}
+            className="flex h-[150px] w-[300px] items-center justify-center overflow-hidden shadow-md" // flex 설정 추가
+          >
+            <CardContent className="flex h-full w-full items-center justify-center p-0">
+              <Image
+                src={partner.logo}
+                alt={partner.type}
+                width={250}
+                height={150}
+                objectFit="cover"
+                objectPosition="center"
+              />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      <Label className="text-[26px] font-bold">후원</Label>
+      <p className="mt-10 text-[17px] leading-8">
+        우리를 후원해주는 집단들은 우리의 성장과 발전을 위해 지속적인 지원을
+        아끼지 않고 있습니다. 이들 후원은 동아리 활동을 더욱 풍성하게
+        만들어주며, 다양한 프로젝트와 행사에서 중요한 역할을 합니다. 또한,
+        후원자들과의 협력을 통해 실무 경험을 쌓고, 실질적인 기술력 향상에 도움을
+        받고 있습니다. 우리 동아리는 이들 후원자들과의 파트너십을 소중히 여기며,
+        상호 발전을 위한 지속적인 교류를 이어가고 있습니다.
+      </p>
+      <div className="mb-28 mt-14 flex flex-wrap justify-center gap-6">
+        {supportLogo.map((partner, index) => (
+          <Card
+            key={index}
+            className="flex h-[150px] w-[300px] items-center justify-center overflow-hidden shadow-md" // flex 설정 추가
+          >
+            <CardContent className="flex h-full w-full items-center justify-center p-0">
+              <Image
+                src={partner.logo}
+                alt={partner.type}
+                width={250}
+                height={150}
+                objectFit="cover"
+                objectPosition="center"
+              />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+};
+//NOTE - Contact탭 컴포넌트
+interface ContactInfo {
+  address: string;
+  mapLocation: { latitude: number; longitude: number };
+  generalContact: { Email: string; Kakao: string; Instagram: string };
+  devContact: { Github: string; Discord: string; Kakao: string };
+}
+interface ContactTabProps {
+  contact: ContactInfo;
+}
+const ContactTab: React.FC<ContactTabProps> = ({ contact }) => {
+  const generalContacts = Object.entries(contact.generalContact).map(
+    ([key, value]) => ({
+      buttonName: key,
+      link: key === 'Email' ? `mailto:${value}` : value,
+    }),
+  );
+  const devContacts = Object.entries(contact.devContact).map(
+    ([key, value]) => ({
+      buttonName: key,
+      link: value,
+    }),
+  );
+  return (
+    <div>
+      <Label className="text-[26px] font-bold">오시는 길</Label>
+      <p className="mt-10 text-[17px] leading-8">{contact.address}</p>
+      <div className="mb-20 mt-8 flex flex-wrap justify-center gap-6">
+        <Image src="/map.jpg" alt="Semtle location" width={800} height={400} />
+      </div>
+      <Label className="text-[26px] font-bold">문의하기</Label>
+      <p className="mb-3 mt-2 text-[17px]">
+        더 궁금한 사항이 있거나 후원을 원하신다면 언제든 연락해 주세요!
+      </p>
+      <div className="mb-16 flex flex-wrap justify-center gap-4">
+        {generalContacts.map((button, index) => (
+          <ButtonLink
+            key={index}
+            buttonName={button.buttonName}
+            link={button.link}
+          />
+        ))}
+      </div>
+      <Label className="text-[26px] font-bold">개발팀 문의하기</Label>
+      <p className="mb-3 mt-2 text-[17px]">
+        개발팀 관련 문의는 아래 링크를 통해 연락해 주세요.
+      </p>
+      <div className="mb-20 flex flex-wrap justify-center gap-4">
+        {devContacts.map((button, index) => (
+          <ButtonLink
+            key={index}
+            buttonName={button.buttonName}
+            link={button.link}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};

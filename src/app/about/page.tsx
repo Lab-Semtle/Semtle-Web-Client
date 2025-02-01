@@ -96,7 +96,7 @@ export default function AboutPage() {
   };
   return (
     <>
-      <main className="dark:text-[#c7c7c7]">
+      <main>
         <div className="mx-auto mt-[150px] flex w-full flex-col items-center gap-5 text-center">
           <Label className="w-full max-w-[800px] text-[30px] font-bold">
             About Us.

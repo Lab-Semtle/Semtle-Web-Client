@@ -149,7 +149,7 @@ export default function OrganizationPage() {
   return (
     <>
       {/* 본문 콘텐츠 */}
-      <main className="dark:text-[#c7c7c7]">
+      <main>
         <section className="mt-[150px] flex flex-col items-center">
           <Label className="text-[30px] font-bold">조직 구성원</Label>
           <div className="mb-[40px] mt-[40px] w-[85vh] text-center">

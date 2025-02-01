@@ -176,7 +176,7 @@ export default function Page() {
   return (
     <div>
       {/* 본문 */}
-      <main className="dark:text-[#c7c7c7]">
+      <main>
         <section>
           <Slider {...settings}>
             {/* CarouselImages 배열을 사용하여 이미지 렌더링 */}
@@ -197,7 +197,7 @@ export default function Page() {
           </Slider>
         </section>
 
-        <section className="mt-20 flex flex-col items-center justify-center dark:text-[#c7c7c7]">
+        <section className="mt-20 flex flex-col items-center justify-center">
           <Label className="text-[26px] font-bold">Arch Semtle</Label>
           <div className="text-l mt-8 space-y-4 text-center font-bold">
             <Label className="text-lg font-bold">

@@ -25,7 +25,7 @@ const CardImageLabel: React.FC<CardImageLabelProps> = ({
 }) => {
   return (
     <div className="relative">
-      <Card className="dark:bg-[#011222] mb-2 flex h-[300px] w-[250px] flex-col overflow-hidden rounded-lg bg-gray-100">
+      <Card className="mb-2 flex h-[300px] w-[250px] flex-col overflow-hidden rounded-lg bg-gray-100 dark:bg-[#18181A]">
         <CardHeader className="flex-1 p-0">
           <CardTitle className="h-[170px] w-full">
             <Image

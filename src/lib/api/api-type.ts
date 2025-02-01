@@ -1,4 +1,4 @@
-/* API 응답 타입 정의 */
+/** API 응답 타입 정의 : API 호출 시 응답 및 에러 타입 처리 */
 
 // 기본 응답 타입 정의
 export interface ApiResponse {

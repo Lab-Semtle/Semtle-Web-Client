@@ -1,6 +1,3 @@
-// 'use client';
-
-import { useState, useEffect } from 'react';
 import { redirect } from 'next/navigation';
 import * as React from 'react';
 import Link from 'next/link';
@@ -27,7 +24,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { getSession, signOutWithForm } from '@/lib/authServerAction';
+
+import { getSession, signOutWithForm } from '@/lib/auth/server-action';
 
 const aboutSections = [
   {
@@ -82,10 +80,10 @@ export default async function NavigationBar() {
   // // 로그인 상태 관리
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const [userProfile, setUserProfile] = useState({
-    name: 'Unknown',
-    image: '/profile-image.jpg',
-  });
+  // const [userProfile, setUserProfile] = useState({
+  //   name: 'Unknown',
+  //   image: '/profile-image.jpg',
+  // });
 
   // useEffect(() => {
   //   // 예시로 API 호출
@@ -130,7 +128,6 @@ export default async function NavigationBar() {
 
   return (
     <header>
-      {session?.user && <div>{session.user.name}</div>}
       <nav className="fixed top-0 z-50 flex h-[70px] w-full items-center bg-white shadow-md transition-all duration-300 ease-in-out">
         <NavigationMenu>
           <NavigationMenuList className="ml-5 flex items-center gap-2">
@@ -208,11 +205,11 @@ export default async function NavigationBar() {
                         <Avatar className="cursor-pointer">
                           <AvatarImage
                             className="h-8 w-8 rounded-full border-2 border-gray-900"
-                            src={userProfile.image}
-                            alt={userProfile.name}
+                            src={session.user.image || '/default-profile.png'}
+                            alt={session.user.name || 'User'}
                           />
                           <AvatarFallback>
-                            {userProfile.name.slice(0, 2)}
+                            {session.user.name?.slice(0, 2) || '??'}
                           </AvatarFallback>
                         </Avatar>
                       </DropdownMenuTrigger>

@@ -1,6 +1,14 @@
 'use client';
 
+import { signInWithCredentials } from '@/lib/auth/server-action';
+import { loginSchema } from '@/lib/validation/login-schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { z } from 'zod';
+import { startTransition } from 'react';
+
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -15,78 +23,65 @@ import {
 } from '@/components/ui/card';
 import { ArrowLeft, LucideEye, LucideEyeOff } from 'lucide-react';
 
-import { useSignInForm } from '@/hooks/use-signin-form';
-import { signInWithCredentials } from '@/lib/auth/server-action';
-
-import {
-  validateEmail,
-  validatePassword,
-} from '@/lib/validation/signin-validation';
-import { loginApi, resetPasswordApi } from '@/services/auth';
-
 export default function SignInPage() {
-  const {
-    email,
-    password,
-    showPassword,
-    emailError,
-    passwordError,
-    handleEmailChange,
-    handlePasswordChange,
-    togglePasswordVisibility,
-    resetErrors,
-    setEmailError,
-    setPasswordError,
-  } = useSignInForm();
-  const { toast } = useToast();
+  const { register, handleSubmit, setError, formState } = useForm<
+    z.infer<typeof loginSchema>
+  >({
+    resolver: zodResolver(loginSchema),
+    mode: 'onChange',
+  });
+  const { errors } = formState;
   const router = useRouter();
-
-  // 로그인 버튼 클릭 시 동작, next-auth 핸들러
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    resetErrors();
-
-    const emailValidationError = validateEmail(email);
-    const passwordValidationError = validatePassword(
-      password,
-      email.split('@')[0],
-    );
-
-    setEmailError(emailValidationError);
-    setPasswordError(passwordValidationError);
-
-    if (emailValidationError || passwordValidationError) {
-      toast({
-        title: '로그인 실패',
-        description: emailValidationError || passwordValidationError,
-      });
-      return;
-    }
-
-    try {
-      await loginApi(email, password);
-      router.push('/');
-    } catch (error: any) {
-      toast({
-        title: '로그인 실패',
-        description: error.message,
-      });
-    }
+  const { toast } = useToast();
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
-  const handleResetPassword = async () => {
-    try {
-      await resetPasswordApi(email);
-      toast({
-        title: '비밀번호 재설정 성공',
-        description: '이메일로 비밀번호 재설정 링크가 발송되었습니다.',
-      });
-    } catch (error: any) {
-      toast({
-        title: '비밀번호 재설정 실패',
-        description: error.message,
-      });
-    }
+  // 리다이렉트 없이 로그인 검증
+  const onSubmit = (data: z.infer<typeof loginSchema>) => {
+    startTransition(async () => {
+      try {
+        await signInWithCredentials(data);
+        // router.push('/'); // 로그인 성공 시 메인 페이지로 리다이렉트 -> 중복로직?
+      } catch (error: any) {
+        if (error.response?.status === 401) {
+          const errorCode = error.response.data?.code;
+          switch (errorCode) {
+            case 'NON_EXISTENT_ACCOUNT':
+              toast({
+                variant: 'destructive',
+                title: '로그인 실패',
+                description: '등록되지 않은 이메일입니다.',
+                duration: 2000,
+              });
+              break;
+            case 'MISMATCHED_PASSWORD':
+              toast({
+                variant: 'destructive',
+                title: '로그인 실패',
+                description: '비밀번호가 틀렸습니다.',
+                duration: 2000,
+              });
+              break;
+            default:
+              toast({
+                variant: 'destructive',
+                title: '로그인 실패',
+                description: '알 수 없는 오류가 발생했습니다.',
+                duration: 2000,
+              });
+          }
+        } else {
+          toast({
+            variant: 'destructive',
+            title: '로그인 실패',
+            description: (error as Error).message,
+            duration: 2000,
+          });
+        }
+      }
+    });
   };
 
   return (
@@ -99,7 +94,7 @@ export default function SignInPage() {
           </Button>
         </div>
 
-        {/* 로그인 섹션 */}
+        {/* 로그인 카드 섹션 */}
         <Card>
           <CardHeader className="text-center">
             {/* 로고 */}
@@ -120,23 +115,18 @@ export default function SignInPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <form
-              action={signInWithCredentials}
-              onSubmit={handleLogin}
-              className="space-y-4"
-            >
-              {/* 이메일 입력 */}
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {/* 이메일 입력 폼 */}
               <div className="flex flex-col space-y-1">
                 <Input
                   id="email"
-                  type="text"
-                  value={email}
-                  onChange={handleEmailChange}
+                  type="email"
                   placeholder="학교 이메일"
-                  required
+                  {...register('email')}
+                  aria-invalid={!!errors.email}
                 />
-                {emailError && (
-                  <p className="text-sm text-red-500">{emailError}</p>
+                {errors.email && (
+                  <p className="text-sm text-red-500">{errors.email.message}</p>
                 )}
               </div>
 
@@ -146,10 +136,9 @@ export default function SignInPage() {
                   <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={handlePasswordChange}
                     placeholder="비밀번호"
-                    required
+                    {...register('password')}
+                    aria-invalid={!!errors.password} // 에러 발생 시 시각적 접근성 대응
                     className="flex-1 border-none px-3 focus:outline-none focus:ring-0"
                   />
                   <button
@@ -172,8 +161,11 @@ export default function SignInPage() {
                     )}
                   </button>
                 </div>
-                {passwordError && (
-                  <p className="text-sm text-red-500">{passwordError}</p>
+                {/* 에러 메세지 표시 */}
+                {errors.password && (
+                  <p className="text-sm text-red-500">
+                    {errors.password.message}
+                  </p>
                 )}
               </div>
 
@@ -196,11 +188,7 @@ export default function SignInPage() {
             >
               가입하기
             </Button>
-            <Button
-              variant="link"
-              onClick={handleResetPassword}
-              className="w-full text-sm sm:w-1/3"
-            >
+            <Button variant="link" className="w-full text-sm sm:w-1/3">
               비밀번호를 잊으셨나요?
             </Button>
           </CardFooter>

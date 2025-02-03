@@ -1,20 +1,38 @@
 'use server';
 
 import { auth, signIn, signOut, update } from '@/lib/auth/config';
+import type { z } from 'zod';
+import { loginSchema } from '@/lib/validation/login-schema';
 
 // 이메일, 비밀번호 사용 로그인
-export const signInWithCredentials = async (formData: FormData) => {
-  const email = formData.get('email')?.toString() ?? '';
-  const password = formData.get('password')?.toString() ?? '';
+export const signInWithCredentials = async (
+  data: z.infer<typeof loginSchema>,
+) => {
+  console.log('[server-action.ts] 로그인 시도 데이터:', data);
 
-  if (!email || !password) throw new Error('이메일과 비밀번호를 입력해주세요.');
+  try {
+    const result = await signIn('credentials', {
+      email: data.email,
+      password: data.password,
+      redirect: false, // 서버 액션에서 리다이렉트는 catch에서 처리
+    });
+    console.log('[server-action.ts] signIn 결과:', result);
 
-  await signIn('credentials', {
-    email,
-    password,
-    redirect: false, // 서버 액션에서 리다이렉트는 catch에서 처리
-  });
+    if (result?.error) {
+      console.error('[server-action.ts] signIn에서 발생한 에러:', result.error);
+    }
+  } catch (error) {
+    console.error('[server-action.ts] signInWithCredentials 에러 발생:', error);
+    throw new Error('로그인에 실패했습니다.'); // 에러 메시지 전달
+  }
 };
+
+// 로그아웃
+export const signOutWithForm = async (data: z.infer<typeof loginSchema>) => {
+  await signOut(); // 서버에서 세션 종료
+};
+
+export { auth as getSession, update as updateSession };
 
 // 구글 로그인
 // export const signInWithGoogle = async () => {
@@ -27,10 +45,3 @@ export const signInWithCredentials = async (formData: FormData) => {
 //   await signIn('github', { /* 옵션 */ })
 //   // ...
 // }
-
-// 로그아웃
-export const signOutWithForm = async (formData: FormData) => {
-  await signOut(); // 서버에서 세션 종료
-};
-
-export { auth as getSession, update as updateSession };

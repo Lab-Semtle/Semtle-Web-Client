@@ -29,8 +29,23 @@ export const isApiResponseError = (
   );
 };
 
-// 토큰 정보 (인증 및 세션 관리)
-export interface Tokens {
+export interface LoginRequestBody {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  accessToken: string;
+  refreshToken: string;
+  user: {
+    id: string;
+    email: string;
+    role: 'admin' | 'user' | 'guest';
+    profileImageUrl?: string;
+  };
+}
+
+export interface RefreshTokenResponse {
   accessToken: string;
   refreshToken: string;
 }

@@ -39,12 +39,19 @@ export default function SignInPage() {
   };
 
   // 리다이렉트 없이 로그인 검증
-  const onSubmit = (data: z.infer<typeof loginSchema>) => {
+  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+    console.log('[SignInPage] 제출된 로그인 데이터:', data);
     startTransition(async () => {
       try {
         await signInWithCredentials(data);
-        // router.push('/'); // 로그인 성공 시 메인 페이지로 리다이렉트 -> 중복로직?
+        console.log('[SignInPage] 로그인 성공');
+        router.push('/'); // 로그인 성공 시 메인 페이지로 리다이렉트 -> Mock 제거시 중복 로직일 수 있음
       } catch (error: any) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : '알 수 없는 오류가 발생했습니다.';
+        console.error('[SignInPage] 로그인 실패:', error);
         if (error.response?.status === 401) {
           const errorCode = error.response.data?.code;
           switch (errorCode) {
@@ -76,7 +83,7 @@ export default function SignInPage() {
           toast({
             variant: 'destructive',
             title: '로그인 실패',
-            description: (error as Error).message,
+            description: errorMessage,
             duration: 2000,
           });
         }

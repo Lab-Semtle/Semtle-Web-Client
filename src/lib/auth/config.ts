@@ -39,17 +39,18 @@ export const {
       },
       // 로그인 유효성 검증 로직
       authorize: async (credentials) => {
-        console.log('[config] 전달된 credentials:', credentials);
+        console.log('[authorize] 전달된 로그인 데이터:', credentials);
 
+        // 입력값 검증
         const validationFields = await loginSchema.safeParseAsync(credentials);
-
-        // 입력값 검증 실패 시 null 반환 → 로그인 실패로 간주됨
         if (!validationFields.success) {
+          console.error('[authorize] 입력 검증 실패:', validationFields.error);
           return null;
         }
 
         // 검증에 성공하면 유효한 email과 password를 추출
         const { email, password } = validationFields.data;
+        console.log('[authorize] 검증된 입력값:', { email, password });
 
         try {
           // 로그인 요청을 서버로 보냄 (apiClient는 HTTP 요청을 담당하는 유틸리티)
@@ -60,12 +61,15 @@ export const {
             '/auth/signin', // 서버의 로그인 엔드포인트
             { body: { email, password } }, // 요청 본문에 이메일과 비밀번호를 포함
           );
+          console.log('[authorize] API 응답:', response);
 
-          console.log('[config] API 응답:', response);
+          if (!response.data) {
+            throw new Error('로그인 응답이 유효하지 않습니다.');
+          }
 
           // 서버로부터 로그인 성공 응답을 받은 경우 유저 데이터를 반환 (인증 성공)
           const { accessToken, refreshToken, user } = response.data;
-          console.log('[config] 로그인 성공 - 반환된 유저 데이터:', user);
+          console.log('[authorize] 로그인 성공 - 유저 데이터:', user);
 
           // 응답에서 유저 정보와 토큰을 가져와 User 객체로 변환
           return {
@@ -78,7 +82,7 @@ export const {
               user.profileImageUrl ?? 'https://example.com/default-profile.png',
           } as User;
         } catch (error) {
-          console.error('[config] API 요청 에러:', error);
+          console.error('[authorize] 로그인 에러 발생:', error);
           // 에러가 발생한 경우 이를 처리함
           const credentialsSignin = new CredentialsSignin();
 

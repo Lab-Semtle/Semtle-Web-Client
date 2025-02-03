@@ -8,7 +8,7 @@ import { loginSchema } from '@/lib/validation/login-schema';
 export const signInWithCredentials = async (
   data: z.infer<typeof loginSchema>,
 ) => {
-  console.log('[server-action.ts] 로그인 시도 데이터:', data);
+  console.log('[서버액션] 로그인 시도 데이터:', data);
 
   try {
     const result = await signIn('credentials', {
@@ -16,14 +16,15 @@ export const signInWithCredentials = async (
       password: data.password,
       redirect: false, // 서버 액션에서 리다이렉트는 catch에서 처리
     });
-    console.log('[server-action.ts] signIn 결과:', result);
+    console.log('[서버액션] signIn 결과:', result);
 
     if (result?.error) {
-      console.error('[server-action.ts] signIn에서 발생한 에러:', result.error);
+      console.error('[서버액션] 로그인 API 호출 중 에러 발생:', result.error);
+      throw new Error(result.error);
     }
   } catch (error) {
-    console.error('[server-action.ts] signInWithCredentials 에러 발생:', error);
-    throw new Error('로그인에 실패했습니다.'); // 에러 메시지 전달
+    console.error('[서버액션] 로그인 API 호출 중 에러 발생:', error);
+    throw new Error('로그인에 실패했습니다.');
   }
 };
 

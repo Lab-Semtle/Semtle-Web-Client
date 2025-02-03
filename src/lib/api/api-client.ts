@@ -7,7 +7,7 @@ import { FetchClient } from '@/lib/api/fetch-client';
 const baseUrl =
   process.env.NODE_ENV === 'production'
     ? process.env.NEXT_PUBLIC_API_BASE_URL_PROD
-    : process.env.NEXT_PUBLIC_API_BASE_URL;
+    : process.env.NEXT_PUBLIC_API_BASE_URL_DEV;
 
 // FetchClient 인스턴스 생성
 const apiClient = new FetchClient(baseUrl || '');

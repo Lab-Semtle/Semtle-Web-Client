@@ -22,11 +22,12 @@ export class FetchClient {
 
   // 세션 정보를 가져오는 메서드
   private async getSession() {
-    // 서버사이드 환경에서는 auth() 메서드를 호출하여 세션 정보를 가져옴
+    console.log('[FetchClient] 세션 가져오기 시도');
     if (typeof window === 'undefined') {
+      console.log('[FetchClient] 서버사이드 - auth() 호출');
       return auth();
     }
-    // 클라이언트사이드 환경에서는 next-auth의 getSession() 메서드를 호출하여 세션 정보를 가져옴
+    console.log('[FetchClient] 클라이언트사이드 - getSession() 호출');
     return getSession();
   }
 
@@ -62,6 +63,7 @@ export class FetchClient {
     // 사용자의 액세스 토큰 가져옴
     // withAuth가 true일 때만 세션 정보 가져옴, 즉 인증 필요없는 API라면 세션 정보 안 가져옴
     const session = withAuth ? await this.getSession() : null;
+    console.log('[FetchClient] 세션 정보:', session);
 
     // 요청 헤더 구성
     const allHeaders = new Headers(
@@ -76,23 +78,34 @@ export class FetchClient {
 
     // Fetch API를 사용하여 요청을 전송
     // 요청 본문이 있는 경우 JSON으로 변환하여 전송
+    console.log('[FetchClient] API 요청 시작:', {
+      url: `${this.baseUrl}${url}`,
+      method: restOptions.method,
+      headers: allHeaders,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+
     const response = await fetch(`${this.baseUrl}${url}`, {
       ...restOptions, // GET, POST 등 요청 메서드
       headers: allHeaders, // 구성된 헤더
       body: body ? JSON.stringify(body) : undefined, // 본문 데이터가 있으면 JSON으로 직렬화하여 추가
     });
 
-    // 응답 처리
+    console.log('[FetchClient] API 응답 상태코드:', response.status);
+
     // 204 응답은 본문이 없으므로 null을 반환
     if (response.status === 204) {
+      console.log('[FetchClient] 응답 없음 (204)');
       return null; // No content
     }
 
     // 응답 데이터를 JSON으로 파싱
     const responseData = await response.json();
+    console.log('[FetchClient] 응답 데이터:', responseData);
 
     // 응답이 정상적이지 않으면 (예: 400, 401, 500 등) 에러를 발생
     if (!response.ok) {
+      console.error('[FetchClient] API 요청 실패:', responseData);
       throw responseData as ApiResponseError;
     }
     // 응답이 정상적이면 JSON 데이터를 반환
@@ -101,22 +114,27 @@ export class FetchClient {
 
   // HTTP 메서드 별 메서드 정의
   public get<TResponse>(url: string, options?: FetchOptions) {
+    console.log('[FetchClient] GET 요청:', url);
     return this.request<TResponse>(url, { method: 'GET', ...options });
   }
 
   public post<TResponse, TBody>(url: string, options?: FetchOptions<TBody>) {
+    console.log('[FetchClient] POST 요청:', url);
     return this.request<TResponse>(url, { method: 'POST', ...options });
   }
 
   public put<TResponse, TBody>(url: string, options?: FetchOptions<TBody>) {
+    console.log('[FetchClient] PUT 요청:', url);
     return this.request<TResponse>(url, { method: 'PUT', ...options });
   }
 
   public patch<TResponse, TBody>(url: string, options?: FetchOptions<TBody>) {
+    console.log('[FetchClient] PATCH 요청:', url);
     return this.request<TResponse>(url, { method: 'PATCH', ...options });
   }
 
   public delete<TResponse>(url: string, options?: FetchOptions) {
+    console.log('[FetchClient] DELETE 요청:', url);
     return this.request<TResponse>(url, { method: 'DELETE', ...options });
   }
 }

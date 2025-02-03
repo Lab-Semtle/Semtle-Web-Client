@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/card';
 import AlertCard from '@/components/AlertCard';
 
-// //NOTE - Footer Data Fetching
+// //NOTE - Footer Contact Data Fetching
 // async function fetchContactData() {
 //   const res = await fetch('example/api/contact');
 //   if (!res.ok) {
@@ -18,6 +18,15 @@ import AlertCard from '@/components/AlertCard';
 //   }
 //   const ContactData: ContactData[] = await res.json();
 //   return ContactData;
+// }
+//NOTE - Footer SNS Logo Data Fetching
+// async function fetchFooterLogo() {
+//   const res = await fetch('example/api/logo');
+//   if (!res.ok) {
+//     throw new Error('Failed to load data...');
+//   }
+//   const FooterLogo: FooterLogo[] = await res.json();
+//   return FooterLogo;
 // }
 const ContactData = {
   address: '서울특별시 강남구 학회길 123',
@@ -49,13 +58,16 @@ export default function Footer() {
               height={35}
             />
           </Link>
-          <Link href="카페주소">
+          <Link href="/카페주소">
             <Image
               src="/naver_cafe_logo.jpg"
               alt="naver_cafe"
               width={35}
               height={35}
             />
+          </Link>
+          <Link href="/페이스북링크">
+            <Image src="/facebook.png" alt="facebook" width={35} height={35} />
           </Link>
         </CardTitle>
       </CardHeader>

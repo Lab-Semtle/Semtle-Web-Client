@@ -81,6 +81,7 @@ const archiveSections = [
 ];
 
 export default function NavigationBar() {
+  //NOTE - Dark & White Mode
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {

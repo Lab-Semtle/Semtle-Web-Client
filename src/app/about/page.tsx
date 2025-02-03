@@ -44,12 +44,48 @@ import ButtonLink from '@/components/ButtonLink';
 export default function AboutPage() {
   const eventData = [
     {
+      imageSrc: '/example4.jpg',
+      altText: 'Seminar Image',
+      newsTitle: '세미나',
+      newsContent:
+        '우리 동아리의 MT는 새로운 멤버와 친목을 다지고, 함께 즐기는 다양한 액티비티로 구성됩니다. 매년 참가자들은 서로를 더욱 잘 이해하며, 강한 팀워크를 만들어가요.',
+    },
+    {
+      imageSrc: '/example1.jpg',
+      altText: 'Conference Image',
+      newsTitle: '공모전-경진대회 출전',
+      newsContent:
+        '우리 동아리의 MT는 새로운 멤버와 친목을 다지고, 함께 즐기는 다양한 액티비티로 구성됩니다. 매년 참가자들은 서로를 더욱 잘 이해하며, 강한 팀워크를 만들어가요.',
+    },
+    {
+      imageSrc: '/example3.jpg',
+      altText: 'Teamplay Image',
+      newsTitle: 'Team Project',
+      newsContent:
+        '우리 동아리의 MT는 새로운 멤버와 친목을 다지고, 함께 즐기는 다양한 액티비티로 구성됩니다. 매년 참가자들은 서로를 더욱 잘 이해하며, 강한 팀워크를 만들어가요.',
+    },
+    {
+      imageSrc: '/example2.jpg',
+      altText: 'Home ComingDay Image',
+      newsTitle: '홈 커밍데이',
+      newsContent:
+        '우리 동아리의 MT는 새로운 멤버와 친목을 다지고, 함께 즐기는 다양한 액티비티로 구성됩니다. 매년 참가자들은 서로를 더욱 잘 이해하며, 강한 팀워크를 만들어가요.',
+    },
+    {
       imageSrc: '/example1.jpg',
       altText: 'MT Image',
       newsTitle: 'MT',
       newsContent:
         '우리 동아리의 MT는 새로운 멤버와 친목을 다지고, 함께 즐기는 다양한 액티비티로 구성됩니다. 매년 참가자들은 서로를 더욱 잘 이해하며, 강한 팀워크를 만들어가요.',
     },
+    {
+      imageSrc: '/example1.jpg',
+      altText: 'TeacherDay Image',
+      newsTitle: '스승의 날 행사',
+      newsContent:
+        '우리 동아리의 MT는 새로운 멤버와 친목을 다지고, 함께 즐기는 다양한 액티비티로 구성됩니다. 매년 참가자들은 서로를 더욱 잘 이해하며, 강한 팀워크를 만들어가요.',
+    },
+
     {
       imageSrc: '/example2.jpg',
       altText: 'E-Sports Image',
@@ -74,8 +110,8 @@ export default function AboutPage() {
   ];
   const projectImages = ['/project1.jpg', '/project1.jpg', '/project1.jpg'];
   const supportLogo = [
-    { logo: '/logo1.png', type: 'Logo 1' },
-    { logo: '/logo2.png', type: 'Logo 2' },
+    { logo: '/naver_cloud.webp', type: 'Logo 1' },
+    { logo: '/maritime_ai.png', type: 'Logo 2' },
   ];
   const contactData = {
     address: '부산광역시 영도구 태종로 727 공학1관(B1) 3층 308호실',
@@ -126,7 +162,7 @@ export default function AboutPage() {
             {/* 행사 탭 */}
             <TabsContent
               value="event"
-              className="mx-auto mb-28 w-full max-w-[900px]"
+              className="mx-auto mb-28 w-full max-w-[1000px]"
             >
               <div className="mb-12">
                 <Label className="text-[26px] font-bold">행사</Label>
@@ -245,8 +281,8 @@ const SupportTab: React.FC<SupportTab> = ({ supportLogo }) => {
               <Image
                 src={partner.logo}
                 alt={partner.type}
-                width={250}
-                height={150}
+                width={130}
+                height={100}
                 objectFit="cover"
                 objectPosition="center"
               />
@@ -273,8 +309,8 @@ const SupportTab: React.FC<SupportTab> = ({ supportLogo }) => {
               <Image
                 src={partner.logo}
                 alt={partner.type}
-                width={250}
-                height={150}
+                width={130}
+                height={100}
                 objectFit="cover"
                 objectPosition="center"
               />

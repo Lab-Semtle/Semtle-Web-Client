@@ -59,7 +59,7 @@ type NewsData = {
 export default function Page() {
   //NOTE - 학회소식바로보기 Data Fetching 사용예제
   const [news, setNews] = useState<NewsData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingNews, setLoadingNews] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const sortedNews = [...news].sort(
     (a, b) =>
@@ -74,13 +74,13 @@ export default function Page() {
       } catch {
         setError('Failed to load news');
       } finally {
-        setLoading(false);
+        setLoadingNews(false);
       }
     }
 
     loadData();
   }, []);
-  if (loading) return <div>Loading...</div>;
+  if (loadingNews) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   const CarouselImages = [

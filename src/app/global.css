@@ -81,7 +81,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-.hidden {
-  opacity: 0;
-}

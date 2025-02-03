@@ -1,7 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { Upload, X, Bold, Italic, List, ImageIcon, Save } from 'lucide-react';
+import {
+  Upload,
+  X,
+  Bold,
+  Italic,
+  List,
+  ImageIcon,
+  Save,
+  Code,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,14 +23,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { marked } from 'marked';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import PostContent from '@/components/PostContent';
 
 interface PostFormData {
   title: string;
@@ -38,10 +42,24 @@ export default function CreatePost() {
   });
   const [imagePreview, setImagePreview] = useState<string>('');
   const [isDraft, setIsDraft] = useState(false);
+  const router = useRouter();
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const validImageTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/webp',
+      ];
+      if (!validImageTypes.includes(file.type)) {
+        alert(
+          '지원되지 않는 이미지 형식입니다. JPEG, PNG, GIF, WebP 파일만 업로드 가능합니다.',
+        );
+        return;
+      }
+
       setFormData((prev) => ({ ...prev, image: file }));
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -66,22 +84,28 @@ export default function CreatePost() {
       const selectedText = value.slice(selectionStart, selectionEnd);
       let formattedText = '';
 
-      // 포맷 옵션에 따른 변환
-      if (format === 'bold') {
-        formattedText = `**${selectedText}**`; // Markdown 형식 예: **굵게**
-      } else if (format === 'italic') {
-        formattedText = `*${selectedText}*`; // Markdown 형식 예: *기울임*
-      } else if (format === 'list') {
-        formattedText = `- ${selectedText.replace(/\n/g, '\n- ')}`; // 목록
+      switch (format) {
+        case 'bold':
+          formattedText = `**${selectedText}**`;
+          break;
+        case 'italic':
+          formattedText = `*${selectedText}*`;
+          break;
+        case 'code':
+          formattedText = `\`\`\`\n${selectedText}\n\`\`\``;
+          break;
+        case 'list':
+          formattedText = `- ${selectedText.replace(/\n/g, '\n- ')}`;
+          break;
+        default:
+          break;
       }
 
-      // 새로운 텍스트로 업데이트
       const newText =
         value.slice(0, selectionStart) +
         formattedText +
         value.slice(selectionEnd);
 
-      // 상태 업데이트 및 커서 위치 재설정
       setFormData((prev) => ({ ...prev, content: newText }));
       setTimeout(() => {
         textarea.setSelectionRange(
@@ -97,9 +121,13 @@ export default function CreatePost() {
     console.log('Submit form:', { ...formData, isDraft: draft });
   };
 
+  const handleCancel = () => {
+    router.push('/activities');
+  };
+
   return (
-    <div className="container mx-auto max-w-4xl p-4">
-      <Card>
+    <div className="container mx-auto mt-[70px] max-w-4xl p-4">
+      <Card className="rounded-lg shadow-lg">
         <CardContent className="space-y-6 p-6">
           {/* 게시물 제목 */}
           <div className="space-y-2">
@@ -111,6 +139,7 @@ export default function CreatePost() {
                 setFormData((prev) => ({ ...prev, title: e.target.value }))
               }
               placeholder="제목을 입력하세요"
+              className="rounded-lg shadow-lg"
             />
           </div>
 
@@ -123,7 +152,9 @@ export default function CreatePost() {
                   <Image
                     src={imagePreview || '/placeholder.svg'}
                     alt="Preview"
-                    className="h-full w-full object-cover"
+                    className="h-full w-full rounded-lg object-contain shadow-lg"
+                    width={500}
+                    height={500}
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-gray-400">
@@ -132,7 +163,10 @@ export default function CreatePost() {
                 )}
               </div>
               <div className="flex flex-col gap-2">
-                <Button variant="outline" className="relative">
+                <Button
+                  variant="outline"
+                  className="relative rounded-lg shadow-lg hover:bg-semtleColor"
+                >
                   <input
                     type="file"
                     className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
@@ -143,7 +177,11 @@ export default function CreatePost() {
                   업로드
                 </Button>
                 {imagePreview && (
-                  <Button variant="outline" onClick={handleImageRemove}>
+                  <Button
+                    variant="outline"
+                    onClick={handleImageRemove}
+                    className="rounded-lg shadow-lg hover:bg-red-500"
+                  >
                     <X className="mr-2 h-4 w-4" />
                     삭제
                   </Button>
@@ -161,7 +199,7 @@ export default function CreatePost() {
                 setFormData((prev) => ({ ...prev, category: value }))
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className="rounded-lg shadow-lg">
                 <SelectValue placeholder="유형 선택" />
               </SelectTrigger>
               <SelectContent>
@@ -176,46 +214,36 @@ export default function CreatePost() {
           {/* 내용 입력 */}
           <div className="space-y-2">
             <Label>게시물 내용</Label>
-            <div className="rounded-lg border">
+            <div className="rounded-lg border shadow-lg">
               <div className="flex gap-2 border-b p-2">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleTextFormat('bold')}
-                      >
-                        <Bold className="h-4 w-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>굵게</TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleTextFormat('italic')}
-                      >
-                        <Italic className="h-4 w-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>기울임</TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleTextFormat('list')}
-                      >
-                        <List className="h-4 w-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>목록</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleTextFormat('bold')}
+                >
+                  <Bold className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleTextFormat('italic')}
+                >
+                  <Italic className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleTextFormat('list')}
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleTextFormat('code')}
+                >
+                  <Code className="h-4 w-4" />
+                </Button>
               </div>
               <Textarea
                 id="post-content"
@@ -226,32 +254,33 @@ export default function CreatePost() {
                 placeholder="내용을 입력하세요"
                 className="min-h-[300px] rounded-none border-0 focus-visible:ring-0"
               />
-              {/* 미리보기 */}
               <Label>미리보기</Label>
-              <div
-                className="rounded-lg border bg-gray-100 p-4"
-                dangerouslySetInnerHTML={{
-                  __html: marked.parse(formData.content),
-                }}
-              />
+              <PostContent content={formData.content} />
             </div>
           </div>
-
-          {/* 미리보기 */}
-          {/* <div className="space-y-2">
-            <Label>미리보기</Label>
-            <div
-              className="border rounded-lg p-4 bg-gray-100"
-              dangerouslySetInnerHTML={{ __html: marked.parse(formData.content) }}
-            />
-          </div> */}
         </CardContent>
-        <CardFooter className="flex justify-end gap-2 p-6">
-          <Button variant="outline" onClick={() => handleSubmit(true)}>
-            <Save className="mr-2 h-4 w-4" />
-            임시저장
+
+        <CardFooter className="flex justify-between gap-2 p-6">
+          {/* 취소 버튼 */}
+          <Button
+            variant="outline"
+            onClick={handleCancel}
+            className="rounded-lg shadow-lg hover:bg-red-500"
+          >
+            <X className="mr-2 h-4 w-4" />
+            취소
           </Button>
-          <Button onClick={() => handleSubmit(false)}>업로드</Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => handleSubmit(true)}
+              className="rounded-lg shadow-lg"
+            >
+              <Save className="mr-2 h-4 w-4" />
+              임시저장
+            </Button>
+            <Button onClick={() => handleSubmit(false)}>업로드</Button>
+          </div>
         </CardFooter>
       </Card>
     </div>

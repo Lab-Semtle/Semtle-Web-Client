@@ -29,7 +29,7 @@ export const signInWithCredentials = async (
 };
 
 // 로그아웃
-export const signOutWithForm = async (data: z.infer<typeof loginSchema>) => {
+export const signOutWithForm = async () => {
   await signOut(); // 서버에서 세션 종료
 };
 

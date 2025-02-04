@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import localFont from 'next/font/local';
 import '@/app/global.css';
+import { ThemeProvider } from 'next-themes';
 import { Providers } from '@/mocks/msw-providers';
 
 const pretendard = localFont({
@@ -36,11 +37,14 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
+      suppressHydrationWarning
       className={`${pretendard.variable} ${geistSans.variable} ${geistMono.variable}`}
     >
       <body className="font-pretendard antialiased">
         <Providers>
-          <main>{children}</main>
+          <ThemeProvider attribute="class" defaultTheme="system">
+            <main>{children}</main>
+          </ThemeProvider>
         </Providers>
         <Toaster />
       </body>

@@ -1,5 +1,4 @@
 import React from 'react';
-// import GlobalLayout from '@/components/GlobalLayout';
 import Footer from '@/components/layouts/Footer';
 import NavigationBar from '@/components/layouts/Navigation';
 

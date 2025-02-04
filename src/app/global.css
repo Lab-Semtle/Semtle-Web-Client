@@ -85,3 +85,8 @@
 .hidden {
   opacity: 0;
 }
+
+.not-dark {
+  background-color: white !important;
+  color: black !important;
+}

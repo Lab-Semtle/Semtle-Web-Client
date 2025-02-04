@@ -1,5 +1,4 @@
 /** NextAuth의 기본 User와 Session 타입에 커스텀 필드 확장 */
-import NextAuth from 'next-auth';
 
 export declare module 'next-auth' {
   // 로그인 시 반환되는 유저 정보 (authorize(), 로그인 API 응답에서 사용자 정보 반환)
@@ -7,9 +6,10 @@ export declare module 'next-auth' {
     id: string;
     email: string;
     role: 'admin' | 'user' | 'guest'; // 역할 기반 접근 제어에 필요
-    profileImageUrl?: string; // 네비게이션 바에 표시 필요
+    profileImageUrl?: string; // 네비게이션 바에 표시
     accessToken: string; // API 호출 시 사용
     refreshToken: string;
+    name?: string; // 네비게이션 바에 표시
     emailVerified?: Date | null;
   }
 
@@ -20,6 +20,7 @@ export declare module 'next-auth' {
       email: string;
       role: 'admin' | 'user' | 'guest';
       profileImageUrl?: string;
+      name?: string;
     };
     accessToken: string;
     refreshToken: string;

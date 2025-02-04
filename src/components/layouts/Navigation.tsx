@@ -1,7 +1,11 @@
-import { redirect } from 'next/navigation';
+'use client';
+import { useState, useEffect } from 'react';
+// import { redirect } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import Link from 'next/link';
-import { cn } from '@/lib/tailwind-utils';
+import { Session } from 'next-auth';
+import { cn } from '@/lib/utils';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -51,14 +55,19 @@ const activitySections = [
     description: '우리의 최근 활동과 프로젝트에 대해 알아보세요.',
   },
   {
-    title: '프로젝트',
-    href: '/projects',
-    description: '진행 중인 프로젝트와 그 성과를 확인해 보세요.',
-  },
-  {
     title: '학회 일정',
     href: '/schedule',
     description: '다가오는 학회 일정과 이벤트를 확인할 수 있습니다.',
+  },
+  {
+    title: '프로젝트 아카이브',
+    href: '/projects/completed',
+    description: '완료되어 홍보 중인 프로젝트를 확인해 보세요.',
+  },
+  {
+    title: '프로젝트 참여하기',
+    href: '/projects/active',
+    description: '여러분을 모집 중인 프로젝트를 확인해 보세요.',
   },
 ];
 const archiveSections = [
@@ -74,15 +83,45 @@ const archiveSections = [
   },
 ];
 
-export default async function NavigationBar() {
-  const session = await getSession();
+export default function NavigationBar() {
+  const [session, setSession] = useState<Session | null>(null);
 
+  useEffect(() => {
+    const fetchSession = async () => {
+      const sessionData = await getSession();
+      setSession(sessionData);
+    };
+
+    fetchSession(); // 비동기 세션 가져오기
+  }, []);
+
+  //NOTE - Dark & White Mode
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme === 'dark') {
+      setIsDarkMode(true);
+      document.documentElement.classList.add('dark');
+    }
+  }, []);
+  const toggleDarkMode = () => {
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+    if (newMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
   // // 로그인 상태 관리
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // const [userProfile, setUserProfile] = useState({
   //   name: 'Unknown',
-  //   image: '/profile-image.jpg',
+  //   image: '/default_profile.png',
   // });
 
   // useEffect(() => {
@@ -117,131 +156,132 @@ export default async function NavigationBar() {
   //   redirect('/');
   // };
 
-  // // Secret Note 페이지를 클릭할 때 로그인 상태 확인 후 리다이렉트
+  // const router = useRouter();
+
   // const handleSecretPage = (title: string, href: string) => {
   //   if (title === 'Secret Note' && !isLoggedIn) {
-  //     redirect('/signin'); // 로그인되지 않으면 로그인 페이지로 리다이렉트
+  //     redirect('/login');
   //   } else {
-  //     redirect(href); // 로그인되었으면 해당 페이지로 이동
+  //     router.push(href);
   //   }
   // };
 
   return (
-    <header>
-      <nav className="fixed top-0 z-50 flex h-[70px] w-full items-center bg-white shadow-md transition-all duration-300 ease-in-out">
-        <NavigationMenu>
-          <NavigationMenuList className="ml-5 flex items-center gap-2">
-            <Avatar>
-              <AvatarImage
-                className="h-10 w-10 rounded-full border-2 border-gray-300"
-                src="/semtle_logo_line.png"
-                alt="Arch Semtle Logo"
-              />
-              <AvatarFallback>LI</AvatarFallback>
-            </Avatar>
-            <Switch id="airplane-mode" />
-            <Label htmlFor="airplane-mode"></Label>
-          </NavigationMenuList>
-        </NavigationMenu>
+    <nav className="fixed top-0 z-50 flex h-[70px] w-full items-center border-b border-gray-200 bg-white shadow-md transition-all duration-300 ease-in-out dark:border-gray-700 dark:bg-gray-950">
+      <NavigationMenu>
+        <NavigationMenuList className="ml-5 flex items-center gap-2">
+          <Avatar>
+            <AvatarImage
+              className="not-dark h-10 w-10 rounded-full"
+              src="/semtle_logo_line.png"
+              alt="Arch Semtle Logo"
+            />
+            <AvatarFallback>LI</AvatarFallback>
+          </Avatar>
+          <Switch
+            id="darkandwhtie-mode"
+            onClick={toggleDarkMode}
+            checked={isDarkMode}
+          />
+          <Label htmlFor="darkandwhtie-mode"></Label>
+        </NavigationMenuList>
+      </NavigationMenu>
 
-        <NavigationMenu className="ml-auto mr-4 flex items-center justify-end">
-          <NavigationMenuList className="gap-8">
-            <NavigationMenuItem>
-              <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Home
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
+      <NavigationMenu className="ml-auto mr-4 flex items-center justify-end">
+        <NavigationMenuList className="gap-8">
+          <NavigationMenuItem>
+            <Link href="/" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Home
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
 
-            <NavigationMenuItem>
-              <NavigationMenuTrigger>About</NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <MenuSection sections={aboutSections} />
-              </NavigationMenuContent>
-            </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>About</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <MenuSection sections={aboutSections} />
+            </NavigationMenuContent>
+          </NavigationMenuItem>
 
-            <NavigationMenuItem>
-              <NavigationMenuTrigger>Activity</NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <MenuSection sections={activitySections} />
-              </NavigationMenuContent>
-            </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>Activity</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <MenuSection sections={activitySections} />
+            </NavigationMenuContent>
+          </NavigationMenuItem>
 
-            <NavigationMenuItem>
-              <NavigationMenuTrigger>Archive</NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <MenuSection
-                  sections={archiveSections}
-                  // onClickSection={handleSecretPage}
-                />
-              </NavigationMenuContent>
-            </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>Archive</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <MenuSection sections={archiveSections} />
+            </NavigationMenuContent>
+          </NavigationMenuItem>
 
-            {!session?.user ? (
-              <>
+          {!session?.user ? (
+            <>
+              <NavigationMenuItem>
+                <Link href="/recruiting" className="mr-[-10] text-sm">
+                  Join
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Button>
+                  <Link href="/signin">Signin</Link>
+                </Button>
+              </NavigationMenuItem>
+            </>
+          ) : (
+            <>
+              <NavigationMenuList className="ml-[-15] flex items-center justify-end gap-3">
                 <NavigationMenuItem>
-                  <Link href="/recruiting" className="mr-[-10] text-sm">
-                    Join
-                  </Link>
+                  <form action={signOutWithForm}>
+                    <Button>Logout</Button>
+                  </form>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Button>
-                    <Link href="/signin">Login</Link>
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Avatar className="cursor-pointer">
+                        <AvatarImage
+                          className="h-8 w-8 rounded-full border-2 border-gray-900"
+                          src={
+                            session.user.profileImageUrl ||
+                            '/default-profile.png'
+                          }
+                          alt={session.user.name || 'User'}
+                        />
+                        <AvatarFallback>
+                          {session.user.name
+                            ? session.user.name.slice(0, 2)
+                            : '??'}
+                        </AvatarFallback>
+                      </Avatar>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-30">
+                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem>
+                          <Link href="/mypage/${userid}">개인정보관리</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Link href="/mypage/${userid}/activity">
+                            내 활동관리
+                          </Link>
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </NavigationMenuItem>
-              </>
-            ) : (
-              <>
-                <NavigationMenuList className="ml-[-15] flex items-center justify-end gap-3">
-                  <NavigationMenuItem>
-                    <form action={signOutWithForm}>
-                      <Button>Logout</Button>
-                    </form>
-                  </NavigationMenuItem>
-                  <NavigationMenuItem>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Avatar className="cursor-pointer">
-                          <AvatarImage
-                            className="h-8 w-8 rounded-full border-2 border-gray-900"
-                            src={session.user.image || '/default-profile.png'}
-                            alt={session.user.name || 'User'}
-                          />
-                          <AvatarFallback>
-                            {session.user.name?.slice(0, 2) || '??'}
-                          </AvatarFallback>
-                        </Avatar>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-30">
-                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                          <DropdownMenuItem>
-                            <Link href="/mypage/${userid}">개인정보관리</Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Link href="/mypage/${userid}/activity">
-                              내 활동관리
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Link href="/개인시간표">시간표</Link>
-                          </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </NavigationMenuItem>
-                </NavigationMenuList>
-              </>
-            )}
-          </NavigationMenuList>
-        </NavigationMenu>
-      </nav>
-    </header>
+              </NavigationMenuList>
+            </>
+          )}
+        </NavigationMenuList>
+      </NavigationMenu>
+    </nav>
   );
 }
-
 const MenuSection = ({
   sections,
   onClickSection,

@@ -52,8 +52,15 @@ export const {
         const { email, password } = validationFields.data;
         console.log('[authorize] 검증된 입력값:', { email, password });
 
+        // 계정 활성화 상태 확인
+        const isActive = await checkAccountStatus(email);
+        if (!isActive) {
+          console.error('[authorize] 계정이 비활성화되었습니다.');
+          throw new Error('계정이 비활성화되어 있습니다.');
+        }
+
+        // 로그인 시도
         try {
-          // 로그인 요청을 서버로 보냄 (apiClient는 HTTP 요청을 담당하는 유틸리티)
           const response = await apiClient.post<
             LoginResponse,
             LoginRequestBody
@@ -160,7 +167,14 @@ export const {
         email: token.email as string,
         role: token.role,
         profileImageUrl: token.profileImageUrl ?? 'https://default-profile.png',
-      } as AdapterUser;
+        name: token.name ?? undefined,
+      } as AdapterUser & {
+        id: string;
+        email: string;
+        role: 'admin' | 'user' | 'guest';
+        profileImageUrl?: string;
+        name?: string;
+      };
 
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
@@ -194,6 +208,7 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
   }
 }
 
+// 계정 활성 여부 확인
 async function checkAccountStatus(email: string): Promise<boolean> {
   try {
     const response = await apiClient.post<
@@ -202,7 +217,7 @@ async function checkAccountStatus(email: string): Promise<boolean> {
     >(
       '/check-status', // 엔드포인트 경로 (예제)
       {
-        body: { email }, // POST 요청에 필요한 body 데이터
+        body: { email },
       },
     );
 

@@ -24,7 +24,7 @@ import {
 import { ArrowLeft, LucideEye, LucideEyeOff } from 'lucide-react';
 
 export default function SignInPage() {
-  const { register, handleSubmit, setError, formState } = useForm<
+  const { register, handleSubmit, formState } = useForm<
     z.infer<typeof loginSchema>
   >({
     resolver: zodResolver(loginSchema),
@@ -46,49 +46,38 @@ export default function SignInPage() {
         await signInWithCredentials(data);
         console.log('[SignInPage] 로그인 성공');
         router.push('/'); // 로그인 성공 시 메인 페이지로 리다이렉트 -> Mock 제거시 중복 로직일 수 있음
-      } catch (error: any) {
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : '알 수 없는 오류가 발생했습니다.';
-        console.error('[SignInPage] 로그인 실패:', error);
-        if (error.response?.status === 401) {
-          const errorCode = error.response.data?.code;
-          switch (errorCode) {
-            case 'NON_EXISTENT_ACCOUNT':
-              toast({
-                variant: 'destructive',
-                title: '로그인 실패',
-                description: '등록되지 않은 이메일입니다.',
-                duration: 2000,
-              });
-              break;
-            case 'MISMATCHED_PASSWORD':
-              toast({
-                variant: 'destructive',
-                title: '로그인 실패',
-                description: '비밀번호가 틀렸습니다.',
-                duration: 2000,
-              });
-              break;
-            default:
-              toast({
-                variant: 'destructive',
-                title: '로그인 실패',
-                description: '알 수 없는 오류가 발생했습니다.',
-                duration: 2000,
-              });
-          }
-        } else {
-          toast({
-            variant: 'destructive',
-            title: '로그인 실패',
-            description: errorMessage,
-            duration: 2000,
-          });
-        }
+      } catch (error: unknown) {
+        handleSignInError(error);
       }
     });
+  };
+
+  const handleSignInError = (error: unknown) => {
+    let errorMessage = '알 수 없는 오류가 발생했습니다.';
+
+    if (error instanceof Error) {
+      errorMessage = error.message || '알 수 없는 오류가 발생했습니다.';
+    }
+
+    // 특정 에러 메시지에 따라 처리할 경우
+    switch (errorMessage) {
+      case 'NON_EXISTENT_ACCOUNT':
+        errorMessage = '등록되지 않은 이메일입니다.';
+        break;
+      case 'MISMATCHED_PASSWORD':
+        errorMessage = '비밀번호가 틀렸습니다.';
+        break;
+    }
+
+    // Toast 알림 호출
+    toast({
+      variant: 'destructive',
+      title: '로그인 실패',
+      description: errorMessage,
+      duration: 2000,
+    });
+
+    console.error('[SignInPage] 로그인 실패:', error);
   };
 
   return (

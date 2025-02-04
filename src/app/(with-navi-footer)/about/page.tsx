@@ -145,7 +145,7 @@ export default function AboutPage() {
           </Label>
 
           <Tabs defaultValue="event" className="w-full">
-            <TabsList className="mx-auto mb-10 mt-10 flex w-[85%] max-w-[350px] justify-center gap-1">
+            <TabsList className="mx-auto mb-10 mt-10 flex w-[85%] max-w-[326px] justify-center gap-1">
               <TabsTrigger value="event" className="text-[17px]">
                 행사
               </TabsTrigger>
@@ -162,7 +162,7 @@ export default function AboutPage() {
             {/* 행사 탭 */}
             <TabsContent
               value="event"
-              className="mx-auto mb-28 w-full max-w-[1000px]"
+              className="mx-auto mb-28 w-full max-w-[950px]"
             >
               <div className="mb-12">
                 <Label className="text-[26px] font-bold">행사</Label>

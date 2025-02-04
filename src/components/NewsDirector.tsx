@@ -34,7 +34,7 @@ const NewsDirector: React.FC<NewsDirectorProps> = ({
       } items-start gap-6`}
     >
       <Card className="w-[250px] flex-shrink-0">
-        <CardHeader className="p-0">
+        <CardHeader className="p-2">
           <Image
             src={imageSrc}
             alt={'News' + id}

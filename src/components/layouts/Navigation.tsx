@@ -56,7 +56,7 @@ const activitySections = [
   },
   {
     title: '학회 일정',
-    href: '/schedule',
+    href: '/calendar',
     description: '다가오는 학회 일정과 이벤트를 확인할 수 있습니다.',
   },
   {

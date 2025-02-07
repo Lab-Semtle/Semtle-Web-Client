@@ -1,5 +1,4 @@
 /** API 응답 타입 정의 : API 호출 시 응답 및 에러 타입 처리 */
-
 // 기본 응답 타입 정의
 export interface ApiResponse {
   status: number;
@@ -11,7 +10,7 @@ export type ApiResponseError = ApiResponse & {
   message: string;
 };
 
-// 성공 응답 타입 정의 (제네릭 사용)
+// 데이터가 포함된 응답 타입 정의 (제네릭 사용)
 export type ApiResponseWithData<T> = ApiResponse & {
   data: T;
 };
@@ -29,6 +28,7 @@ export const isApiResponseError = (
   );
 };
 
+/** 로그인 */
 export interface LoginRequestBody {
   email: string;
   password: string;
@@ -48,4 +48,11 @@ export interface LoginResponse {
 export interface RefreshTokenResponse {
   accessToken: string;
   refreshToken: string;
+}
+
+/** Demo 게시판 */
+export interface Post {
+  id: string;
+  title: string;
+  content: string;
 }

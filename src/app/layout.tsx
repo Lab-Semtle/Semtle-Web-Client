@@ -3,7 +3,7 @@ import { Toaster } from '@/components/ui/toaster';
 import localFont from 'next/font/local';
 import '@/app/global.css';
 import { ThemeProvider } from 'next-themes';
-import { Providers } from '@/mocks/msw-providers';
+import { Providers } from '@/mocks/MSWProvider';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',

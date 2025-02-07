@@ -113,26 +113,31 @@ export class FetchClient {
   }
 
   // HTTP 메서드 별 메서드 정의
+  // TResponse :  서버에서 반환될 데이터의 타입 (예: Post[])
   public get<TResponse>(url: string, options?: FetchOptions) {
     console.log('[FetchClient] GET 요청:', url);
     return this.request<TResponse>(url, { method: 'GET', ...options });
   }
 
+  // TResponse, TBody : 응답의 타입, 요청 본문의 타입 (예: ApiResponseWithData<Post>, Post)
   public post<TResponse, TBody>(url: string, options?: FetchOptions<TBody>) {
     console.log('[FetchClient] POST 요청:', url);
     return this.request<TResponse>(url, { method: 'POST', ...options });
   }
 
+  // TResponse, TBody : 응답의 타입, 요청 본문의 타입
   public put<TResponse, TBody>(url: string, options?: FetchOptions<TBody>) {
     console.log('[FetchClient] PUT 요청:', url);
     return this.request<TResponse>(url, { method: 'PUT', ...options });
   }
 
+  // TResponse, TBody : 응답의 타입, 요청 본문의 타입
   public patch<TResponse, TBody>(url: string, options?: FetchOptions<TBody>) {
     console.log('[FetchClient] PATCH 요청:', url);
     return this.request<TResponse>(url, { method: 'PATCH', ...options });
   }
 
+  // TResponse : 서버에서 반환할 응답의 타입
   public delete<TResponse>(url: string, options?: FetchOptions) {
     console.log('[FetchClient] DELETE 요청:', url);
     return this.request<TResponse>(url, { method: 'DELETE', ...options });

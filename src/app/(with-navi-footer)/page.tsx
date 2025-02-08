@@ -228,7 +228,7 @@ export default function Page() {
         </section>
 
         <section className="mt-20 flex flex-col items-center justify-center">
-          <Label className="text-[26px] font-bold">Arch Semtle</Label>
+          <Label className="text-[26px] font-bold">Archi Semtle</Label>
           <div className="text-l mt-8 space-y-4 text-center font-bold">
             <Label className="text-lg font-bold">
               아치 셈틀은 다양한 기술과 아이디어를 탐구하며, 함께 성장하는 것을

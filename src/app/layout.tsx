@@ -5,21 +5,33 @@ import '@/app/global.css';
 import { ThemeProvider } from 'next-themes';
 import { Providers } from '@/mocks/MSWProvider';
 
+const yclover = localFont({
+  src: './fonts/YClover-Bold.woff2',
+  display: 'swap',
+  variable: '--font-yclover',
+});
+
+const moneygraphy = localFont({
+  src: './fonts/Moneygraphy-Rounded.woff2',
+  display: 'swap',
+  variable: '--font-moneygraphy',
+});
+
 const pretendard = localFont({
-  src: '../../public/fonts/PretendardVariable.woff2',
+  src: './fonts/PretendardVariable.woff2',
   display: 'swap',
   weight: '45 920',
   variable: '--font-pretendard',
 });
 
 const geistSans = localFont({
-  src: '../../public/fonts/GeistVF.woff',
+  src: './fonts/GeistVF.woff',
   variable: '--font-geist-sans',
   weight: '100 900',
 });
 
 const geistMono = localFont({
-  src: '../../public/fonts/GeistMonoVF.woff',
+  src: './fonts/GeistMonoVF.woff',
   variable: '--font-geist-mono',
   weight: '100 900',
 });
@@ -35,12 +47,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="ko"
-      suppressHydrationWarning
-      className={`${pretendard.variable} ${geistSans.variable} ${geistMono.variable}`}
-    >
-      <body className="font-pretendard antialiased">
+    <html lang="ko" suppressHydrationWarning>
+      <body
+        className={`${moneygraphy.variable} ${pretendard.variable} ${yclover.variable} ${geistSans.variable} ${geistMono.variable} font-moneygraphy antialiased`}
+      >
         <Providers>
           <ThemeProvider attribute="class" defaultTheme="system">
             <main>{children}</main>

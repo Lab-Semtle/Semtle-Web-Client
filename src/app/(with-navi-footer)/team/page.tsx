@@ -19,7 +19,7 @@ import ProfileCardList from '@/components/ProfileCardList';
 //   const boardDevelopers: BoardDeveloper[] = await res.json();
 //   return boardDevelopers;
 // }
-export default function OrganizationPage() {
+export default function TeamPage() {
   const boardMembers = [
     {
       id: 1,

@@ -92,6 +92,8 @@ const config: Config = {
       },
       fontFamily: {
         pretendard: ['var(--font-pretendard)'],
+        moneygraphy: ['var(--font-moneygraphy)'],
+        yclover: ['var(--font-yclover)'],
       },
     },
   },

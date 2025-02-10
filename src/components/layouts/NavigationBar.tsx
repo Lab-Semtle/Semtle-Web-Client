@@ -219,7 +219,7 @@ function AvatarMenu({ session }: any) {
             <Link href="/profile/setup">개인정보수정</Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href="/profile/my">마이페이지</Link>
+            <Link href="/profile/mypage">마이페이지</Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Link href="/admin">공홈관리시스템</Link>

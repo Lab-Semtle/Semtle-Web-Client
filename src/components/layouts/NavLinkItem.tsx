@@ -11,9 +11,15 @@ interface NavItemProps {
   href: string;
   label: string;
   className?: string;
+  onClick?: () => void;
 }
 
-export const NavLinkItem = ({ href, label, className }: NavItemProps) => (
+export const NavLinkItem = ({
+  href,
+  label,
+  className,
+  onClick,
+}: NavItemProps) => (
   <NavigationMenuItem>
     <Link href={href} legacyBehavior passHref>
       <NavigationMenuLink
@@ -22,6 +28,7 @@ export const NavLinkItem = ({ href, label, className }: NavItemProps) => (
           'text-base font-semibold',
           className,
         )}
+        onClick={onClick}
       >
         {label}
       </NavigationMenuLink>

@@ -25,7 +25,7 @@ interface Activity {
   category: string;
 }
 
-export default function ActivitiesPage() {
+export default function ActivityPage() {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -216,7 +216,7 @@ export default function ActivitiesPage() {
       </div>
       <button
         onClick={scrollToTop}
-        className={`hover:bg-semtleColor group fixed bottom-8 right-8 rounded-full bg-white p-3 text-primary-foreground shadow-lg transition-all duration-300 ${
+        className={`group fixed bottom-8 right-8 rounded-full bg-white p-3 text-primary-foreground shadow-lg transition-all duration-300 hover:bg-semtleColor ${
           showScrollTop
             ? 'translate-y-0 opacity-100'
             : 'pointer-events-none translate-y-10 opacity-0'
@@ -233,7 +233,7 @@ export default function ActivitiesPage() {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="group-hover:fill-semtleColor transition-all duration-300 group-hover:stroke-white"
+          className="transition-all duration-300 group-hover:fill-semtleColor group-hover:stroke-white"
         >
           <path d="m18 15-6-6-6 6" />
         </svg>

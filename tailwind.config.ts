@@ -94,6 +94,12 @@ const config: Config = {
         pretendard: ['var(--font-pretendard)'],
         moneygraphy: ['var(--font-moneygraphy)'],
         yclover: ['var(--font-yclover)'],
+        suit: ['var(--font-suit)'],
+      },
+      screens: {
+        sm: '640px', // 스마트폰
+        md: '768px', // 테블릿
+        lg: '1024px', // 데스크톱
       },
     },
   },

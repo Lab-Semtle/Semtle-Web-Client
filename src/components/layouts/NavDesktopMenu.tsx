@@ -13,7 +13,7 @@ interface NavDropdownItemProps {
   sections: Section[];
 }
 
-export default function NavDropdownItem({
+export default function NavDesktopMenu({
   triggerLabel,
   sections,
 }: NavDropdownItemProps) {

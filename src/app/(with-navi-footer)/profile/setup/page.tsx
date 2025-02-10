@@ -25,7 +25,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 
-export default function Page() {
+export default function ProfileSetupPage() {
   const [birthDate, setBirthDate] = useState<Date | undefined>(undefined);
 
   return (

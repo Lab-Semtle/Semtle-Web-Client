@@ -52,7 +52,7 @@ interface Comment {
   postTitle: string;
 }
 
-export default function ActivityPage() {
+export default function ProfileMyPage() {
   const [currentPagePosts, setCurrentPagePosts] = useState(1);
   const [currentPageComments, setCurrentPageComments] = useState(1);
   const [selectedBoardPosts, setSelectedBoardPosts] = useState<string | null>(

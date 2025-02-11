@@ -8,12 +8,11 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import AlertSchedule from '@/components/AlertSchedule';
 
-
 interface CalendarEventType {
   date: string;
   title: string;
   start: string;
-  end: string;  // end는 선택적 속성
+  end: string; // end는 선택적 속성
   location: string;
   description: string;
 }
@@ -31,7 +30,7 @@ const CalendarEvent: CalendarEventType[] = [
     date: '2025-02-15',
     title: '학회 프로젝트 발표',
     start: '2025-02-15T14:00:00',
-    end: '2025-02-15T16:00:00', // 추가된 end
+    end: '2025-02-15T16:00:00',
     location: '컨퍼런스룸 A',
     description: '학회에서 진행한 프로젝트 결과 발표',
   },

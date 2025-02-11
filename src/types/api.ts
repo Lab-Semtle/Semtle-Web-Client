@@ -49,3 +49,18 @@ export interface RefreshTokenResponse {
   accessToken: string;
   refreshToken: string;
 }
+
+export interface SecretPost {
+  post_id: number;
+  title: string;
+  writer: string;
+  image_url?: string[];
+  attachments?: {
+    file_id: number;
+    file_url: string;
+    file_name: string;
+    file_type: string;
+    file_size: string;
+  }[];
+  created_at: string;
+};

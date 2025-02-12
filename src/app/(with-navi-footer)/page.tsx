@@ -14,7 +14,7 @@ export default function HomePage() {
   };
   return (
     <div>
-      <main className="space-y-16">
+      <main className="space-y-24">
         <CarouselSection />
         <IntroSection />
         <RecentActivitySection />

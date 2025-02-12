@@ -6,6 +6,7 @@ import {
 import Link from 'next/link';
 import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
+import { Button } from '../ui/button';
 
 interface NavItemProps {
   href: string;
@@ -25,8 +26,9 @@ export const NavLinkItem = ({
       <NavigationMenuLink
         className={cn(
           navigationMenuTriggerStyle(),
-          'text-base font-semibold',
-          className,
+          'bg-transparent text-base font-semibold text-inherit',
+          'rounded-lg px-4 py-2 transition-colors',
+          'hover:bg-gray-300/40 hover:text-gray-900 dark:hover:bg-gray-700/40 dark:hover:text-white',
         )}
         onClick={onClick}
       >

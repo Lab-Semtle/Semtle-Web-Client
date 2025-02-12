@@ -43,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning>
       <body
-        className={`${moneygraphy.variable} ${pretendard.variable} ${yclover.variable} ${suit.variable} font-moneygraphy antialiased`}
+        className={`${moneygraphy.variable} ${pretendard.variable} ${yclover.variable} ${suit.variable} font-pretendard antialiased`}
       >
         <Providers>
           <ThemeProvider attribute="class" defaultTheme="system">

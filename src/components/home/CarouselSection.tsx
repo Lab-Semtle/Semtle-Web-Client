@@ -34,7 +34,7 @@ const CarouselSection = () => {
   };
 
   return (
-    <section className="mx-auto max-w-[1200px] px-4 pt-0 sm:pt-[80px] md:pt-[80px]">
+    <section className="mx-auto max-w-[1200px] px-4 pt-3 sm:pt-[90px] md:pt-[90px]">
       <div className="relative rounded-2xl">
         <Slider {...settings} className="mb-0">
           {CAROUSEL_ITEM.map((carousel) => (

@@ -62,6 +62,13 @@ const config: Config = {
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))',
         },
+        backdropBlur: {
+          none: '0',
+          sm: '4px',
+          md: '8px',
+          lg: '12px',
+          xl: '16px',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',

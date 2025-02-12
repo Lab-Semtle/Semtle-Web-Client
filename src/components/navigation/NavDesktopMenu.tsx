@@ -19,9 +19,10 @@ export default function NavDesktopMenu({
 }: NavDropdownItemProps) {
   return (
     <NavigationMenuItem>
-      <NavigationMenuTrigger className="text-base font-semibold">
+      <NavigationMenuTrigger className="bg-transparent text-base font-semibold transition-all hover:bg-gray-300/40 hover:text-gray-900 dark:hover:bg-gray-700/40 dark:hover:text-white">
         {triggerLabel}
       </NavigationMenuTrigger>
+
       <NavigationMenuContent>
         <MenuSection sections={sections} />
       </NavigationMenuContent>
@@ -73,8 +74,8 @@ const ListItem = ({
       <NavigationMenuLink asChild>
         <a
           className={cn(
-            'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
-            className,
+            'block select-none space-y-1 rounded-lg px-4 py-2 leading-none no-underline outline-none transition-all',
+            'bg-transparent text-inherit hover:bg-gray-300/40 hover:text-gray-900 dark:hover:bg-gray-700/40 dark:hover:text-white',
           )}
           {...props}
           onClick={onClick}

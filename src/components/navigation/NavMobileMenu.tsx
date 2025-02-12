@@ -35,7 +35,7 @@ export default function NavMobileMenu({
   return (
     <Sheet onOpenChange={setIsMenuOpen}>
       <SheetTrigger asChild>
-        <button className="mr-5 rounded-full p-2 hover:bg-gray-200 dark:hover:bg-gray-700">
+        <button className="mr-5 rounded-full p-2 transition-colors hover:bg-gray-300/40 dark:hover:bg-gray-700/40">
           <MenuIcon className="h-8 w-8 text-gray-800 dark:text-white" />
         </button>
       </SheetTrigger>

@@ -22,7 +22,7 @@ const IntroSection = () => {
           direction="up"
           className="flex flex-col items-center space-y-0 pb-5 pt-0 text-center"
         >
-          <h2 className="mb-4 text-pretty font-yclover text-3xl font-semibold md:mb-4 md:text-4xl lg:mb-6 lg:max-w-3xl lg:text-5xl">
+          <h2 className="mb-4 text-pretty font-pretendard text-3xl font-black md:mb-4 md:text-4xl lg:mb-6 lg:max-w-3xl lg:text-5xl">
             {INTRO_HEADING}
           </h2>
           <p className="mb-6 text-muted-foreground md:text-base lg:max-w-2xl lg:text-lg">

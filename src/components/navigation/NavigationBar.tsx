@@ -26,6 +26,7 @@ import { SunIcon, MoonIcon } from 'lucide-react';
 import { NavLinkItem } from '@/components/navigation/NavLinkItem';
 import NavDesktopMenu from './NavDesktopMenu';
 import NavMobileMenu from './NavMobileMenu';
+import { FlipButton } from '../animation/FlipButton';
 
 /** 분리된 로직 */
 import { useSession } from '@/hooks/use-session'; // 사용자 세션 정보
@@ -57,11 +58,14 @@ export default function NavigationBar() {
   return (
     <header>
       {session?.user && <div>{session.user.name}</div>}
-      <nav
+      {/* 스크롤시 슬라이딩 효과 */}
+      {/* <nav
         className={`fixed top-0 z-50 flex h-[60px] w-full items-center justify-between border-b border-gray-200 bg-white shadow-md transition-transform duration-300 ease-in-out ${
           isScrollingUp ? 'translate-y-0' : '-translate-y-full'
         } dark:border-gray-700 dark:bg-gray-950`}
-      >
+      > */}
+      {/* <nav className="fixed top-0 z-50 flex h-[60px] w-full items-center justify-between border-b border-gray-200/30 bg-white/30 shadow-sm backdrop-blur-md transition-colors duration-300 dark:border-gray-700/20 dark:bg-gray-950/50"> */}
+      <nav className="fixed top-0 z-50 flex h-[70px] w-full items-center justify-between bg-white/30 shadow-sm backdrop-blur-md transition-colors duration-300 dark:bg-gray-950/50">
         {/* 로고 */}
         <Link
           href="/"
@@ -131,12 +135,12 @@ function DarkModeButton({ isDarkMode, toggleDarkMode }: any) {
     <Button
       variant="ghost"
       onClick={toggleDarkMode}
-      className="flex h-10 w-10 items-center justify-center rounded-full"
+      className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-gray-200/50 dark:hover:bg-gray-700/50"
     >
       {isDarkMode ? (
-        <SunIcon className="h-6 w-6 scale-150 text-yellow-500" />
+        <SunIcon className="h-6 w-6 scale-125 text-yellow-400" />
       ) : (
-        <MoonIcon className="h-6 w-6 scale-150 text-sky-800" />
+        <MoonIcon className="h-6 w-6 scale-125 text-blue-500" />
       )}
     </Button>
   );
@@ -151,10 +155,9 @@ function UserMenu({ session }: any) {
             action={signOutWithForm}
             onSubmit={(e) => {
               e.preventDefault(); // 기본 폼 동작 방지
-              // signOutWithForm(); // 로그아웃 처리
             }}
           >
-            <Button type="submit">로그아웃</Button>
+            <FlipButton type="submit">로그아웃</FlipButton>
           </form>
         </NavigationMenuItem>
         <NavigationMenuItem>
@@ -167,12 +170,9 @@ function UserMenu({ session }: any) {
     <>
       <NavLinkItem href="/recruit" label="가입하기" />
       <NavigationMenuItem>
-        <Button
-          className="text-base font-semibold"
-          // onClick={handleToggleSession} // 로그인 상태 UI 테스트 : 주석 해제
-        >
+        <FlipButton>
           <Link href="/auth/signin">로그인</Link>
-        </Button>
+        </FlipButton>
       </NavigationMenuItem>
     </>
   );

@@ -1,8 +1,11 @@
 /** Fetch API 클라이언트
  * - API 요청을 추상화하여 GET, POST, PUT, DELETE 등의 요청을 간단하고 타입 안전하게 처리
  */
-import { type ApiResponseError, type ApiResponseWithData } from '@/types/api';
-import { getSession } from '@/lib/auth/server-action';
+import {
+  type ApiResponseError,
+  type ApiResponseWithData,
+} from '@/types/apiTypes';
+import { getSession } from '@/lib/auth/serverActions/auth';
 import { auth } from '@/lib/auth/config'; // 서버사이드에서 사용할 인증 메서드
 
 type FetchOptions<TBody = unknown> = Omit<RequestInit, 'headers' | 'body'> & {
@@ -22,12 +25,9 @@ export class FetchClient {
 
   // 세션 정보를 가져오는 메서드
   private async getSession() {
-    console.log('[FetchClient] 세션 가져오기 시도');
     if (typeof window === 'undefined') {
-      console.log('[FetchClient] 서버사이드 - auth() 호출');
       return auth();
     }
-    console.log('[FetchClient] 클라이언트사이드 - getSession() 호출');
     return getSession();
   }
 
@@ -62,8 +62,7 @@ export class FetchClient {
 
     // 사용자의 액세스 토큰 가져옴
     // withAuth가 true일 때만 세션 정보 가져옴, 즉 인증 필요없는 API라면 세션 정보 안 가져옴
-    const session = withAuth ? await this.getSession() : null;
-    console.log('[FetchClient] 세션 정보:', session);
+    const session = withAuth ? await getSession() : null; // this.getSession() 해야하나?
 
     // 요청 헤더 구성
     const allHeaders = new Headers(

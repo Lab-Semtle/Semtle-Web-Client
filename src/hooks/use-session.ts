@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getSession } from '@/lib/auth/server-action';
+import { getSession } from '@/lib/auth/serverActions/auth';
 import { Session } from 'next-auth';
 
 export const useSession = () => {

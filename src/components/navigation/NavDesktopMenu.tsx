@@ -30,9 +30,9 @@ export default function NavDesktopMenu({
 }
 
 interface Section {
-  title: string;
+  label: string;
   href: string;
-  description: string;
+  desc: string;
 }
 
 const MenuSection = ({
@@ -46,12 +46,12 @@ const MenuSection = ({
     <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
       {sections.map((section) => (
         <ListItem
-          key={section.title}
-          title={section.title}
+          key={section.label}
+          label={section.label}
           href={section.href}
-          onClick={() => onClickSection?.(section.title, section.href)} // onClickSection이 있으면 호출
+          onClick={() => onClickSection?.(section.label, section.href)} // onClickSection이 있으면 호출
         >
-          {section.description}
+          {section.desc}
         </ListItem>
       ))}
     </ul>
@@ -60,11 +60,14 @@ const MenuSection = ({
 
 const ListItem = ({
   className,
-  title,
+  label,
   children,
   onClick,
   ...props
-}: React.ComponentPropsWithoutRef<'a'> & { onClick: () => void }) => {
+}: React.ComponentPropsWithoutRef<'a'> & {
+  label: string;
+  onClick: () => void;
+}) => {
   return (
     <li>
       <NavigationMenuLink asChild>
@@ -76,7 +79,7 @@ const ListItem = ({
           {...props}
           onClick={onClick}
         >
-          <div className="text-sm font-medium leading-none">{title}</div>
+          <div className="text-sm font-medium leading-none">{label}</div>
           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
             {children}
           </p>

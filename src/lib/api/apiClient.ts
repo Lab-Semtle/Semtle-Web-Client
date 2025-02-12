@@ -1,7 +1,7 @@
 /** API Fetch Client URL 설정
  * - API Client 인스턴스 생성
  */
-import { FetchClient } from '@/lib/api/fetch-client';
+import { FetchClient } from '@/lib/api/fetchClient';
 
 // 환경 변수로 baseUrl 설정
 const baseUrl =

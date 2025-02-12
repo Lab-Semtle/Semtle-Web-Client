@@ -1,6 +1,6 @@
+/** 로그인 페이지 */
 'use client';
 
-import { signInWithCredentials } from '@/lib/auth/server-action';
 import { loginSchema } from '@/lib/validation/login-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -23,6 +23,9 @@ import {
 } from '@/components/ui/card';
 import { ArrowLeft, LucideEye, LucideEyeOff } from 'lucide-react';
 
+import { useFormState } from 'react-dom';
+import { signInWithCredentials } from '@/lib/auth/serverActions/auth'; // Next Auth
+
 export default function SignInPage() {
   const { register, handleSubmit, formState } = useForm<
     z.infer<typeof loginSchema>
@@ -38,14 +41,17 @@ export default function SignInPage() {
     setShowPassword(!showPassword);
   };
 
-  // 리다이렉트 없이 로그인 검증
+  // 로그인 API 호출 중 발생한 에러 처리 (서버액션과 상태 연결)
+  const [state, action] = useFormState(signInWithCredentials, {
+    message: '',
+  });
+
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     console.log('[SignInPage] 제출된 로그인 데이터:', data);
     startTransition(async () => {
       try {
         await signInWithCredentials(data);
         console.log('[SignInPage] 로그인 성공');
-        router.push('/'); // 로그인 성공 시 메인 페이지로 리다이렉트 -> Mock 제거시 중복 로직일 수 있음
       } catch (error: unknown) {
         handleSignInError(error);
       }
@@ -111,7 +117,16 @@ export default function SignInPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {/* 에러 메시지 출력 */}
+            {state.message && (
+              <h2 className="mb-4 text-center text-red-500">{state.message}</h2>
+            )}
+            <form
+              action={action}
+              method="post"
+              onSubmit={handleSubmit(onSubmit)}
+              className="space-y-4"
+            >
               {/* 이메일 입력 폼 */}
               <div className="flex flex-col space-y-1">
                 <Input

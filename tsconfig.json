@@ -30,7 +30,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/types/auth.d.ts"
+    "src/lib/auth/auth.d.ts"
   ],
   "exclude": ["node_modules"]
 }

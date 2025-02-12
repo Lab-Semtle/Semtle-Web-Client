@@ -25,9 +25,30 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 
-export default function ProfileSetupPage() {
+import { getSession } from '@/lib/auth/serverActions/auth'; // * 로그인 세션 주입
+import { updateUser } from '@/lib/auth/serverActions/updateUserSession'; // * 세션 정보 갱신
+
+interface ResponseValue {
+  totalBalance: number;
+}
+
+export default async function ProfileSetupPage() {
+  const session = await getSession(); // * 로그인 세션 주입
   const [birthDate, setBirthDate] = useState<Date | undefined>(undefined);
 
+  // 예시 코드(수정 필수)
+  const res = await fetch(`${process.env.HEROPY_API_URL}/banks/account`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      apikey: process.env.HEROPY_API_KEY as string,
+      username: 'HEROPY',
+      Authorization: `Bearer ${session.accessToken}`, // * 로그인 세션 주입 (로그인 권한 필요한 API)
+    },
+  });
+  const account = (await res.json()) as ResponseValue;
+
+  // return <div>{account?.totalBalance}</div>  // * 로그인 세션 주입
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-6">
       <div className="w-full max-w-lg space-y-6">
@@ -44,7 +65,10 @@ export default function ProfileSetupPage() {
             <TableBody>
               <TableRow>
                 <TableCell className="w-1/2 font-medium">이름</TableCell>
-                <TableCell className="w-2/2">홍길동</TableCell>
+                <TableCell className="w-2/2">
+                  {/* * 로그인 세션 주입 */}
+                  {session?.user?.name || ''}
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell className="w-1/2 font-medium">생년월일</TableCell>
@@ -71,6 +95,7 @@ export default function ProfileSetupPage() {
                 </Button>
               </SheetTrigger>
 
+              {/* 회원정보 수정 폼 */}
               <SheetContent
                 side="bottom"
                 className="flex flex-col items-center"
@@ -81,14 +106,21 @@ export default function ProfileSetupPage() {
                     아래 항목을 수정하고 저장 버튼을 눌러주세요.
                   </SheetDescription>
                 </SheetHeader>
-                <div className="grid w-[60%] gap-4 py-4">
+
+                {/* 폼에 서버 액션 연결 (세션 정보 갱신) */}
+                <form
+                  action={updateUser}
+                  method="post"
+                  className="grid w-[60%] gap-4 py-4"
+                >
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="edit-name" className="text-right">
                       이름
                     </Label>
+                    {/* * 로그인 세션 주입 */}
                     <Input
                       id="edit-name"
-                      defaultValue="홍길동"
+                      defaultValue={session?.user?.name || ''}
                       className="col-span-3 w-full"
                     />
                   </div>
@@ -148,7 +180,7 @@ export default function ProfileSetupPage() {
                       <Button type="submit">저장</Button>
                     </SheetClose>
                   </div>
-                </div>
+                </form>
               </SheetContent>
             </Sheet>
           </div>

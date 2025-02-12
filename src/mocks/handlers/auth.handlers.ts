@@ -1,6 +1,6 @@
 /** 목업 API */
 import { http, HttpResponse } from 'msw';
-import { ApiResponse, ApiResponseError } from '@/types/api';
+import { ApiResponse, ApiResponseError } from '@/types/apiTypes';
 
 export const authHandlers = [
   // 로그인 목업 API

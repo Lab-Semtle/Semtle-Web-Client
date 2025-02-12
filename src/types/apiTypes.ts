@@ -28,29 +28,12 @@ export const isApiResponseError = (
   );
 };
 
-/** 로그인 */
-export interface LoginRequestBody {
-  email: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  user: {
-    id: string;
-    email: string;
-    role: 'admin' | 'user' | 'guest';
-    profileImageUrl?: string;
-  };
-}
-
-export interface RefreshTokenResponse {
+export interface Tokens {
   accessToken: string;
   refreshToken: string;
 }
 
-/** Demo 게시판 */
+/** Demo 게시판 - 삭제 예정 */
 export interface Post {
   id: string;
   title: string;

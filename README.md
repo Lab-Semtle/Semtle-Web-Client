@@ -105,3 +105,7 @@ NEXT_PUBLIC_API_KEY=
 ## 🐞 **문제 및 개선 사항**
 
 ...
+
+## 배포 전 확인 필요
+
+- src/lib/auth/middleware.ts

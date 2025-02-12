@@ -9,8 +9,11 @@ import {
 } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
 import { SunIcon, MoonIcon, MenuIcon } from 'lucide-react';
-import { navigationMenuData } from '@/constants/navigation';
+// import { navigationMenuData } from '@/constants/navItem';
+import { navigationMenuItems } from '@/constants/navItem';
 import Link from 'next/link';
+import { useSession } from '@/hooks/use-session';
+import { signOutWithForm } from '@/lib/auth/serverActions/auth';
 
 interface NavMobileMenuProps {
   setIsMenuOpen: (open: boolean) => void;
@@ -23,6 +26,8 @@ export default function NavMobileMenu({
   toggleDarkMode,
   isDarkMode,
 }: NavMobileMenuProps) {
+  const session = useSession(); // 세션 가져오기
+
   const handleLinkClick = () => {
     setIsMenuOpen(false); // 시트 닫기
   };
@@ -46,7 +51,7 @@ export default function NavMobileMenu({
         </SheetHeader>
 
         <nav className="mt-4">
-          {navigationMenuData.map((section, index) => (
+          {navigationMenuItems.map((section, index) => (
             <div key={section.label} className={index !== 0 ? 'mt-6' : ''}>
               <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300">
                 {section.label}
@@ -54,19 +59,15 @@ export default function NavMobileMenu({
               <Separator className="-mx-4 my-2 w-[calc(100%+32px)] bg-gray-400 dark:bg-gray-600" />
 
               <ul>
-                {section.items.map((item, itemIndex) => (
+                {section.items.map((item) => (
                   <li key={item.href}>
                     <Link
                       href={item.href}
                       onClick={handleLinkClick}
                       className="block w-full py-2 pl-2 text-left text-gray-800 hover:text-blue-500 dark:text-white"
                     >
-                      {item.title}
+                      {item.label}
                     </Link>
-
-                    {itemIndex < section.items.length - 1 && (
-                      <Separator className="-mx-4 w-[calc(100%+32px)] bg-gray-300 dark:bg-gray-700" />
-                    )}
                   </li>
                 ))}
               </ul>
@@ -80,25 +81,61 @@ export default function NavMobileMenu({
             </h3>
             <Separator className="-mx-4 my-2 w-[calc(100%+32px)] bg-gray-400 dark:bg-gray-600" />
             <ul>
-              <li>
-                <Link
-                  href="/recruit"
-                  onClick={handleLinkClick}
-                  className="block w-full py-2 pl-2 text-left text-gray-800 hover:text-blue-500 dark:text-white"
-                >
-                  가입하기
-                </Link>
-                <Separator className="-mx-4 w-[calc(100%+32px)] bg-gray-300 dark:bg-gray-700" />
-              </li>
-              <li>
-                <Link
-                  href="/auth/signin"
-                  onClick={handleLinkClick}
-                  className="block w-full py-2 pl-2 text-left text-gray-800 hover:text-blue-500 dark:text-white"
-                >
-                  로그인
-                </Link>
-              </li>
+              {!session?.user ? (
+                <>
+                  <li>
+                    <Link
+                      href="/recruit"
+                      onClick={handleLinkClick}
+                      className="block w-full py-2 pl-2 text-left text-gray-800 hover:text-blue-500 dark:text-white"
+                    >
+                      가입하기
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/auth/signin"
+                      onClick={handleLinkClick}
+                      className="block w-full py-2 pl-2 text-left text-gray-800 hover:text-blue-500 dark:text-white"
+                    >
+                      로그인
+                    </Link>
+                  </li>
+                </>
+              ) : (
+                <>
+                  {navigationMenuItems
+                    .find((section) => section.label === '사용자 메뉴')
+                    ?.items.map((item) => (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          onClick={handleLinkClick}
+                          className="block w-full py-2 pl-2 text-left text-gray-800 hover:text-blue-500 dark:text-white"
+                        >
+                          {item.label}
+                        </Link>
+                      </li>
+                    ))}
+                  <li>
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        signOutWithForm(); // 로그아웃 처리
+                        // handleToggleSession(); // 임시 로그인 테스트 : 세션 상태 전환 (로그아웃)
+                      }}
+                    >
+                      <button
+                        type="submit"
+                        onClick={handleLinkClick}
+                        className="block w-full py-2 pl-2 text-left text-gray-800 hover:text-blue-500 dark:text-white"
+                      >
+                        로그아웃
+                      </button>
+                    </form>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
 

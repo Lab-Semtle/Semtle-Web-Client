@@ -25,7 +25,7 @@ const IntroSection = () => {
           <h2 className="mb-4 text-pretty font-pretendard text-3xl font-black md:mb-4 md:text-4xl lg:mb-6 lg:max-w-3xl lg:text-5xl">
             {INTRO_HEADING}
           </h2>
-          <p className="mb-6 text-muted-foreground md:text-base lg:max-w-2xl lg:text-lg">
+          <p className="mb-6 text-black dark:text-white md:text-base lg:max-w-2xl lg:text-lg">
             {INTRO_DESCRIPTION}
           </p>
           <Button variant="ghost" className="w-full sm:w-auto" asChild>

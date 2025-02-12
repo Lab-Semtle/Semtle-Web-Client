@@ -390,14 +390,16 @@ const RecentActivitySection = ({
   return (
     <section className="py-12">
       <div className="container mx-auto flex flex-col items-center gap-12 lg:px-16">
-        <h2 className="mb-2 text-pretty text-2xl font-semibold md:mb-3 md:text-3xl lg:mb-4 lg:max-w-3xl lg:text-4xl">
-          Recent News
+        <h2 className="mb-6 text-pretty text-3xl font-extrabold md:mb-6 md:text-4xl lg:mb-8 lg:max-w-3xl lg:text-5xl">
+          RECENT NEWS
         </h2>
 
         {/* 뉴스 카드 리스트 */}
-        <div className="flex w-full flex-col gap-8 md:gap-10">
+        <div className="flex w-full flex-col gap-6 md:gap-8">
           {posts.map((post, index) => (
-            <FadeUp key={post.id} delay={index * 0.2}>
+            <FadeUp key={post.id} delay={index * 0.15}>
+              {' '}
+              {/* ✅ 간격 차이를 줄이기 위해 delay 감소 */}
               <Card className="relative w-full max-w-[1000px] overflow-hidden border-none bg-transparent shadow-none md:flex md:flex-row">
                 <div className="aspect-[16/9] h-full w-full flex-shrink-0 md:w-1/3">
                   <a
@@ -416,8 +418,10 @@ const RecentActivitySection = ({
                 </div>
 
                 <div className="relative flex w-full flex-col md:w-2/3">
-                  <CardHeader className="pb-3 md:pb-4">
-                    <h3 className="text-[1.45rem] font-semibold text-foreground md:text-[1.6rem]">
+                  <CardHeader className="pb-2 md:pb-3">
+                    {' '}
+                    {/* ✅ 전체적으로 padding도 살짝 줄임 */}
+                    <h3 className="text-[1.4rem] font-semibold text-foreground md:text-[1.5rem]">
                       <a
                         href={post.link_url}
                         target="_blank"
@@ -428,13 +432,17 @@ const RecentActivitySection = ({
                     </h3>
                   </CardHeader>
 
-                  <CardContent className="pb-4 md:pb-5">
+                  <CardContent className="pb-3 md:pb-4">
+                    {' '}
+                    {/* ✅ 간격 미세 조정 */}
                     <p className="text-black dark:text-gray-200">
                       {post.newsContent}
                     </p>
                   </CardContent>
 
-                  <CardFooter className="flex justify-end pb-2 md:pb-4">
+                  <CardFooter className="flex justify-end pb-1 md:pb-3">
+                    {' '}
+                    {/* ✅ 여백 조금 감소 */}
                     <a
                       href={post.link_url}
                       target="_blank"

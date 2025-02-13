@@ -1,6 +1,6 @@
 'use client'; // 클라이언트 컴포넌트로 지정
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -15,38 +15,74 @@ import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import { Calendar } from '@/components/ui/calendar';
 
-const RecruitmentPostPage = () => {
-  const [postData, setPostData] = useState({
-    projectTitle: '제18회 공개SW 개발자대회', // 초기 프로젝트 제목
-    startDate: new Date(),
-    endDate: new Date(),
+// 상태 데이터 타입 정의
+interface PostData {
+  projectTitle: string;
+  startDate: Date | undefined;
+  endDate: Date | undefined;
+  contact: string;
+  projectType: string;
+  categories: string[];
+  content: string;
+  images: string[];
+}
+
+const RecruitmentPostPage = ({ id }: { id: string }) => {
+  const [postData, setPostData] = useState<PostData>({
+    projectTitle: '',
+    startDate: undefined,
+    endDate: undefined,
     contact: '',
-    projectType: '해커톤',
-    categories: ['Android', 'Web'],
-    content: '게시물 내용을 입력하세요.',
+    projectType: '',
+    categories: [],
+    content: '',
     images: [],
   });
 
-  const handleImageChange = (e) => {
+  // API에서 게시물 데이터를 가져오기
+  useEffect(() => {
+    console.log(id);
+    if (!id) return;
+
+    const fetchPostData = async () => {
+      try {
+        const response = await fetch(`/api/post?id=${id}`);
+        const data = await response.json();
+        // 받아온 데이터에서 Date 객체로 변환할 값이 있을 경우 처리
+        setPostData({
+          ...data,
+          startDate: data.startDate ? new Date(data.startDate) : undefined,
+          endDate: data.endDate ? new Date(data.endDate) : undefined,
+        });
+      } catch (error) {
+        console.error('Failed to fetch post data:', error);
+      }
+    };
+    fetchPostData();
+  }, [id]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    const newImages = Array.from(files).map((file) =>
-      URL.createObjectURL(file),
-    );
-    setPostData((prevData) => ({
-      ...prevData,
-      images: [...prevData.images, ...newImages],
-    }));
+    if (files) {
+      const newImages = Array.from(files).map((file) =>
+        URL.createObjectURL(file),
+      );
+      setPostData((prevData) => ({
+        ...prevData,
+        images: [...prevData.images, ...newImages],
+      }));
+    }
   };
 
-  const handleTitleChange = (e) => {
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPostData({
       ...postData,
-      projectTitle: e.target.value, // 프로젝트 제목 업데이트
+      projectTitle: e.target.value,
     });
   };
 
   return (
-    <div className="mx-auto max-w-4xl rounded-lg bg-white p-6 shadow-md">
+    <div className="mx-auto max-w-4xl bg-white p-6 shadow-md" style={{ paddingTop: '80px' }}>
       {/* 프로젝트 제목 입력란 */}
       <div className="mb-6">
         <label className="font-semibold text-gray-700">프로젝트 제목</label>
@@ -62,12 +98,30 @@ const RecruitmentPostPage = () => {
 
       <div className="mb-6 grid grid-cols-2 gap-6">
         <p>
-          <strong>게시 일자:</strong> {postData.startDate.toLocaleDateString()}
+          <strong>게시 일자:</strong> {postData.startDate ? postData.startDate.toLocaleDateString() : '미정'}
         </p>
-        <p>
-          <strong>진행 기간:</strong> {postData.startDate.toLocaleDateString()}{' '}
-          ~ {postData.endDate.toLocaleDateString()}
-        </p>
+      </div>
+
+      {/* 진행 기간 설정 */}
+      <div className="mb-6 grid grid-cols-2 gap-6">
+        <div>
+          <label className="font-semibold text-gray-700">시작 날짜</label>
+          <Calendar
+            mode="single"
+            selected={postData.startDate}
+            onSelect={(date) => setPostData({ ...postData, startDate: date })}
+            className="rounded-md border shadow"
+          />
+        </div>
+        <div>
+          <label className="font-semibold text-gray-700">종료 날짜</label>
+          <Calendar
+            mode="single"
+            selected={postData.endDate}
+            onSelect={(date) => setPostData({ ...postData, endDate: date })}
+            className="rounded-md border shadow"
+          />
+        </div>
       </div>
 
       {/* 문의 링크 입력란 */}
@@ -76,9 +130,7 @@ const RecruitmentPostPage = () => {
         <Input
           type="text"
           value={postData.contact}
-          onChange={(e) =>
-            setPostData({ ...postData, contact: e.target.value })
-          }
+          onChange={(e) => setPostData({ ...postData, contact: e.target.value })}
           className="mt-2 w-full rounded-md border border-gray-300 bg-gray-50 p-3"
           placeholder="https://open.kakao.com/..."
         />
@@ -89,9 +141,7 @@ const RecruitmentPostPage = () => {
         <label className="font-semibold text-gray-700">프로젝트 타입</label>
         <Select
           value={postData.projectType}
-          onValueChange={(value) =>
-            setPostData({ ...postData, projectType: value })
-          }
+          onValueChange={(value) => setPostData({ ...postData, projectType: value })}
         >
           <SelectTrigger className="w-full rounded-md border border-gray-300 bg-gray-50 p-3">
             {postData.projectType}
@@ -101,17 +151,6 @@ const RecruitmentPostPage = () => {
             <SelectItem value="개발">개발</SelectItem>
           </SelectContent>
         </Select>
-      </div>
-
-      {/* 마감일자 선택 */}
-      <div className="mb-6">
-        <label className="font-semibold text-gray-700">마감일자</label>
-        <Calendar
-          mode="single"
-          selected={postData.endDate}
-          onSelect={(date) => setPostData({ ...postData, endDate: date })}
-          className="rounded-md border shadow"
-        />
       </div>
 
       {/* 관련 분야 선택 */}
@@ -146,11 +185,9 @@ const RecruitmentPostPage = () => {
         <label className="font-semibold text-gray-700">게시물 내용</label>
         <Textarea
           value={postData.content}
-          onChange={(e) =>
-            setPostData({ ...postData, content: e.target.value })
-          }
+          onChange={(e) => setPostData({ ...postData, content: e.target.value })}
           className="w-full rounded-md border border-gray-300 bg-gray-50 p-3"
-          rows={10} // 라인 수를 10으로 설정
+          rows={10}
         />
       </div>
 
@@ -165,16 +202,9 @@ const RecruitmentPostPage = () => {
         />
         <div className="mt-4 flex space-x-4 overflow-x-auto">
           {postData.images.map((image, index) => (
-            <Card
-              key={index}
-              className="flex h-32 w-32 items-center justify-center rounded-md shadow-md"
-            >
+            <Card key={index} className="flex h-32 w-32 items-center justify-center rounded-md shadow-md">
               <CardContent>
-                <Image
-                  src={image}
-                  alt={`uploaded-${index}`}
-                  className="h-full w-full rounded-md object-cover"
-                />
+                <Image src={image} alt={`uploaded-${index}`} className="h-full w-full rounded-md object-cover" />
               </CardContent>
             </Card>
           ))}

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 
-const CardList = ({ cards, onDelete }) => {
+const CardListC = ({ cards, onDelete }) => {
   const [selectedCards, setSelectedCards] = useState([]);
 
   // 카드 더블클릭 시 선택 상태 변경
@@ -90,4 +90,4 @@ const CardList = ({ cards, onDelete }) => {
   );
 };
 
-export default CardList;
+export default CardListC;

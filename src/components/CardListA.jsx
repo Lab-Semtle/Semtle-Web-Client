@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation'; // next/router 대신 next/navigati
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
-const CardList = ({ cards }) => {
+const CardListA = ({ cards }) => {
   const [isClient, setIsClient] = useState(false); // 클라이언트 여부 상태
   const router = useRouter(); // next/navigation에서 가져오는 useRouter
 
@@ -69,4 +69,4 @@ const CardList = ({ cards }) => {
   );
 };
 
-export default CardList;
+export default CardListA;

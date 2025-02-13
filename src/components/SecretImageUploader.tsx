@@ -1,37 +1,61 @@
 'use client';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Upload, Trash } from 'lucide-react';
+import { useFormContext } from 'react-hook-form';
 
 const MAX_TOTAL_IMAGE_SIZE = 100 * 1024 * 1024;
 
-export default function SecretImageUploader({
-  images,
-  setImages,
-}: {
-  images: File[];
-  setImages: (images: File[]) => void;
-}) {
-  const totalImageSize = images.reduce((acc, image) => acc + image.size, 0);
+export default function SecretImageUploader() {
+  const { setValue, watch } = useFormContext();
+  const images = Array.isArray(watch('images'))
+    ? (watch('images') as File[])
+    : [];
+
+  const [totalImageSize, setTotalImageSize] = useState(0);
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      const images = value.images || [];
+      const size = images.reduce(
+        (acc: number, image: File) => acc + image.size,
+        0,
+      );
+      setTotalImageSize(size);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      const selectedImages = Array.from(event.target.files);
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      const selectedImages = Array.from(input.files);
+
+      const newFiles = selectedImages.filter(
+        (file) =>
+          !images.some(
+            (image) => image.name === file.name && image.size === file.size,
+          ),
+      );
+
       const newTotalSize = selectedImages.reduce(
-        (acc, image) => acc + image.size,
+        (acc: number, image) => acc + image.size,
         0,
       );
 
       if (totalImageSize + newTotalSize > MAX_TOTAL_IMAGE_SIZE) {
-        alert('총 이미지 업로드 용량이 100MB를 초과했습니다.');
+        alert('이미지의 총 업로드 용량이 100MB를 초과했습니다.');
         return;
       }
 
-      setImages([...images, ...selectedImages]);
+      setValue('images', [...images, ...newFiles]);
     }
   };
 
   const handleRemoveImage = (index: number) => {
-    setImages(images.filter((_, i) => i !== index));
+    const updatedImages = images.filter((_, i) => i !== index);
+    setValue('images', updatedImages);
   };
 
   return (

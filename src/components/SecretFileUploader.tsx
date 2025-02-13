@@ -1,37 +1,60 @@
+'use client';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Upload, Trash } from 'lucide-react';
 import { Label } from '@/components/ui/label';
+import { useFormContext } from 'react-hook-form';
 
 const MAX_TOTAL_FILE_SIZE = 100 * 1024 * 1024;
 
-export default function SecretFileUploader({
-  files,
-  setFiles,
-}: {
-  files: File[];
-  setFiles: (files: File[]) => void;
-}) {
-  const totalFileSize = files.reduce((acc, file) => acc + file.size, 0);
+export default function SecretFileUploader() {
+  const { setValue, watch } = useFormContext();
+  const files = Array.isArray(watch('files')) ? (watch('files') as File[]) : [];
+
+  const [totalFileSize, setTotalFileSize] = useState(0);
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      const files = value.files || [];
+      const size = files.reduce(
+        (acc: number, file: File) => acc + file.size,
+        0,
+      );
+      setTotalFileSize(size);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      const selectedFiles = Array.from(event.target.files);
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      const selectedFiles = Array.from(input.files);
+      const newFiles = selectedFiles.filter(
+        (file) =>
+          !files.some(
+            (existingFile) =>
+              existingFile.name === file.name &&
+              existingFile.size === file.size,
+          ),
+      );
       const newTotalSize = selectedFiles.reduce(
-        (acc, file) => acc + file.size,
+        (acc: number, file: File) => acc + file.size,
         0,
       );
 
       if (totalFileSize + newTotalSize > MAX_TOTAL_FILE_SIZE) {
-        alert('총 업로드 용량이 100MB를 초과했습니다.');
+        alert('파일의 총 업로드 용량이 100MB를 초과했습니다.');
         return;
       }
 
-      setFiles([...files, ...selectedFiles]);
+      setValue('files', [...files, ...newFiles]);
     }
   };
 
   const handleRemoveFile = (index: number) => {
-    setFiles(files.filter((_, i) => i !== index));
+    const updatedFiles = files.filter((_, i) => i !== index);
+    setValue('files', updatedFiles);
   };
 
   return (
@@ -41,11 +64,10 @@ export default function SecretFileUploader({
         <div className="flex w-auto items-center gap-2">
           <div className="relative w-[400px]">
             <Input
-              multiple
               type="file"
-              name="files"
+              multiple
               accept="image/*, application/*, .zip"
-              className="w-full cursor-pointer  pr-10"
+              className="w-full cursor-pointer pr-10"
               onChange={handleFileChange}
             />
             <Upload
@@ -88,6 +110,7 @@ export default function SecretFileUploader({
     </div>
   );
 }
+
 const formatFileSize = (size: number): string => {
   if (size < 1024) return `${size} B`;
   if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;

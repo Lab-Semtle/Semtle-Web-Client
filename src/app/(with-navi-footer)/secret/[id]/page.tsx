@@ -176,9 +176,12 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           <p className="text-gray-400">첨부된 이미지나 파일이 없습니다.</p>
         )}
       </div>
-      <div className="mb-[60px] mt-[60px] flex w-full max-w-[800px] justify-center px-4">
+      <div className="mb-[60px] mt-[60px] flex w-full max-w-[800px] justify-center gap-4 px-4">
         <Link href="/secret">
           <Button>목록으로</Button>
+        </Link>
+        <Link href={`/secret/edit/${id}`}>
+          <Button className="bg-gray-500">수정하기</Button>
         </Link>
       </div>
     </div>

@@ -1,5 +1,6 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+
 import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
 
 import { Textarea } from '@/components/ui/textarea';
@@ -10,47 +11,53 @@ import { Button } from '@/components/ui/button';
 import SecretFileUploader from './SecretFileUploader';
 import SecretImageUploader from './SecretImageUploader';
 
-type FormValues = {
+export type FormValues = {
   title: string;
   content?: string;
   created_at: string;
+  initialFiles?: File[];
+  initialImages?: File[];
 };
-export default function SecretNoteEditor() {
-  const methods = useForm<FormValues>();
+
+type SecretNoteEditorProps = {
+  initialValues?: FormValues;
+  onSubmit: SubmitHandler<FormValues>;
+  isEdit?: boolean;
+};
+
+export default function SecretNoteEditor({
+  initialValues,
+  onSubmit,
+  isEdit = false,
+}: SecretNoteEditorProps) {
+  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+
+  const methods = useForm<FormValues>({
+    defaultValues: initialValues || {
+      title: '',
+      content: '',
+      created_at: new Date().toISOString(),
+    },
+  });
+
   const {
     watch,
     register,
     handleSubmit,
     formState: { errors },
   } = methods;
-  const router = useRouter();
+
   const title = watch('title') || '';
 
-  const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
-    const completeData = {
-      ...data,
-      created_at: new Date().toISOString(),
-    };
+  const handleFormSubmit: SubmitHandler<FormValues> = async (data) => {
+    setSubmitLoading(true);
     try {
-      const response = await fetch('/archives', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(completeData),
-      });
-
-      if (!response.ok) {
-        throw new Error(`서버 요청 실패: ${response.status}`);
-      }
-
-      const result = await response.json();
-      if (!result.post_id) {
-        throw new Error('post_id가 반환되지 않았습니다.');
-      }
-
-      router.push(`/secret/${result.post_id}`);
+      await onSubmit(data); // props로 전달받은 onSubmit 호출
     } catch (error) {
       console.error('제출 오류:', error);
       alert('제출 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setSubmitLoading(false);
     }
   };
 
@@ -58,10 +65,10 @@ export default function SecretNoteEditor() {
 
   return (
     <div>
-      <h1 className="text-[30px]">글쓰기</h1>
+      <h1 className="text-[30px]">{isEdit ? '글 수정' : '글쓰기'}</h1>
       <hr className="mb-2 border-t-2 border-gray-400" />
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(handleFormSubmit)}>
           <div className="mb-2 ml-4 flex items-center gap-6">
             <Label htmlFor="title" className="w-auto text-lg font-semibold">
               제목
@@ -87,9 +94,7 @@ export default function SecretNoteEditor() {
               {title.length}/{MAX_TITLE_LENGTH} 글자
             </p>
             {title.length > MAX_TITLE_LENGTH && (
-              <p className="text-red-500">
-                글자 수가 초과되었습니다.
-              </p>
+              <p className="text-red-500">글자 수가 초과되었습니다.</p>
             )}
           </div>
           <hr className="border-t-1 mb-2 border-gray-300" />
@@ -104,7 +109,7 @@ export default function SecretNoteEditor() {
               <div className="ml-6 flex items-center gap-2">
                 <Label className="text-lg font-semibold">작성일자</Label>
                 <Input
-                  placeholder={new Date().toISOString().split('T')[0]}
+                  {...register('created_at')}
                   className="h-[40px] w-[200px] resize-none"
                   disabled
                 />
@@ -112,8 +117,9 @@ export default function SecretNoteEditor() {
             </div>
 
             <div className="flex flex-wrap">
-              {/* 이미지 업로드 */}
-              <SecretImageUploader />
+              <SecretImageUploader
+                initialImages={initialValues?.initialImages || []}
+              />
             </div>
           </div>
           <hr className="border-t-1 mb-2 border-gray-300" />
@@ -127,10 +133,13 @@ export default function SecretNoteEditor() {
             />
           </div>
 
-          {/* 파일 업로드 */}
-          <SecretFileUploader />
+          <SecretFileUploader
+            initialFiles={initialValues?.initialFiles || []}
+          />
           <hr className="border-t-1 mb-2 mt-2 border-gray-300" />
-          <Button type="submit">올리기</Button>
+          <Button type="submit" disabled={submitLoading}>
+            {submitLoading ? '업로드 중...' : isEdit ? '수정하기' : '올리기'}
+          </Button>
         </form>
       </FormProvider>
     </div>

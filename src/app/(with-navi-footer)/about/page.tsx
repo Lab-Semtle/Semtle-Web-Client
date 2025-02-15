@@ -10,6 +10,7 @@ import {
   CarouselItem,
 } from '@/components/ui/carousel';
 import ButtonLink from '@/components/ButtonLink';
+import KakaoMap from '@/components/KakaoMap';
 
 //NOTE - 행사탭 Data Fetching
 // async function fetchEventTab() {
@@ -349,7 +350,7 @@ const ContactTab: React.FC<ContactTabProps> = ({ contact }) => {
       <Label className="text-[26px] font-bold">오시는 길</Label>
       <p className="mt-10 text-[17px] leading-8">{contact.address}</p>
       <div className="mb-20 mt-8 flex flex-wrap justify-center gap-6">
-        <Image src="/map.jpg" alt="Semtle location" width={800} height={400} />
+        <KakaoMap />
       </div>
       <Label className="text-[26px] font-bold">문의하기</Label>
       <p className="mb-3 mt-2 text-[17px]">

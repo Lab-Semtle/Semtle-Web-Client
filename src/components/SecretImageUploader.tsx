@@ -5,41 +5,51 @@ import { Upload, Trash } from 'lucide-react';
 import { useFormContext } from 'react-hook-form';
 
 const MAX_TOTAL_IMAGE_SIZE = 100 * 1024 * 1024;
+type ImageItem = {
+  id?: string; // 서버에서 반환된 이미지의 고유 ID (수정 시 삭제 등에 사용)
+  name: string;
+  size: number;
+  url?: string; // 기존 서버 이미지인 경우 URL
+  file?: File; // 새로 업로드한 이미지인 경우 File 객체
+};
+type SecretImageUploaderProps = {
+  initialImages?: ImageItem[];
+};
 
-export default function SecretImageUploader() {
-  const { setValue, watch } = useFormContext();
-  const images = Array.isArray(watch('images'))
-    ? (watch('images') as File[])
-    : [];
+export default function SecretImageUploader({
+  initialImages = [],
+}: SecretImageUploaderProps) {
+  const { setValue } = useFormContext();
+  const [images, setImages] = useState<ImageItem[]>(initialImages);
 
-  const [totalImageSize, setTotalImageSize] = useState(0);
+  const totalImageSize = images.reduce(
+    (acc: number, image) => acc + image.size,
+    0,
+  );
 
   useEffect(() => {
-    const subscription = watch((value) => {
-      const images = value.images || [];
-      const size = images.reduce(
-        (acc: number, image: File) => acc + image.size,
-        0,
-      );
-      setTotalImageSize(size);
-    });
-
-    return () => subscription.unsubscribe();
-  }, [watch]);
+    setValue('images', images);
+  }, [images, setValue]);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const input = event.target as HTMLInputElement;
     if (input.files) {
-      const selectedImages = Array.from(input.files);
+      const selectedImages = Array.from(input.files).map((file) => ({
+        name: file.name,
+        size: file.size,
+        file,
+      }));
 
       const newFiles = selectedImages.filter(
         (file) =>
           !images.some(
-            (image) => image.name === file.name && image.size === file.size,
+            (existingImage) =>
+              existingImage.name === file.name &&
+              existingImage.size === file.size,
           ),
       );
 
-      const newTotalSize = selectedImages.reduce(
+      const newTotalSize = newFiles.reduce(
         (acc: number, image) => acc + image.size,
         0,
       );
@@ -49,13 +59,13 @@ export default function SecretImageUploader() {
         return;
       }
 
-      setValue('images', [...images, ...newFiles]);
+      setImages([...images, ...newFiles]);
     }
   };
 
   const handleRemoveImage = (index: number) => {
     const updatedImages = images.filter((_, i) => i !== index);
-    setValue('images', updatedImages);
+    setImages(updatedImages);
   };
 
   return (
@@ -82,7 +92,7 @@ export default function SecretImageUploader() {
         {images.map((image, index) => (
           <li
             key={index}
-            className="mb-2 flex h-[35px] w-[300px] items-center justify-between rounded-lg bg-gray-100 p-2"
+            className="mb-2 flex h-[35px] w-[300px] items-center justify-between rounded-lg bg-gray-100 p-2 dark:bg-gray-700"
           >
             <p className="w-2/3 truncate">{image.name}</p>
             <div className="flex items-center gap-2">
@@ -103,6 +113,7 @@ export default function SecretImageUploader() {
     </div>
   );
 }
+
 const formatFileSize = (size: number): string => {
   if (size < 1024) return `${size} B`;
   if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;

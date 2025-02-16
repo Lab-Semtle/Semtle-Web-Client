@@ -17,6 +17,7 @@ type FileItem = {
 
 type SecretFileUploaderProps = {
   initialFiles?: FileItem[];
+  onRemoveFile?: (fileId: string) => void;
 };
 
 const parseFileSize = (size: string): number => {
@@ -30,6 +31,7 @@ const parseFileSize = (size: string): number => {
 
 export default function SecretFileUploader({
   initialFiles = [],
+  onRemoveFile,
 }: SecretFileUploaderProps) {
   const { setValue } = useFormContext();
   const [files, setFiles] = useState<FileItem[]>(initialFiles);
@@ -80,9 +82,17 @@ export default function SecretFileUploader({
     }
   };
 
-  const handleRemoveFile = (index: number) => {
-    const updatedFiles = files.filter((_, i) => i !== index);
-    setFiles(updatedFiles);
+  const handleRemoveFile = (targetFile: FileItem) => {
+    const removedFile = files.find(
+      (file) =>
+        file.name === targetFile.name &&
+        file.size === targetFile.size &&
+        (!file.file || file.file === targetFile.file),
+    );
+    if (removedFile?.id && onRemoveFile) {
+      onRemoveFile(removedFile.id); // 삭제된 파일의 id를 부모 컴포넌트로 전달
+    }
+    setFiles(files.filter((file) => file !== removedFile));
   };
 
   return (
@@ -132,12 +142,43 @@ export default function SecretFileUploader({
                 </a>
                 <div className="flex items-center gap-2">
                   <p className="text-sm text-gray-500">
-                    {typeof file.size === 'string' ? file.size : formatFileSize(file.size)}
+                    {typeof file.size === 'string'
+                      ? file.size
+                      : formatFileSize(file.size)}
                   </p>
                   <button
                     type="button"
                     className="text-red-500 hover:text-red-700"
-                    onClick={() => handleRemoveFile(index)}
+                    onClick={() => handleRemoveFile(file)}
+                  >
+                    <Trash size={20} />
+                  </button>
+                </div>
+              </li>
+            ))}
+        </ul>
+        {/* 새로 추가된 파일 목록 */}
+        <ul className="mt-2 space-y-2">
+          {files
+            .filter((file) => !file.url)
+            .map((file, index) => (
+              <li
+                key={`new-${index}`}
+                className="flex items-center justify-between rounded-lg bg-gray-100 p-2 dark:bg-gray-700"
+              >
+                <p className="w-2/3 truncate">{file.name}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm text-gray-500">
+                    {formatFileSize(
+                      typeof file.size === 'string'
+                        ? parseFileSize(file.size)
+                        : file.size,
+                    )}
+                  </p>
+                  <button
+                    type="button"
+                    className="text-red-500 hover:text-red-700"
+                    onClick={() => handleRemoveFile(file)}
                   >
                     <Trash size={20} />
                   </button>
@@ -153,6 +194,7 @@ export default function SecretFileUploader({
 const formatFileSize = (size: number): string => {
   if (size < 1024) return `${size} B`;
   if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
-  if (size < 1024 * 1024 * 1024) return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+  if (size < 1024 * 1024 * 1024)
+    return `${(size / (1024 * 1024)).toFixed(1)} MB`;
   return `${(size / (1024 * 1024 * 1024)).toFixed(1)} GB`;
 };

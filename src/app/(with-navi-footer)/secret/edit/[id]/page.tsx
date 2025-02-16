@@ -19,7 +19,6 @@ export default function ModifyPostEditor({
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        // 임시 데이터 생성
         const data = {
           title: '임시 제목입니다!',
           content: '이것은 임시 본문 내용입니다.',
@@ -76,18 +75,41 @@ export default function ModifyPostEditor({
   }, [id]);
 
   const handleUpdatePost = async (data: FormValues) => {
-    const response = await fetch(`/api/posts/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
+    try {
+      // 삭제 요청
+      const deletePayload = {
+        deletedFiles: data.deletedFiles || [],
+        deletedImages: data.deletedImages || [],
+      };
 
-    if (!response.ok) {
-      throw new Error('게시글 수정 실패');
+      if (
+        deletePayload.deletedFiles.length > 0 ||
+        deletePayload.deletedImages.length > 0
+      ) {
+        await fetch(`/archives/${id}/delete`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(deletePayload),
+        });
+      }
+
+      // 수정 요청
+      const response = await fetch(`/archives/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('게시글 수정 실패');
+      }
+
+      const result = await response.json();
+      router.push(`/secret/${result.post_id}`);
+    } catch (error) {
+      console.error('수정 오류:', error);
+      alert('수정 중 오류가 발생했습니다.');
     }
-
-    const result = await response.json();
-    router.push(`/secret/${result.post_id}`);
   };
 
   if (loading) return <p>로딩 중...</p>;

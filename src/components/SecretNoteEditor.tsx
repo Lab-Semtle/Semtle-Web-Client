@@ -12,11 +12,11 @@ import SecretFileUploader from './SecretFileUploader';
 import SecretImageUploader from './SecretImageUploader';
 
 type FileItem = {
-  id?: string; 
+  id?: string;
   name: string;
   size: number | string;
-  url?: string; 
-  file?: File; 
+  url?: string;
+  file?: File;
 };
 export type FormValues = {
   title: string;
@@ -24,6 +24,8 @@ export type FormValues = {
   created_at: string;
   initialFiles?: FileItem[];
   initialImages?: FileItem[];
+  deletedFiles?: string[];
+  deletedImages?: string[];
 };
 
 type SecretNoteEditorProps = {
@@ -38,6 +40,32 @@ export default function SecretNoteEditor({
   isEdit = false,
 }: SecretNoteEditorProps) {
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+
+  const [deletedFileIds, setDeletedFileIds] = useState<string[]>([]);
+  const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);
+
+  const handleRemoveFile = (fileId: string) => {
+    setDeletedFileIds((prev) => [...prev, fileId]); // 삭제된 파일 id 추가
+  };
+  const handleRemoveImage = (imageId: string) => {
+    setDeletedImageIds((prev) => [...prev, imageId]);
+  };
+
+  const deleteFilesFromServer = async (fileIds: string[]) => {
+    try {
+      const response = await fetch(`/api/files/delete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileIds }),
+      });
+
+      if (!response.ok) {
+        throw new Error('파일 삭제 실패');
+      }
+    } catch (error) {
+      console.error('파일 삭제 중 오류 발생:', error);
+    }
+  };
 
   const methods = useForm<FormValues>({
     defaultValues: initialValues || {
@@ -57,9 +85,21 @@ export default function SecretNoteEditor({
   const title = watch('title') || '';
 
   const handleFormSubmit: SubmitHandler<FormValues> = async (data) => {
+    const completeData = {
+      ...data,
+      deletedFiles: deletedFileIds,
+      deletedImages: deletedImageIds,
+    };
     setSubmitLoading(true);
     try {
-      await onSubmit(data); // props로 전달받은 onSubmit 호출
+      if (deletedFileIds.length > 0) {
+        await deleteFilesFromServer(deletedFileIds);
+      }
+      if (deletedImageIds.length > 0) {
+        await deleteFilesFromServer(deletedImageIds); // 이미지도 같은 API 사용 가능
+      }
+
+      await onSubmit(completeData); // props로 전달받은 onSubmit 호출
     } catch (error) {
       console.error('제출 오류:', error);
       alert('제출 중 오류가 발생했습니다. 다시 시도해주세요.');
@@ -126,6 +166,7 @@ export default function SecretNoteEditor({
             <div className="flex flex-wrap">
               <SecretImageUploader
                 initialImages={initialValues?.initialImages || []}
+                onRemoveImage={handleRemoveImage}
               />
             </div>
           </div>
@@ -142,6 +183,7 @@ export default function SecretNoteEditor({
 
           <SecretFileUploader
             initialFiles={initialValues?.initialFiles || []}
+            onRemoveFile={handleRemoveFile}
           />
           <hr className="border-t-1 mb-2 mt-2 border-gray-300" />
           <Button type="submit" disabled={submitLoading}>

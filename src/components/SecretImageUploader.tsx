@@ -14,6 +14,7 @@ type ImageItem = {
 };
 type SecretImageUploaderProps = {
   initialImages?: ImageItem[];
+  onRemoveImage?: (imageId: string) => void;
 };
 const parseImageSize = (size: string): number => {
   const units = { B: 1, KB: 1024, MB: 1024 ** 2, GB: 1024 ** 3 };
@@ -25,6 +26,7 @@ const parseImageSize = (size: string): number => {
 };
 export default function SecretImageUploader({
   initialImages = [],
+  onRemoveImage,
 }: SecretImageUploaderProps) {
   const { setValue } = useFormContext();
   const [images, setImages] = useState<ImageItem[]>(initialImages);
@@ -80,10 +82,12 @@ export default function SecretImageUploader({
   };
 
   const handleRemoveImage = (index: number) => {
-    const updatedImages = images.filter((_, i) => i !== index);
-    setImages(updatedImages);
+    const removedImage = images[index];
+    if (removedImage.id && onRemoveImage) {
+      onRemoveImage(removedImage.id); // 삭제된 파일의 id를 부모 컴포넌트로 전달
+    }
+    setImages(images.filter((_, i) => i !== index));
   };
-
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">

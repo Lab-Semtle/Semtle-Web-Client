@@ -1,7 +1,6 @@
 /** 모바일 사이즈 화면에서 네비게이션 메뉴(사용자 메뉴 포함됨) */
 
 'use client';
-
 import {
   Sheet,
   SheetContent,
@@ -15,7 +14,7 @@ import { NAVIGATION_MENU } from '@/constants/navItems';
 import Link from 'next/link';
 import { useSession } from '@/hooks/use-session';
 import { signOutWithForm } from '@/lib/auth/serverActions/auth';
-import DarkModeButton from './DarkModeButton';
+import DarkModeButton from '@/components/button/DarkModeButton';
 import { ROUTES } from '@/constants/routes';
 
 interface MobileMenuProps {
@@ -24,7 +23,7 @@ interface MobileMenuProps {
   isDarkMode: boolean;
 }
 
-export default function MobileMenu({
+export default function NavMobileMenu({
   setIsMenuOpen,
   toggleDarkMode,
   isDarkMode,

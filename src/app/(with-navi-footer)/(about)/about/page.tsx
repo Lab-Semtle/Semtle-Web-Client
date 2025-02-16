@@ -9,7 +9,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel';
-import ButtonLink from '@/components/ButtonLink';
+import ButtonLink from '@/components/Button/LinkButton';
 
 //NOTE - 행사탭 Data Fetching
 // async function fetchEventTab() {

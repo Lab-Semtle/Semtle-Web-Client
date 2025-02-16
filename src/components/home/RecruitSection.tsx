@@ -7,10 +7,10 @@ import {
 } from '@/constants/recruit';
 
 const ICONS = {
-  teamwork: <Users className="size-9 text-blue-500" />,
-  expertise: <Lightbulb className="size-9 text-yellow-500" />,
-  opportunity: <Target className="size-9 text-green-500" />,
-  network: <Layers className="size-9 text-purple-500" />,
+  teamwork: <Users className="size-9 text-blue-700" />,
+  expertise: <Lightbulb className="size-9 text-yellow-700" />,
+  opportunity: <Target className="size-9 text-green-700" />,
+  network: <Layers className="size-9 text-purple-700" />,
 };
 
 const RecruitSection = () => (
@@ -41,7 +41,7 @@ const RecruitSection = () => (
     {/* 가입하기 버튼 */}
     <div className="mb-24 mt-12 flex justify-center">
       <Button
-        className="w-full bg-blue-200 text-blue-900 transition-colors hover:bg-blue-600 hover:text-white dark:bg-blue-700 dark:text-white dark:hover:bg-blue-500 sm:w-auto"
+        className="w-full bg-blue-300 text-blue-950 transition-colors hover:bg-blue-700 hover:text-gray-200 dark:bg-blue-700 dark:text-gray-200 dark:hover:bg-blue-300 dark:hover:text-blue-950 sm:w-auto"
         asChild
       >
         <a href={RECRUIT_BUTTON_URL}>

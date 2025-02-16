@@ -97,7 +97,6 @@
 
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
-import { FadeUp } from '@/components/animation/FadeUp'; // ✅ FadeUp 애니메이션 추가
 import {
   Card,
   CardContent,
@@ -151,57 +150,58 @@ const RecentActivitySection = ({
 
         {/* 뉴스 카드 리스트 */}
         <div className="flex w-full flex-col gap-6 md:gap-8">
-          {posts.map((post, index) => (
-            <FadeUp key={post.id} delay={index * 0.15}>
-              <Card className="relative w-full max-w-[1000px] overflow-hidden border-none bg-transparent shadow-none md:flex md:flex-row">
-                <div className="aspect-[16/9] h-full w-full flex-shrink-0 md:w-1/3">
-                  <a
-                    href={post.link_url}
-                    target="_blank"
-                    className="block transition-opacity duration-200 hover:opacity-70"
-                  >
-                    <Image
-                      src={post.imageSrc}
-                      alt={post.newsTitle}
-                      width={500}
-                      height={300}
-                      className="block h-full w-full rounded-lg object-cover md:rounded-xl"
-                    />
-                  </a>
-                </div>
+          {posts.map((post) => (
+            <Card
+              key={post.id}
+              className="relative w-full max-w-[1000px] overflow-hidden border-none bg-transparent shadow-none md:flex md:flex-row"
+            >
+              <div className="aspect-[16/9] h-full w-full flex-shrink-0 md:w-1/3">
+                <a
+                  href={post.link_url}
+                  target="_blank"
+                  className="block transition-opacity duration-200 hover:opacity-70"
+                >
+                  <Image
+                    src={post.imageSrc}
+                    alt={post.newsTitle}
+                    width={500}
+                    height={300}
+                    className="block h-full w-full rounded-lg object-cover md:rounded-xl"
+                  />
+                </a>
+              </div>
 
-                <div className="relative flex w-full flex-col md:w-2/3">
-                  <CardHeader className="pb-2 md:pb-3">
-                    <h3 className="text-[1.4rem] font-semibold text-foreground md:text-[1.5rem]">
-                      <a
-                        href={post.link_url}
-                        target="_blank"
-                        className="hover:underline"
-                      >
-                        {post.newsTitle}
-                      </a>
-                    </h3>
-                  </CardHeader>
-
-                  <CardContent className="pb-3 md:pb-4">
-                    <p className="text-black dark:text-gray-200">
-                      {post.newsContent}
-                    </p>
-                  </CardContent>
-
-                  <CardFooter className="flex justify-end pb-1 md:pb-3">
+              <div className="relative flex w-full flex-col md:w-2/3">
+                <CardHeader className="pb-2 md:pb-3">
+                  <h3 className="text-[1.4rem] font-semibold text-foreground md:text-[1.5rem]">
                     <a
                       href={post.link_url}
                       target="_blank"
-                      className="flex items-center text-primary hover:underline"
+                      className="hover:underline"
                     >
-                      더보기
-                      <ArrowRight className="ml-2 size-4" />
+                      {post.newsTitle}
                     </a>
-                  </CardFooter>
-                </div>
-              </Card>
-            </FadeUp>
+                  </h3>
+                </CardHeader>
+
+                <CardContent className="pb-3 md:pb-4">
+                  <p className="text-black dark:text-gray-200">
+                    {post.newsContent}
+                  </p>
+                </CardContent>
+
+                <CardFooter className="flex justify-end pb-1 md:pb-3">
+                  <a
+                    href={post.link_url}
+                    target="_blank"
+                    className="flex items-center text-primary hover:underline"
+                  >
+                    더보기
+                    <ArrowRight className="ml-2 size-4" />
+                  </a>
+                </CardFooter>
+              </div>
+            </Card>
           ))}
         </div>
       </div>

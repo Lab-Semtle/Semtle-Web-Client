@@ -15,7 +15,7 @@ interface NavItemProps {
   onClick?: () => void;
 }
 
-export const NavLinkItem = ({
+export const NavLinkMenu = ({
   href,
   label,
   className,

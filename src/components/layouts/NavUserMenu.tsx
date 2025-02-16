@@ -1,7 +1,7 @@
 /** 데스크톱 사이즈 화면에서 네비게이션바 사용자 메뉴 */
 
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { VariantShineButton } from '../button/VariantShineButton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -17,7 +17,7 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
 } from '@/components/ui/navigation-menu';
-import { NavLinkItem } from '@/components/navigation/NavLinkItem';
+import { NavLinkMenu } from '@/components/layouts/NavLinkMenu';
 import { useSession } from '@/hooks/use-session';
 import { signOutWithForm } from '@/lib/auth/serverActions/auth';
 import { ROUTES } from '@/constants/routes';
@@ -35,16 +35,16 @@ export default function DesktopUserMenu() {
               e.preventDefault();
             }}
           >
-            <Button
+            <VariantShineButton
               type="submit"
-              className="rounded-md bg-sky-500/50 px-4 py-2 font-semibold text-black backdrop-blur-md transition-colors duration-300 ease-in-out hover:bg-sky-500/80 dark:text-black"
+              className="bg-blue-300 text-blue-950 hover:bg-blue-700 hover:text-gray-200 dark:bg-blue-700 dark:text-gray-200 dark:hover:bg-blue-300 dark:hover:text-blue-950"
             >
               로그아웃
-            </Button>
+            </VariantShineButton>
           </form>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <AvatarMenu session={session} />
+          <LoginMenu session={session} />
         </NavigationMenuItem>
       </NavigationMenuList>
     );
@@ -52,20 +52,17 @@ export default function DesktopUserMenu() {
 
   return (
     <>
-      <NavLinkItem href={ROUTES.RECRUIT} label="가입하기" />
+      <NavLinkMenu href={ROUTES.RECRUIT} label="가입하기" />
       <NavigationMenuItem>
-        <Button
-          asChild
-          className="rounded-md bg-sky-500/50 px-4 py-2 font-semibold text-black backdrop-blur-md transition-colors duration-300 ease-in-out hover:bg-sky-500/80 dark:text-white"
-        >
+        <VariantShineButton className="bg-blue-300 text-blue-950 hover:bg-blue-700 hover:text-gray-200 dark:bg-blue-700 dark:text-gray-200 dark:hover:bg-blue-300 dark:hover:text-blue-950">
           <Link href={ROUTES.AUTH_SIGNIN}>로그인</Link>
-        </Button>
+        </VariantShineButton>
       </NavigationMenuItem>
     </>
   );
 }
 
-function AvatarMenu({ session }: any) {
+function LoginMenu({ session }: any) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

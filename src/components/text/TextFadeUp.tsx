@@ -4,7 +4,7 @@
 import { motion, useInView } from 'framer-motion';
 import * as React from 'react';
 
-export function FadeUp({
+export function TextFadeUp({
   direction,
   children,
   className = '',

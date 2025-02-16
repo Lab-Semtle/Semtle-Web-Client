@@ -8,16 +8,16 @@ import {
   NavigationMenuLink,
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
-import { NavLinkItem } from '@/components/navigation/NavLinkItem';
+import { NavLinkMenu } from '@/components/layouts/NavLinkMenu';
 import { NAVIGATION_MENU } from '@/constants/navItems';
 import { cn } from '@/lib/utils';
 import { ROUTES } from '@/constants/routes';
 
-export default function DesktopMenu({ session }: { session: any }) {
+export default function NavToogleMenu({ session }: { session: any }) {
   return (
     <NavigationMenu>
       <NavigationMenuList className="flex items-center gap-1">
-        <NavLinkItem href={ROUTES.HOME} label="처음으로" />
+        <NavLinkMenu href={ROUTES.HOME} label="처음으로" />
         {NAVIGATION_MENU.filter((menu) =>
           menu.label === '사용자 메뉴' ? session?.user : true,
         ).map((menu) => (

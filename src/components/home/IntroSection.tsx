@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { FadeUp } from '@/components/animation/FadeUp';
+import { TextFadeUp } from '@/components/text/TextFadeUp';
 import { ArrowRight } from 'lucide-react';
 import {
   INTRO_HEADING,
@@ -18,7 +18,7 @@ const IntroSection = () => {
     <section className="py-4">
       <div className="container mx-auto flex flex-col items-center gap-4 lg:px-16">
         {/* 소개 헤더 */}
-        <FadeUp
+        <TextFadeUp
           direction="up"
           className="flex flex-col items-center space-y-0 pb-5 pt-0 text-center"
         >
@@ -34,7 +34,7 @@ const IntroSection = () => {
               <ArrowRight className="ml-2 size-4" />
             </a>
           </Button>
-        </FadeUp>
+        </TextFadeUp>
 
         {/* 카드 리스트 */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">

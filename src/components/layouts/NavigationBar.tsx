@@ -9,10 +9,10 @@ import {
   NavigationMenuList,
 } from '@/components/ui/navigation-menu';
 
-import DesktopMenu from '@/components/navigation/DesktopMenu';
-import MobileMenu from './MobileMenu';
-import DarkModeButton from './DarkModeButton';
-import DesktopUserMenu from './DesktopUserMenu';
+import NavToogleMenu from '@/components/layouts/NavToggleMenu';
+import NavMobileMenu from './NavMobileMenu';
+import DarkModeButton from '../Button/DarkModeButton';
+import DesktopUserMenu from './NavUserMenu';
 
 import { useSession } from '@/hooks/use-session'; // 사용자 세션 정보
 import { useDarkMode } from '@/hooks/use-darkmode';
@@ -52,10 +52,10 @@ export default function NavigationBar() {
         {/* 중앙 메뉴 */}
         {isDesktop ? (
           <div className="flex flex-1 justify-center">
-            <DesktopMenu session={session} />
+            <NavToogleMenu session={session} />
           </div>
         ) : (
-          <MobileMenu
+          <NavMobileMenu
             setIsMenuOpen={setIsMenuOpen}
             toggleDarkMode={toggleDarkMode}
             isDarkMode={isDarkMode}

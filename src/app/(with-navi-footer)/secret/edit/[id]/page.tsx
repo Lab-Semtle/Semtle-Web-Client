@@ -2,7 +2,7 @@
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import SecretNoteEditor, { FormValues } from '@/components/SecretNoteEditor'; 
+import SecretNoteEditor, { FormValues } from '@/components/SecretNoteEditor';
 
 export default function ModifyPostEditor({
   params,
@@ -11,7 +11,7 @@ export default function ModifyPostEditor({
 }) {
   const { id } = use(params);
   const router = useRouter();
-  
+
   const [post, setPost] = useState<FormValues | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,20 +27,39 @@ export default function ModifyPostEditor({
         };
 
         const initialFiles = [
-            new File([new Blob(['file content for pdf'])], 'example.pdf', { type: 'application/pdf' }),
-            new File([new Blob(['file content for zip'])], 'archive.zip', { type: 'application/zip' }),
-          ];
-          
-          const initialImages = [
-            new File([new Blob(['image content for jpg'])], 'example1.jpg', { type: 'image/jpeg' }),
-            new File([new Blob(['image content for png'])], 'example2.png', { type: 'image/png' }),
-          ];
-          
+          {
+            id: '1',
+            name: 'example.pdf',
+            size: '2.5MB',
+            url: 'https://example.com/example.pdf',
+          },
+          {
+            id: '2',
+            name: 'archive.zip',
+            size: '2.5MB',
+            url: 'https://example.com/archive.zip',
+          },
+        ];
+
+        const initialImages = [
+          {
+            id: '1',
+            name: 'example1.jpg',
+            size: '1.5MB',
+            url: 'https://example.com/example1.jpg',
+          },
+          {
+            id: '2',
+            name: 'example2.png',
+            size: '2.2MB',
+            url: 'https://example.com/example2.png',
+          },
+        ];
 
         setPost({
           ...data,
-          initialFiles,   // 초기 파일 리스트
-          initialImages,  // 초기 이미지 리스트
+          initialFiles,
+          initialImages,
         });
       } catch (err: unknown) {
         if (err instanceof Error) {

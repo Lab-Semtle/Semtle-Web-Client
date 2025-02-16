@@ -8,15 +8,24 @@ import { useFormContext } from 'react-hook-form';
 const MAX_TOTAL_FILE_SIZE = 100 * 1024 * 1024;
 
 type FileItem = {
-  id?: string; // 서버에서 반환된 고유 ID
+  id?: string;
   name: string;
-  size: number;
-  url?: string; // 기존 서버 파일 URL
-  file?: File; // 새로 업로드한 파일
+  size: number | string; // 수정: size는 number 또는 string
+  url?: string;
+  file?: File;
 };
 
 type SecretFileUploaderProps = {
-  initialFiles?: FileItem[]; // 기존 서버에서 가져온 파일들
+  initialFiles?: FileItem[];
+};
+
+const parseFileSize = (size: string): number => {
+  const units = { B: 1, KB: 1024, MB: 1024 ** 2, GB: 1024 ** 3 };
+  const match = size.match(/^([\d.]+)\s*(B|KB|MB|GB)$/i);
+  if (!match) return 0;
+  const value = parseFloat(match[1]);
+  const unit = match[2].toUpperCase() as keyof typeof units;
+  return value * units[unit];
 };
 
 export default function SecretFileUploader({
@@ -25,12 +34,18 @@ export default function SecretFileUploader({
   const { setValue } = useFormContext();
   const [files, setFiles] = useState<FileItem[]>(initialFiles);
 
-  const totalFileSize = files
-    .filter((file) => file.file) // 새로 업로드된 파일만 용량 합산
-    .reduce((acc: number, file) => acc + (file.file?.size || 0), 0);
+  const totalFileSize = files.reduce((acc: number, file) => {
+    if (file.file) {
+      return acc + file.file.size;
+    } else if (typeof file.size === 'string') {
+      return acc + parseFileSize(file.size);
+    } else {
+      return acc + file.size;
+    }
+  }, 0);
 
   useEffect(() => {
-    setValue('files', files); // 폼 상태와 동기화
+    setValue('files', files);
   }, [files, setValue]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,36 +126,13 @@ export default function SecretFileUploader({
                   href={file.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-2/3 truncate text-blue-500 hover:underline"
+                  className="w-2/3 truncate hover:underline"
                 >
                   {file.name}
                 </a>
                 <div className="flex items-center gap-2">
-                  <p className="text-sm text-gray-500">{file.size} MB</p>
-                  <button
-                    type="button"
-                    className="text-red-500 hover:text-red-700"
-                    onClick={() => handleRemoveFile(index)}
-                  >
-                    <Trash size={20} />
-                  </button>
-                </div>
-              </li>
-            ))}
-        </ul>
-        {/* 새로 추가된 파일 목록 */}
-        <ul className="mt-4 space-y-2">
-          {files
-            .filter((file) => file.file)
-            .map((file, index) => (
-              <li
-                key={index}
-                className="flex items-center justify-between rounded-lg bg-gray-100 p-2 dark:bg-gray-700"
-              >
-                <p className="w-2/3 truncate">{file.name}</p>
-                <div className="flex items-center gap-2">
                   <p className="text-sm text-gray-500">
-                    {formatFileSize(file.size)}
+                    {typeof file.size === 'string' ? file.size : formatFileSize(file.size)}
                   </p>
                   <button
                     type="button"
@@ -161,7 +153,6 @@ export default function SecretFileUploader({
 const formatFileSize = (size: number): string => {
   if (size < 1024) return `${size} B`;
   if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
-  if (size < 1024 * 1024 * 1024)
-    return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+  if (size < 1024 * 1024 * 1024) return `${(size / (1024 * 1024)).toFixed(1)} MB`;
   return `${(size / (1024 * 1024 * 1024)).toFixed(1)} GB`;
 };

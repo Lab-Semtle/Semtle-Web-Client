@@ -8,24 +8,40 @@ const MAX_TOTAL_IMAGE_SIZE = 100 * 1024 * 1024;
 type ImageItem = {
   id?: string; // 서버에서 반환된 이미지의 고유 ID (수정 시 삭제 등에 사용)
   name: string;
-  size: number;
+  size: number | string;
   url?: string; // 기존 서버 이미지인 경우 URL
   file?: File; // 새로 업로드한 이미지인 경우 File 객체
 };
 type SecretImageUploaderProps = {
   initialImages?: ImageItem[];
 };
-
+const parseImageSize = (size: string): number => {
+  const units = { B: 1, KB: 1024, MB: 1024 ** 2, GB: 1024 ** 3 };
+  const match = size.match(/^([\d.]+)\s*(B|KB|MB|GB)$/i);
+  if (!match) return 0;
+  const value = parseFloat(match[1]);
+  const unit = match[2].toUpperCase() as keyof typeof units;
+  return value * units[unit];
+};
 export default function SecretImageUploader({
   initialImages = [],
 }: SecretImageUploaderProps) {
   const { setValue } = useFormContext();
   const [images, setImages] = useState<ImageItem[]>(initialImages);
 
-  const totalImageSize = images.reduce(
-    (acc: number, image) => acc + image.size,
-    0,
-  );
+  const totalImageSize = images.reduce((acc: number, file) => {
+    if (file.file) {
+      return acc + file.file.size;
+    } else if (typeof file.size === 'string') {
+      return acc + parseImageSize(file.size);
+    } else {
+      return acc + file.size;
+    }
+  }, 0);
+  // const totalImageSize = images.reduce(
+  //   (acc: number, image) => acc + image.size,
+  //   0,
+  // );
 
   useEffect(() => {
     setValue('images', images);
@@ -114,7 +130,11 @@ export default function SecretImageUploader({
   );
 }
 
-const formatFileSize = (size: number): string => {
+const formatFileSize = (size: number | string): string => {
+  if (typeof size === 'string') {
+    size = parseImageSize(size); // 문자열일 경우 숫자로 변환
+  }
+
   if (size < 1024) return `${size} B`;
   if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
   if (size < 1024 * 1024 * 1024)

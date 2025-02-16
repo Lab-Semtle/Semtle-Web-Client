@@ -11,12 +11,19 @@ import { Button } from '@/components/ui/button';
 import SecretFileUploader from './SecretFileUploader';
 import SecretImageUploader from './SecretImageUploader';
 
+type FileItem = {
+  id?: string; 
+  name: string;
+  size: number | string;
+  url?: string; 
+  file?: File; 
+};
 export type FormValues = {
   title: string;
   content?: string;
   created_at: string;
-  initialFiles?: File[];
-  initialImages?: File[];
+  initialFiles?: FileItem[];
+  initialImages?: FileItem[];
 };
 
 type SecretNoteEditorProps = {

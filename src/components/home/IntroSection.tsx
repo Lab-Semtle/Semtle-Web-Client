@@ -11,7 +11,7 @@ import {
   INTRO_BUTTON_TEXT,
   INTRO_BUTTON_URL,
   INTRO_CARDS,
-} from '@/constants/introItem';
+} from '@/constants/introItems';
 
 const IntroSection = () => {
   return (

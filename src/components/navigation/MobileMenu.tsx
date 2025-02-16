@@ -1,3 +1,5 @@
+/** 모바일 사이즈 화면에서 네비게이션 메뉴(사용자 메뉴 포함됨) */
+
 'use client';
 
 import {
@@ -8,24 +10,25 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
-import { SunIcon, MoonIcon, MenuIcon } from 'lucide-react';
-// import { navigationMenuData } from '@/constants/navItem';
-import { navigationMenuItems } from '@/constants/navItem';
+import { MenuIcon } from 'lucide-react';
+import { NAVIGATION_MENU } from '@/constants/navItems';
 import Link from 'next/link';
 import { useSession } from '@/hooks/use-session';
 import { signOutWithForm } from '@/lib/auth/serverActions/auth';
+import DarkModeButton from './DarkModeButton';
+import { ROUTES } from '@/constants/routes';
 
-interface NavMobileMenuProps {
+interface MobileMenuProps {
   setIsMenuOpen: (open: boolean) => void;
   toggleDarkMode: () => void;
   isDarkMode: boolean;
 }
 
-export default function NavMobileMenu({
+export default function MobileMenu({
   setIsMenuOpen,
   toggleDarkMode,
   isDarkMode,
-}: NavMobileMenuProps) {
+}: MobileMenuProps) {
   const session = useSession(); // 세션 가져오기
 
   const handleLinkClick = () => {
@@ -51,7 +54,7 @@ export default function NavMobileMenu({
         </SheetHeader>
 
         <nav className="mt-4">
-          {navigationMenuItems.map((section, index) => (
+          {NAVIGATION_MENU.map((section, index) => (
             <div key={section.label} className={index !== 0 ? 'mt-6' : ''}>
               <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300">
                 {section.label}
@@ -85,7 +88,7 @@ export default function NavMobileMenu({
                 <>
                   <li>
                     <Link
-                      href="/recruit"
+                      href={ROUTES.RECRUIT}
                       onClick={handleLinkClick}
                       className="block w-full py-2 pl-2 text-left text-gray-800 hover:text-blue-500 dark:text-white"
                     >
@@ -94,7 +97,7 @@ export default function NavMobileMenu({
                   </li>
                   <li>
                     <Link
-                      href="/auth/signin"
+                      href={ROUTES.AUTH_SIGNIN}
                       onClick={handleLinkClick}
                       className="block w-full py-2 pl-2 text-left text-gray-800 hover:text-blue-500 dark:text-white"
                     >
@@ -104,25 +107,24 @@ export default function NavMobileMenu({
                 </>
               ) : (
                 <>
-                  {navigationMenuItems
-                    .find((section) => section.label === '사용자 메뉴')
-                    ?.items.map((item) => (
-                      <li key={item.href}>
-                        <Link
-                          href={item.href}
-                          onClick={handleLinkClick}
-                          className="block w-full py-2 pl-2 text-left text-gray-800 hover:text-blue-500 dark:text-white"
-                        >
-                          {item.label}
-                        </Link>
-                      </li>
-                    ))}
+                  {NAVIGATION_MENU.find(
+                    (section) => section.label === '사용자 메뉴',
+                  )?.items.map((item) => (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        onClick={handleLinkClick}
+                        className="block w-full py-2 pl-2 text-left text-gray-800 hover:text-blue-500 dark:text-white"
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
                   <li>
                     <form
                       onSubmit={(e) => {
                         e.preventDefault();
                         signOutWithForm(); // 로그아웃 처리
-                        // handleToggleSession(); // 임시 로그인 테스트 : 세션 상태 전환 (로그아웃)
                       }}
                     >
                       <button
@@ -141,16 +143,10 @@ export default function NavMobileMenu({
 
           <Separator className="-mx-4 my-4 w-[calc(100%+32px)] bg-gray-400 dark:bg-gray-600" />
           <div className="flex items-center py-2 pl-2">
-            <button onClick={toggleDarkMode} className="flex items-center">
-              {isDarkMode ? (
-                <SunIcon className="mr-2 h-6 w-6 text-yellow-500" />
-              ) : (
-                <MoonIcon className="mr-2 h-6 w-6 text-sky-800" />
-              )}
-              <span className="text-gray-800 dark:text-white">
-                {isDarkMode ? '라이트 모드' : '다크 모드'}
-              </span>
-            </button>
+            <DarkModeButton
+              isDarkMode={isDarkMode}
+              toggleDarkMode={toggleDarkMode}
+            />
           </div>
         </nav>
       </SheetContent>

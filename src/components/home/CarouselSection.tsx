@@ -7,13 +7,14 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
-import { CustomArrowProps } from 'react-slick';
 import {
   CAROUSEL_ITEM,
   CAROUSEL_BUTTON_TEXT,
   CAROUSEL_BUTTON_URL,
-} from '@/constants/carouselItem';
+} from '@/constants/carouselItems';
+import PreviousArrowIcon from '@/components/icon/PreviousArrowIcon';
+import NextArrowIcon from '@/components/icon/NextArrowIcon';
+import { ArrowRight } from 'lucide-react';
 
 const CarouselSection = () => {
   const settings = {
@@ -24,8 +25,8 @@ const CarouselSection = () => {
     autoplay: true,
     autoplaySpeed: 3000,
     pauseOnHover: true,
-    prevArrow: <PreviousArrow />,
-    nextArrow: <NextArrow />,
+    prevArrow: <PreviousArrowIcon />,
+    nextArrow: <NextArrowIcon />,
     appendDots: (dots) => (
       <div className="absolute bottom-4 flex w-full justify-center">
         <ul className="space-x-2 dark:text-gray-400">{dots}</ul>
@@ -70,21 +71,3 @@ const CarouselSection = () => {
 };
 
 export default CarouselSection;
-
-const PreviousArrow: React.FC<CustomArrowProps> = ({ onClick }) => (
-  <div
-    className="absolute left-2 top-1/2 z-10 -translate-y-1/2 cursor-pointer dark:opacity-80 dark:hover:opacity-100"
-    onClick={onClick}
-  >
-    <ChevronLeft size={30} className="text-white dark:text-gray-300" />
-  </div>
-);
-
-const NextArrow: React.FC<CustomArrowProps> = ({ onClick }) => (
-  <div
-    className="absolute right-2 top-1/2 z-10 -translate-y-1/2 cursor-pointer dark:opacity-80 dark:hover:opacity-100"
-    onClick={onClick}
-  >
-    <ChevronRight size={30} className="text-white dark:text-gray-300" />
-  </div>
-);

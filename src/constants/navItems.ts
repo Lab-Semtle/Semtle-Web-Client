@@ -1,85 +1,87 @@
-export const aboutMenuItems = [
+import { ROUTES } from '@/constants/routes';
+
+export const ABOUT_MENU = [
   {
     label: '학회 소개',
-    href: '/about',
+    href: ROUTES.ABOUT,
     desc: '테스트',
   },
   {
     label: '조직도',
-    href: '/about/team',
+    href: ROUTES.TEAM,
     desc: '테스트',
   },
   {
     label: '학회 연혁',
-    href: '/about/history',
+    href: ROUTES.HISTORY,
     desc: '테스트',
   },
 ];
 
-export const activityMenuItems = [
+export const ACTIVITY_MENU = [
   {
     label: '학회 활동',
-    href: '/activity',
+    href: ROUTES.ACTIVITY_BOARD,
     desc: '테스트',
   },
   {
     label: '프로젝트',
-    href: '/activity/project',
+    href: ROUTES.PROJECT_BOARD,
     desc: '테스트',
   },
   {
     label: '학회 일정',
-    href: '/activity/schedule',
+    href: ROUTES.SCHEDULE,
     desc: '테스트',
   },
 ];
 
-export const resourceMenuItems = [
+export const RESOURCE_MENU = [
   {
     label: '학회 회칙',
-    href: '/resource/rules',
+    href: ROUTES.RULES,
     desc: '테스트',
   },
   {
     label: '족보',
-    href: '/resource/secret',
+    href: ROUTES.SECRET_BOARD,
     desc: '테스트',
   },
 ];
 
-export const userMenuItems = [
+export const USER_MENU = [
   {
     label: '개인정보수정',
-    href: '/profile/setup',
+    href: ROUTES.PROFILE_SETUP,
     desc: '테스트',
   },
   {
     label: '마이페이지',
-    href: '/profile/mypage',
+    href: ROUTES.PROFILE_MYPAGE,
     desc: '테스트',
   },
   {
     label: '공홈관리시스템',
-    href: '/admin',
+    href: ROUTES.EXECUTIVE,
     desc: '테스트',
   },
 ];
 
-export const navigationMenuItems = [
+export const NAVIGATION_MENU = [
   {
     label: '아치 셈틀',
-    items: aboutMenuItems,
+    items: ABOUT_MENU,
   },
   {
     label: '학회 활동',
-    items: activityMenuItems,
+    items: ACTIVITY_MENU,
   },
   {
     label: '학회 자료실',
-    items: resourceMenuItems,
+    items: RESOURCE_MENU,
   },
   {
     label: '사용자 메뉴',
-    items: userMenuItems,
+    items: USER_MENU,
   },
 ];

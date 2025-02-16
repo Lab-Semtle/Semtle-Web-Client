@@ -1,4 +1,5 @@
 /** 단순한 링크로 구성된 네비게이션 항목 */
+
 import {
   NavigationMenuItem,
   NavigationMenuLink,
@@ -6,7 +7,6 @@ import {
 import Link from 'next/link';
 import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
-import { Button } from '../ui/button';
 
 interface NavItemProps {
   href: string;

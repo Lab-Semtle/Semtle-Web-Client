@@ -86,7 +86,7 @@ export default function ModifyPostEditor({
         deletePayload.deletedFiles.length > 0 ||
         deletePayload.deletedImages.length > 0
       ) {
-        await fetch(`/archives/${id}/delete`, {
+        await fetch(`/archives/${id}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(deletePayload),

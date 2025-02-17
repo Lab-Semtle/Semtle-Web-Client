@@ -21,7 +21,7 @@ export default function DarkModeButton({
       {isDarkMode ? (
         <SunIcon className="h-6 w-6 scale-125 text-yellow-400" />
       ) : (
-        <MoonIcon className="h-6 w-6 scale-125 text-blue-400" />
+        <MoonIcon className="h-6 w-6 scale-125 text-blue-800" />
       )}
     </Button>
   );

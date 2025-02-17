@@ -1,8 +1,6 @@
 /** 데스크톱 사이즈 화면에서 네비게이션바 사용자 메뉴 */
 
 import Link from 'next/link';
-import { VariantShineButton } from '../button/VariantShineButton';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,14 +10,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   NavigationMenuItem,
   NavigationMenuList,
 } from '@/components/ui/navigation-menu';
 import { NavLinkMenu } from '@/components/layouts/NavLinkMenu';
+import { VariantShineButton } from '@/components/button/VariantShineButton';
 import { useSession } from '@/hooks/use-session';
 import { signOutWithForm } from '@/lib/auth/serverActions/auth';
+import { Session } from 'next-auth';
 import { ROUTES } from '@/constants/routes';
 
 export default function DesktopUserMenu() {
@@ -62,18 +62,20 @@ export default function DesktopUserMenu() {
   );
 }
 
-function LoginMenu({ session }: any) {
+function LoginMenu({ session }: { session: Session | null }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="cursor-pointer">
           <AvatarImage
-            src={session.user.profileImageUrl || '/images/default-profile.png'}
-            alt={session.user.name || 'User'}
+            src={
+              session?.user?.profileImageUrl || '/images/default-profile.png'
+            }
+            alt={session?.user?.username || 'User'}
             className="h-10 w-10 rounded-full border-2 border-gray-900"
           />
           <AvatarFallback>
-            {session.user.name?.slice(0, 2) || '??'}
+            {session?.user?.username?.slice(0, 2) || '??'}
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>

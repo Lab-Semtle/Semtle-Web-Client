@@ -1,29 +1,36 @@
 /** 메인페이지 Introduction 섹션 */
 
-export const INTRO_HEADING = 'ARCHI-SEMTLE';
-export const INTRO_DESCRIPTION =
-  '아치 셈틀은 다양한 기술과 아이디어를 탐구하며 함께 성장하는 것을 목표로 하는 학회입니다. 팀 프로젝트와 세미나를 통해 지식을 나누고, 새로운 가능성을 발견하는 기회를 제공합니다.';
-export const INTRO_BUTTON_TEXT = '아치셈틀 더 알아보기';
+export const INTRO_HEADING = 'About "아치셈틀"';
+export const INTRO_DESCRIPTION = `
+아치 셈틀은 한국해양대학교 인공지능공학부에 소속된 컴퓨터공학전공 학술연구회입니다.
+컴퓨터와 소프트웨어 개발 및 인공지능 응용분야에 관심 있는 학생들이 모여 함께 배우고 성장할 수 있는 기회를 만들어가고 있습니다. \u{1F680}
+
+컴퓨터와 관련된 다양한 활동을 통해 개인의 성장을 도모하고, 학부 내 비슷한 관심사를 가진 사람들과 교류하며 유익한 정보를 공유할 수 있는 공간을 제공합니다. \u{1F638}
+`;
+
 export const INTRO_BUTTON_URL = '/about';
 export const INTRO_CARDS = [
   {
     id: 'intro-1',
-    title: '활동 소개',
-    description: '아치 셈틀의 다양한 연구 및 활동 내용을 확인하세요.',
+    title: 'Projects',
+    description: `아치셈틀에서는 자체적으로 팀을 구성해 해커톤, 경진대회, 공모전 등에 참가하거나, 
+    사이드 프로젝트를 통해 실제 결과물을 만들어내는 경험을 할 수 있습니다.`,
     label: 'Activities',
     image: '/1.jpg',
   },
   {
     id: 'intro-2',
-    title: '세미나 및 연구',
-    description: '기술 및 학술 연구를 통한 성장 기회를 제공합니다.',
+    title: 'Communication',
+    description: `선후배 간 꿀팁이나 관심 분야에 대한 정보를 자유롭게 나눌 수 있는 환경을 제공합니다. 
+    또한 엠티, 체육대회, 홈커밍 등 다양한 네트워킹 활동을 통해 학부 행사와는 또 다른, 더욱 끈끈한 커뮤니티를 경험할 수 있습니다.`,
     label: 'Seminar',
     image: '/2.jpg',
   },
   {
     id: 'intro-3',
-    title: '프로젝트',
-    description: '팀 프로젝트를 통해 실제 개발 경험을 쌓아보세요.',
+    title: 'Seminar & Study',
+    description: `최신 트렌드와 전공 과목에서 어려웠던 부분을 세미나와 스터디를 통해 해소할 수 있습니다. 
+    학회원들이 서로 가르치고 배우며 함께 성장할 수 있는 환경을 만들어가고자 합니다.`,
     label: 'Projects',
     image: '/3.jpg',
   },

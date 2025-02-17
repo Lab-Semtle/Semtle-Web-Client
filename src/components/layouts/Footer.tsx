@@ -5,7 +5,14 @@ import AlertCard from '@/components/AlertCard';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="relative bg-gray-900 py-10 text-white">
+    <footer
+      className="relative rounded-t-2xl bg-gray-900 py-10 text-white dark:bg-gray-800"
+      style={{
+        borderTopLeftRadius: '30px', // 왼쪽 위 둥글게
+        borderTopRightRadius: '30px', // 오른쪽 위 둥글게
+        overflow: 'hidden', // 내부 요소 잘림 방지
+      }}
+    >
       <div className="container mx-auto flex flex-col justify-between px-5 md:flex-row">
         {/* 왼쪽 영역 - SNS + ARCHI SEMTLE LAB 정보 */}
         <div className="text-left">

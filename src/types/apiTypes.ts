@@ -32,10 +32,3 @@ export interface Tokens {
   accessToken: string;
   refreshToken: string;
 }
-
-/** Demo 게시판 - 삭제 예정 */
-export interface Post {
-  id: string;
-  title: string;
-  content: string;
-}

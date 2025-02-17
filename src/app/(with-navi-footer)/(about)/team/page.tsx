@@ -1,24 +1,6 @@
 import { Label } from '@/components/ui/label';
 import ProfileCardList from '@/components/ProfileCardList';
 
-// //NOTE - 아치셈틀 집행부 Data Fetching
-// async function fetchBoardMember() {
-//   const res = await fetch('example/api/member');
-//   if (!res.ok) {
-//     throw new Error('Failed to load data...');
-//   }
-//   const boardMembers: BoardMember[] = await res.json();
-//   return boardMembers;
-// }
-// //NOTE - 아치셈틀 페이지 Developers Data Fetching
-// async function fetchDeveloper() {
-//   const res = await fetch('example/api/developer');
-//   if (!res.ok) {
-//     throw new Error('Failed to load data...');
-//   }
-//   const boardDevelopers: BoardDeveloper[] = await res.json();
-//   return boardDevelopers;
-// }
 export default function TeamPage() {
   const boardMembers = [
     {
@@ -151,7 +133,7 @@ export default function TeamPage() {
       {/* 본문 콘텐츠 */}
       <main>
         <section className="mt-[150px] flex flex-col items-center">
-          <Label className="text-[30px] font-bold">조직 구성원</Label>
+          <Label className="text-[30px] font-bold">조직도</Label>
           <div className="mb-[40px] mt-[40px] w-[85vh] text-center">
             우리 학회의 집행부 조직원들은 학회의 운영과 발전을 위해 각자의
             역할을 수행하며 협력하고 있습니다. 회장단을 비롯해 기획, 홍보, 교육,

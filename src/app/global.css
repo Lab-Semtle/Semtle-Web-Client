@@ -81,6 +81,23 @@
     @apply bg-background text-foreground;
   }
 }
+@layer components {
+  .slick-dots li button:before {
+    color: #6b7280 !important; /* 기본 회색 (gray-600) */
+    opacity: 0.6;
+    transition: color 0.3s ease-in-out;
+  }
+
+  .dark .slick-dots li button:before {
+    color: #fff !important; /* 다크 모드에서 흰색 */
+    opacity: 1;
+  }
+
+  .slick-dots li.slick-active button:before {
+    color: #3b82f6 !important; /* 활성화된 점 색상 (파란색) */
+    opacity: 1;
+  }
+}
 
 .hidden {
   opacity: 0;

@@ -1,33 +1,30 @@
 /** 네비게이션 바 */
 
 'use client';
-
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   NavigationMenu,
   NavigationMenuList,
 } from '@/components/ui/navigation-menu';
-
 import NavToogleMenu from '@/components/layouts/NavToggleMenu';
-import NavMobileMenu from './NavMobileMenu';
-import DarkModeButton from '../Button/DarkModeButton';
-import DesktopUserMenu from './NavUserMenu';
-
-import { useSession } from '@/hooks/use-session'; // 사용자 세션 정보
+import NavMobileMenu from '@/components/layouts/NavMobileMenu';
+import DesktopUserMenu from '@/components/layouts/NavUserMenu';
+import DarkModeButton from '@/components/button/DarkModeButton';
+import { useSession } from '@/hooks/use-session';
 import { useDarkMode } from '@/hooks/use-darkmode';
 import { ROUTES } from '@/constants/routes';
 
 export default function NavigationBar() {
   const session = useSession();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // 메뉴 열림 구분
   const { isDarkMode, toggleDarkMode } = useDarkMode(); // 다크모드/라이트모드
-  const [isDesktop, setIsDesktop] = useState(false); // 데스크톱 여부 상태 관리
+  const [isDesktop, setIsDesktop] = useState(false); // 데스크톱/모바일
 
   // 화면 크기에 따라 상태 업데이트
   useEffect(() => {
     const handleResize = () => setIsDesktop(window.innerWidth >= 768);
-    handleResize(); // 초기 렌더링 시 현재 화면 크기 반영
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -39,7 +36,7 @@ export default function NavigationBar() {
 
   return (
     <header>
-      {session?.user && <div>{session.user.name}</div>}
+      {session?.user && <div>{session.user.username}</div>}
       <nav className="fixed top-0 z-50 flex h-[70px] w-full items-center justify-between bg-white/30 shadow-sm backdrop-blur-md transition-colors duration-300 dark:bg-gray-950/50">
         {/* 로고 */}
         <Link

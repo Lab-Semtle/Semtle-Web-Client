@@ -3,18 +3,18 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 import Slider from 'react-slick';
+import PreviousArrowIcon from '@/components/icon/PreviousArrowIcon';
+import NextArrowIcon from '@/components/icon/NextArrowIcon';
+import { ArrowRight } from 'lucide-react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { Button } from '@/components/ui/button';
 import {
   CAROUSEL_ITEM,
   CAROUSEL_BUTTON_TEXT,
   CAROUSEL_BUTTON_URL,
 } from '@/constants/carouselItems';
-import PreviousArrowIcon from '@/components/icon/PreviousArrowIcon';
-import NextArrowIcon from '@/components/icon/NextArrowIcon';
-import { ArrowRight } from 'lucide-react';
 
 const CarouselSection = () => {
   const settings = {
@@ -27,11 +27,11 @@ const CarouselSection = () => {
     pauseOnHover: true,
     prevArrow: <PreviousArrowIcon />,
     nextArrow: <NextArrowIcon />,
-    appendDots: (dots) => (
+    appendDots: (dots: React.ReactNode) => (
       <div className="absolute bottom-4 flex w-full justify-center">
-        <ul className="space-x-2 dark:text-gray-400">{dots}</ul>
+        <ul className="space-x-2">{dots}</ul>
       </div>
-    ), // 네비게이션 다크모드 점 색상 추가 (근데 적용이 안됨)
+    ), // !네비게이션 다크모드 점 색상 추가 (근데 적용이 안됨)
   };
 
   return (

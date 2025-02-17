@@ -7,11 +7,6 @@ import FaqSection from '@/components/home/FaqSection';
 import RecruitSection from '@/components/home/RecruitSection';
 
 export default function HomePage() {
-  const midImageStyle = {
-    width: '100%' as const,
-    height: '200px' as const,
-    objectFit: 'cover' as const,
-  };
   return (
     <div>
       <main className="space-y-24">
@@ -20,11 +15,18 @@ export default function HomePage() {
         <RecentActivitySection />
         <section className="pt-10 md:pt-16">
           <Image
-            src="/midImage.jpeg"
-            alt="Web middle Image"
-            width={500}
-            height={500}
-            style={midImageStyle}
+            src="/images/kmou_2022.jpg"
+            alt="KMOU 2023 Spring"
+            width={1920}
+            height={1080}
+            quality={100}
+            className="h-[400px] w-full object-cover object-bottom brightness-100 dark:brightness-75"
+            style={{
+              WebkitMaskImage:
+                'linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,1) 30%, rgba(0,0,0,1) 70%, rgba(0,0,0,0))',
+              maskImage:
+                'linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,1) 30%, rgba(0,0,0,1) 70%, rgba(0,0,0,0))',
+            }}
           />
         </section>
         <FaqSection />

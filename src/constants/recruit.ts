@@ -1,24 +1,28 @@
-export const RECRUIT_TITLE = 'RECRUIT.';
+export const RECRUIT_TITLE = 'Recruit';
 export const RECRUIT_BUTTON_URL = '/recruit';
 export const RECRUIT_DETAILS = [
   {
-    id: 'teamwork',
-    title: '팀워크 중심',
-    description: '협업을 중시하며, 서로의 강점을 살려 프로젝트를 진행합니다.',
+    id: 'passion',
+    title: '배움에 대한 열정',
+    description:
+      '세미나와 스터디에 적극적으로 참여하며 함께 성장하고자 하는 분을 환영합니다.',
   },
   {
-    id: 'expertise',
-    title: '전문성 강화',
-    description: '각 분야의 전문가들과 함께 성장하는 환경을 제공합니다.',
+    id: 'participation',
+    title: '개발 행사 참여',
+    description:
+      '해커톤, 경진대회, 공모전 등 다양한 행사에 관심이 많고 적극적으로 도전하고 싶은 분을 찾습니다.',
   },
   {
-    id: 'opportunity',
-    title: '다양한 기회',
-    description: '대회 및 프로젝트 참여 기회를 통해 실력을 쌓을 수 있습니다.',
+    id: 'diversity',
+    title: '폭넓은 경험',
+    description:
+      '소프트웨어 개발뿐만 아니라 다양한 컴퓨터 관련 분야를 경험하고 싶은 분이라면 주목하세요!',
   },
   {
-    id: 'network',
-    title: '탄탄한 네트워크',
-    description: '졸업 후에도 지속되는 인맥과 업계 네트워크를 제공합니다.',
+    id: 'community',
+    title: '함께하는 성장',
+    description:
+      '개발 이야기를 나누고, 협력하며 성장할 수 있는 동료를 찾고 있다면 지금 바로 지원하세요!',
   },
 ];

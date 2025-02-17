@@ -4,6 +4,7 @@ import localFont from 'next/font/local';
 import '@/app/global.css';
 import { ThemeProvider } from 'next-themes';
 import { Providers } from '@/mocks/MSWProvider';
+import { initMSW } from '@/mocks/msw-init';
 
 const suit = localFont({
   src: './fonts/SUIT-Variable.woff2',

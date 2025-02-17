@@ -1,6 +1,7 @@
 /** 모바일 사이즈 화면에서 네비게이션 메뉴(사용자 메뉴 포함됨) */
 
 'use client';
+import Link from 'next/link';
 import {
   Sheet,
   SheetContent,
@@ -9,13 +10,12 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
+import DarkModeButton from '@/components/button/DarkModeButton';
 import { MenuIcon } from 'lucide-react';
-import { NAVIGATION_MENU } from '@/constants/navItems';
-import Link from 'next/link';
 import { useSession } from '@/hooks/use-session';
 import { signOutWithForm } from '@/lib/auth/serverActions/auth';
-import DarkModeButton from '@/components/button/DarkModeButton';
 import { ROUTES } from '@/constants/routes';
+import { NAVIGATION_MENU } from '@/constants/navItems';
 
 interface MobileMenuProps {
   setIsMenuOpen: (open: boolean) => void;
@@ -28,7 +28,7 @@ export default function NavMobileMenu({
   toggleDarkMode,
   isDarkMode,
 }: MobileMenuProps) {
-  const session = useSession(); // 세션 가져오기
+  const session = useSession();
 
   const handleLinkClick = () => {
     setIsMenuOpen(false); // 시트 닫기

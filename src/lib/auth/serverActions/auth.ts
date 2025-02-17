@@ -4,7 +4,7 @@
 import { auth, signIn, signOut, update } from '@/lib/auth/config';
 import type { z } from 'zod';
 import { loginSchema } from '@/lib/validation/login-schema';
-import { redirect } from 'next/navigation';
+// import { redirect } from 'next/navigation';
 
 // 이메일, 비밀번호 사용 로그인
 export const signInWithCredentials = async (
@@ -23,7 +23,7 @@ export const signInWithCredentials = async (
   } catch (error) {
     return { message: error.cause.err.message };
   }
-  redirect('/'); // return { message: '메시지!' }
+  // redirect('/'); // return { message: '메시지!' }
 };
 
 // 로그아웃

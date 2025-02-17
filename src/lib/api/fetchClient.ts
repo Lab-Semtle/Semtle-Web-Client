@@ -1,6 +1,7 @@
 /** Fetch API 클라이언트
  * - API 요청을 추상화하여 GET, POST, PUT, DELETE 등의 요청을 간단하고 타입 안전하게 처리
  */
+
 import {
   type ApiResponseError,
   type ApiResponseWithData,
@@ -8,11 +9,19 @@ import {
 import { getSession } from '@/lib/auth/serverActions/auth';
 import { auth } from '@/lib/auth/config'; // 서버사이드에서 사용할 인증 메서드
 
-type FetchOptions<TBody = unknown> = Omit<RequestInit, 'headers' | 'body'> & {
+type Params<T = unknown> = {
+  [K in keyof T]?: string | number | boolean | null | undefined;
+};
+
+type FetchOptions<TBody = unknown, TParams = unknown> = Omit<
+  RequestInit,
+  'headers' | 'body'
+> & {
   headers?: Record<string, string>;
   body?: TBody;
   withAuth?: boolean;
   contentType?: string;
+  params?: Params<TParams>;
 };
 
 // API 요청을 담당하는 유틸리티 클래스
@@ -50,41 +59,49 @@ export class FetchClient {
 
   private async request<TResponse = undefined, TBody = unknown>(
     url: string,
-    options: FetchOptions<TBody> = {},
+    options: FetchOptions<TBody>,
   ): Promise<ApiResponseWithData<TResponse> | null> {
     const {
       withAuth = false, // true인 경우 인증 토큰(Authorization 헤더)을 추가, 기본값은 인증 필요 X 상태
       contentType = 'application/json', // 기본 Content-Type
       headers, // 추가적인 커스텀 헤더
       body, // 요청 본문 데이터
+      params = {},
       ...restOptions // 나머지 옵션(메서드 등)
     } = options;
 
     // 사용자의 액세스 토큰 가져옴
     // withAuth가 true일 때만 세션 정보 가져옴, 즉 인증 필요없는 API라면 세션 정보 안 가져옴
-    const session = withAuth ? await getSession() : null; // this.getSession() 해야하나?
+    const session = withAuth ? await getSession() : null;
 
     // 요청 헤더 구성
     const allHeaders = new Headers(
       Object.assign(
-        { 'Content-Type': contentType }, // JSON, 기본 Content-Type 설정
+        {
+          'Content-Type': contentType,
+        },
         withAuth && session
-          ? { Authorization: `Bearer ${session?.accessToken}` }
+          ? {
+              Authorization: `Bearer ${session.accessToken}`,
+            }
           : {}, // withAuth가 true인 경우 액세스 토큰을 헤더에 추가
         headers,
       ),
     );
 
-    // Fetch API를 사용하여 요청을 전송
-    // 요청 본문이 있는 경우 JSON으로 변환하여 전송
-    console.log('[FetchClient] API 요청 시작:', {
-      url: `${this.baseUrl}${url}`,
-      method: restOptions.method,
-      headers: allHeaders,
-      body: body ? JSON.stringify(body) : undefined,
-    });
+    const fetchUrl = `${this.baseUrl}${url}${
+      Object.keys(params).length > 0
+        ? '?' +
+          new URLSearchParams(
+            Object.entries(params)
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              .filter(([_, value]) => value != null)
+              .map(([key, value]) => [key, String(value)]),
+          ).toString()
+        : ''
+    }`;
 
-    const response = await fetch(`${this.baseUrl}${url}`, {
+    const response = await fetch(fetchUrl, {
       ...restOptions, // GET, POST 등 요청 메서드
       headers: allHeaders, // 구성된 헤더
       body: body ? JSON.stringify(body) : undefined, // 본문 데이터가 있으면 JSON으로 직렬화하여 추가
@@ -142,3 +159,12 @@ export class FetchClient {
     return this.request<TResponse>(url, { method: 'DELETE', ...options });
   }
 }
+
+// 사용 예시
+// const response = await apiClient.post<
+//   {accessToken: string}, // Response 타입
+//   {refreshToken: string} // body 타입 (get과 delete 메소드에서는 작성할 필요 없음)
+// >('/auth/refresh', {
+//   body: {refreshToken: token.refreshToken},
+//   withAuth: true, // 인증이 필요한 API 요청일 경우 추가
+// });

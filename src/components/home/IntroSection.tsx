@@ -1,24 +1,25 @@
 /** 메인페이지 Introduction 섹션 */
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { TextFadeUp } from '@/components/text/TextFadeUp';
+import { FadeUp } from '@/components/animation/FadeUp';
 import { ArrowRight } from 'lucide-react';
+import { VariantShineButton } from '@/components/button/VariantShineButton';
 import {
   INTRO_HEADING,
   INTRO_DESCRIPTION,
-  INTRO_BUTTON_TEXT,
   INTRO_BUTTON_URL,
   INTRO_CARDS,
 } from '@/constants/introItems';
 
 const IntroSection = () => {
   return (
-    <section className="py-4">
-      <div className="container mx-auto flex flex-col items-center gap-4 lg:px-16">
-        {/* 소개 헤더 */}
-        <TextFadeUp
+    <section className="py-20">
+      <div className="container mx-auto flex flex-col items-center gap-5 lg:px-16">
+        {/* 헤더 */}
+        <FadeUp
           direction="up"
           className="flex flex-col items-center space-y-0 pb-5 pt-0 text-center"
         >
@@ -26,18 +27,27 @@ const IntroSection = () => {
             {INTRO_HEADING}
           </h2>
           <p className="mb-6 text-black dark:text-white md:text-base lg:max-w-2xl lg:text-lg">
-            {INTRO_DESCRIPTION}
+            {INTRO_DESCRIPTION.split('\n').map((line, index) => (
+              <span key={index}>
+                {line}
+                <br />
+              </span>
+            ))}
           </p>
-          <Button variant="ghost" className="w-full sm:w-auto" asChild>
-            <a href={INTRO_BUTTON_URL}>
-              {INTRO_BUTTON_TEXT}
-              <ArrowRight className="ml-2 size-4" />
-            </a>
-          </Button>
-        </TextFadeUp>
+          <VariantShineButton className="bg-blue-300 text-blue-950 hover:bg-blue-700 hover:text-gray-200 dark:bg-blue-700 dark:text-gray-200 dark:hover:bg-blue-300 dark:hover:text-blue-950">
+            <Link href={INTRO_BUTTON_URL} className="flex items-center gap-2">
+              아치셈틀 더 알아보기
+              <ArrowRight className="size-5" />
+            </Link>
+          </VariantShineButton>
+        </FadeUp>
 
         {/* 카드 리스트 */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+        <FadeUp
+          direction="up"
+          className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6"
+          staggerChildren={0.2} // 카드들이 순차적으로 FadeUp 되도록 설정
+        >
           {INTRO_CARDS.map((card) => (
             <Card
               key={card.id}
@@ -58,11 +68,18 @@ const IntroSection = () => {
                 </h3>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">{card.description}</p>
+                <p className="text-muted-foreground">
+                  {card.description.split('\n').map((line, index) => (
+                    <span key={index}>
+                      {line}
+                      <br />
+                    </span>
+                  ))}
+                </p>
               </CardContent>
             </Card>
           ))}
-        </div>
+        </FadeUp>
       </div>
     </section>
   );

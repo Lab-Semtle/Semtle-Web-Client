@@ -374,3 +374,73 @@ async function _signIn(
     (data || '문제가 발생했습니다, 잠시 후 다시 시도하세요.') as string,
   );
 }
+
+// import NextAuth, { NextAuthOptions } from 'next-auth';
+// import CredentialsProvider from 'next-auth/providers/credentials';
+// import { JWT } from 'next-auth/jwt';
+
+// export const authOptions: NextAuthOptions = {
+//   providers: [
+//     CredentialsProvider({
+//       name: 'Credentials',
+//       credentials: {
+//         email: { label: 'Email', type: 'text' },
+//         password: { label: 'Password', type: 'password' },
+//       },
+//       async authorize(credentials) {
+//         // 로그인 API 요청
+//         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signin`, {
+//           method: 'POST',
+//           headers: { 'Content-Type': 'application/json' },
+//           body: JSON.stringify(credentials),
+//         });
+
+//         if (!res.ok) throw new Error('로그인 실패');
+
+//         const user = await res.json(); // API 응답 데이터
+
+//         return {
+//           uuid: user.uuid, // 고유 ID
+//           username: user.username, // 사용자 이름
+//           roles: user.roles, // 역할 (배열)
+//           profileImageUrl: user.profileImageUrl || '/images/default-profile.png', // 기본 이미지 제공
+//           manageApprovalStatus: user.manageApprovalStatus, // 승인 여부
+//           accessToken: user.accessToken, // 액세스 토큰
+//           refreshToken: user.refreshToken, // 리프레시 토큰
+//         };
+//       },
+//     }),
+//   ],
+//   callbacks: {
+//     async jwt({ token, user }: { token: JWT; user?: any }) {
+//       if (user) {
+//         return {
+//           ...token,
+//           uuid: user.uuid,
+//           username: user.username,
+//           role: user.roles[0], // `roles[0]` 저장
+//           profileImageUrl: user.profileImageUrl,
+//           manageApprovalStatus: user.manageApprovalStatus,
+//           accessToken: user.accessToken,
+//           refreshToken: user.refreshToken,
+//         };
+//       }
+//       return token;
+//     },
+//     async session({ session, token }: { session: any; token: JWT }) {
+//       session.user = {
+//         uuid: token.uuid,
+//         username: token.username,
+//         role: token.role, // 단일 역할 저장
+//         profileImageUrl: token.profileImageUrl,
+//         manageApprovalStatus: token.manageApprovalStatus,
+//       };
+//       session.accessToken = token.accessToken;
+//       session.refreshToken = token.refreshToken;
+//       return session;
+//     },
+//   },
+//   pages: {
+//     signIn: '/auth/signin', // 로그인 페이지 경로
+//   },
+// };

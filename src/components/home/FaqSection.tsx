@@ -9,8 +9,8 @@ import {
 import { faqData } from '@/constants/faq';
 
 const FaqSection = () => (
-  <section className="mx-auto mt-28 max-w-[800px] px-4 py-16">
-    {/* 섹션 헤더 */}
+  <section className="mx-auto mt-28 max-w-[800px] px-4 py-20">
+    {/* 헤더 */}
     <h2 className="mb-4 text-pretty text-center text-3xl font-extrabold md:mb-5 md:text-4xl lg:mb-6 lg:max-w-3xl lg:text-5xl">
       FAQ
     </h2>

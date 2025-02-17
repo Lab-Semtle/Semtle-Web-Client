@@ -79,10 +79,15 @@ export default function ProjectPage() {
     setCurrentPage(page);
   };
 
-  // 프로젝트 등록 버튼 클릭 시 이동
-  const handleCreateProject = () => {
-    router.push('/projects/active/create');
-  };
+// 프로젝트 등록 버튼 클릭 시 이동
+const handleCreateProject = () => {
+  const path =
+    activeTab === 'active'
+      ? '/projects/active/create'
+      : '/projects/completed/new';
+  router.push(path);
+};
+
 
   // 프로젝트 삭제 (완료된 프로젝트에서만 가능)
   const handleDelete = (selectedCardIds: number[]) => {
@@ -135,13 +140,14 @@ export default function ProjectPage() {
         </button>
       </div>
 
-      {/* 필터 + 버튼 */}
-      <div className="flex items-center justify-start gap-4 p-4">
-        {activeTab === 'active' && (
-          <Button onClick={handleCreateProject}>프로젝트 등록</Button>
-        )}
-        <FilterBar onFilter={handleFilter} />
-      </div>
+{/* 필터 + 버튼 */}
+<div className="flex items-center justify-start gap-4 p-4">
+  <Button onClick={handleCreateProject}>
+    {activeTab === 'active' ? '프로젝트 등록' : '완료된 프로젝트 등록'}
+  </Button>
+  <FilterBar onFilter={handleFilter} />
+</div>
+
 
       {/* 카드 리스트 */}
       {activeTab === 'active' ? (

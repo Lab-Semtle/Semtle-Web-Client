@@ -29,6 +29,7 @@ interface PostData {
   images: string[];
 }
 
+
 const RecruitmentPostPage = () => {
   const [postData, setPostData] = useState<PostData>({
   projectTitle: '제18회 공개SW 개발자대회',
@@ -42,18 +43,6 @@ const RecruitmentPostPage = () => {
 });
 
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      const newImages = Array.from(files).map((file) =>
-        URL.createObjectURL(file),
-      );
-      setPostData((prevData) => ({
-        ...prevData,
-        images: [...prevData.images, ...newImages],
-      }));
-    }
-  };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPostData({
@@ -62,6 +51,27 @@ const RecruitmentPostPage = () => {
     });
   };
 
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const newFiles = Array.from(event.target.files).map((file) =>
+        URL.createObjectURL(file)
+      );
+      setPostData((prevData) => ({
+        ...prevData,
+        images: [...prevData.images, ...newFiles], // 기존 이미지 유지하면서 추가
+      }));
+    }
+  };
+  
+  const handleImageRemove = (index: number) => {
+    setPostData((prevData) => ({
+      ...prevData,
+      images: prevData.images.filter((_, i) => i !== index),
+    }));
+  };
+  
+  
   return (
     <div className="mx-auto max-w-4xl bg-white p-6 shadow-md" style={{ paddingTop: '80px' }}>
       {/* 프로젝트 제목 입력란 */}
@@ -178,32 +188,38 @@ const RecruitmentPostPage = () => {
         />
       </div>
 
-      {/* 이미지 업로드 */}
-      <div className="mb-6">
-        <label className="font-semibold text-gray-700">게시물 이미지</label>
-        <Input
-          type="file"
-          multiple
-          onChange={handleImageChange}
-          className="mt-2 rounded-md border border-gray-300 bg-gray-50 p-3"
-        />
-        <div className="mt-4 flex space-x-4 overflow-x-auto">
-          {postData.images.map((image, index) => (
-            <Card
-              key={index}
-              className="flex h-32 w-32 items-center justify-center rounded-md shadow-md"
-            >
-              <CardContent>
-                <Image
-                  src={image}
-                  alt={`uploaded-${index}`}
-                  className="h-full w-full rounded-md object-cover"
-                />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
+{/* 이미지 업로드 */}
+<div className="mb-6">
+  <label className="font-semibold text-gray-700">게시물 이미지</label>
+  <Input
+    id="fileInput"
+    type="file"
+    multiple
+    onChange={handleImageChange}
+    className="mt-2 rounded-md border border-gray-300 bg-gray-50 p-3"
+  />
+
+  <div className="mt-4 flex space-x-4 overflow-x-auto">
+    {postData.images.map((image, index) => (
+      <Card key={index} className="relative flex h-32 w-32 items-center justify-center rounded-md shadow-md">
+        <CardContent>
+          <img
+            src={image}
+            alt={`uploaded-${index}`}
+            className="h-full w-full rounded-md object-cover"
+          />
+        </CardContent>
+        {/* 삭제 버튼 */}
+        <button
+          onClick={() => handleImageRemove(index)}
+          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xs"
+        >
+          ✕
+        </button>
+      </Card>
+    ))}
+  </div>
+</div>
 
       {/* 버튼 영역 */}
       <div className="mb-6 flex justify-center space-x-4">

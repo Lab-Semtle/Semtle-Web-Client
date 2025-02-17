@@ -1,14 +1,13 @@
 /** 목업 API */
-import { HttpResponse, http } from 'msw';
-import { ApiResponse, ApiResponseError } from '@/types/api'; // 응답 타입 사용
+import { http, HttpResponse } from 'msw';
+import { ApiResponse, ApiResponseError } from '@/types/apiTypes';
 
 export const authHandlers = [
   // 로그인 목업 API
   http.post<never, { email: string; password: string }, ApiResponse>(
     '/auth/signin',
     async ({ request }) => {
-      const bodyArray = await request.json();
-      const body = bodyArray[0]; // 첫 번째 객체로 접근, 수정예정(프론트에서 반환값이 이상함)
+      const body = await request.json();
       console.log('[Mock API] 받은 요청 데이터:', body);
 
       // 2. 유저 존재 여부 확인

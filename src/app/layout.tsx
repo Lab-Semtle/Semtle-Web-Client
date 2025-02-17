@@ -3,26 +3,33 @@ import { Toaster } from '@/components/ui/toaster';
 import localFont from 'next/font/local';
 import '@/app/global.css';
 import { ThemeProvider } from 'next-themes';
-import { Providers } from '@/mocks/msw-providers';
+import { Providers } from '@/mocks/MSWProvider';
+import { initMSW } from '@/mocks/msw-init';
 import Script from 'next/script';
 
+const suit = localFont({
+  src: './fonts/SUIT-Variable.woff2',
+  display: 'swap',
+  variable: '--font-suit',
+});
+
+const yclover = localFont({
+  src: './fonts/YClover-Bold.woff2',
+  display: 'swap',
+  variable: '--font-yclover',
+});
+
+const moneygraphy = localFont({
+  src: './fonts/Moneygraphy-Rounded.woff2',
+  display: 'swap',
+  variable: '--font-moneygraphy',
+});
+
 const pretendard = localFont({
-  src: '../../public/fonts/PretendardVariable.woff2',
+  src: './fonts/PretendardVariable.woff2',
   display: 'swap',
   weight: '45 920',
   variable: '--font-pretendard',
-});
-
-const geistSans = localFont({
-  src: '../../public/fonts/GeistVF.woff',
-  variable: '--font-geist-sans',
-  weight: '100 900',
-});
-
-const geistMono = localFont({
-  src: '../../public/fonts/GeistMonoVF.woff',
-  variable: '--font-geist-mono',
-  weight: '100 900',
 });
 
 export const metadata: Metadata = {
@@ -36,12 +43,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="ko"
-      suppressHydrationWarning
-      className={`${pretendard.variable} ${geistSans.variable} ${geistMono.variable}`}
-    >
-      <body className="font-pretendard antialiased">
+    <html lang="ko" suppressHydrationWarning>
+      <body
+        className={`${moneygraphy.variable} ${pretendard.variable} ${yclover.variable} ${suit.variable} font-pretendard antialiased`}
+      >
         <Providers>
           <ThemeProvider attribute="class" defaultTheme="system">
             <main>{children}</main>

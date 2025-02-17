@@ -10,6 +10,7 @@ import {
   CarouselItem,
 } from '@/components/ui/carousel';
 import ButtonLink from '@/components/ButtonLink';
+import KakaoMap from '@/components/KakaoMap';
 
 //NOTE - 행사탭 Data Fetching
 // async function fetchEventTab() {
@@ -145,7 +146,7 @@ export default function AboutPage() {
           </Label>
 
           <Tabs defaultValue="event" className="w-full">
-            <TabsList className="mx-auto mb-10 mt-10 flex w-[85%] max-w-[350px] justify-center gap-1">
+            <TabsList className="mx-auto mb-10 mt-10 flex w-[85%] max-w-[326px] justify-center gap-1">
               <TabsTrigger value="event" className="text-[17px]">
                 행사
               </TabsTrigger>
@@ -162,7 +163,7 @@ export default function AboutPage() {
             {/* 행사 탭 */}
             <TabsContent
               value="event"
-              className="mx-auto mb-28 w-full max-w-[1000px]"
+              className="mx-auto mb-28 w-full max-w-[950px]"
             >
               <div className="mb-12">
                 <Label className="text-[26px] font-bold">행사</Label>
@@ -349,7 +350,7 @@ const ContactTab: React.FC<ContactTabProps> = ({ contact }) => {
       <Label className="text-[26px] font-bold">오시는 길</Label>
       <p className="mt-10 text-[17px] leading-8">{contact.address}</p>
       <div className="mb-20 mt-8 flex flex-wrap justify-center gap-6">
-        <Image src="/map.jpg" alt="Semtle location" width={800} height={400} />
+        <KakaoMap />
       </div>
       <Label className="text-[26px] font-bold">문의하기</Label>
       <p className="mb-3 mt-2 text-[17px]">

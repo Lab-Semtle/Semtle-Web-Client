@@ -4,6 +4,7 @@ import localFont from 'next/font/local';
 import '@/app/global.css';
 import { ThemeProvider } from 'next-themes';
 import { Providers } from '@/mocks/msw-providers';
+import Script from 'next/script';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
@@ -44,6 +45,10 @@ export default function RootLayout({
         <Providers>
           <ThemeProvider attribute="class" defaultTheme="system">
             <main>{children}</main>
+            <Script
+              type="text/javascript"
+              src={`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY}&autoload=false&libraries=services`}
+            ></Script>
           </ThemeProvider>
         </Providers>
         <Toaster />

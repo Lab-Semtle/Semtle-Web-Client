@@ -9,6 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fullcalendar/common": "^5.11.5",
+    "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15",
+    "@fullcalendar/timegrid": "^6.1.15",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-alert-dialog": "^1.1.4",
@@ -56,6 +62,7 @@
     "react-day-picker": "^9.5.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.54.2",
+    "react-kakao-maps-sdk": "^1.1.27",
     "react-resizable-panels": "^2.1.7",
     "react-slick": "^0.30.3",
     "recharts": "^2.15.0",
@@ -74,6 +81,7 @@
     "eslint": "^8",
     "eslint-config-next": "^15.1.6",
     "eslint-config-prettier": "^9.1.0",
+    "kakao.maps.d.ts": "^0.1.40",
     "msw": "^2.7.0",
     "postcss": "^8",
     "prettier": "^3.4.2",

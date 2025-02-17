@@ -10,66 +10,10 @@ import {
   CardHeader,
 } from '@/components/ui/card';
 import { FadeUp } from '@/components/animation/FadeUp';
-
-import { useEffect, useState } from 'react';
-import { initMSW } from '@/mocks/msw-init'; // MSW 초기화 함수 추가
-import apiClient from '@/lib/api/apiClient'; // Fetch API Client 추가
-import { ApiResponseWithData, isApiResponseError } from '@/types/apiTypes'; // API 반환 타입
-
-interface ActivityPost {
-  id: number;
-  title: string;
-  summary: string;
-  createdAt: string;
-}
+import { useRecentActivityPosts } from '@/hooks/api/useRecentActivityPosts';
 
 const RecentActivitySection = () => {
-  const [posts, setPosts] = useState<ActivityPost[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    async function loadData() {
-      if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
-        await initMSW();
-        console.log('[useEffect] MSW 초기화 완료, API 요청 시작');
-      }
-
-      try {
-        const response = await apiClient.get<
-          ApiResponseWithData<{ posts: ActivityPost[] }>
-        >('/index/activity/recent?limit=3');
-
-        if (isMounted && response?.data && 'posts' in response.data) {
-          const { posts } = response.data;
-
-          if (Array.isArray(posts)) {
-            setPosts(posts);
-          } else {
-            throw new Error(
-              'Invalid response structure: posts is not an array',
-            );
-          }
-        } else {
-          throw new Error('Invalid response structure');
-        }
-      } catch (error) {
-        console.error('Error fetching recent activity posts:', error);
-        setError('Failed to load news');
-        throw error;
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    }
-
-    loadData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { posts, loading, error } = useRecentActivityPosts(3); // 3개 조회
 
   if (loading) return <div className="py-10 text-center">Loading...</div>;
   if (error)

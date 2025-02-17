@@ -69,7 +69,7 @@ export const USER_MENU = [
 
 export const NAVIGATION_MENU = [
   {
-    label: '아치 셈틀',
+    label: '학회 소개',
     items: ABOUT_MENU,
   },
   {

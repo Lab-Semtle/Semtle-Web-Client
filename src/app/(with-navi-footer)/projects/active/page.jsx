@@ -11,9 +11,8 @@ import {
   PaginationLink,
 } from '@/components/ui/pagination';
 
-import Header from './components/Header';
-import FilterBar from './components/FilterBar';
-import CardList from './components/CardList';
+import FilterBar from '@/components/FilterBar';
+import CardList from '@/components/CardList';
 
 export default function Active() {
   const [isLoggedIn] = useState(true); // setIsLoggedIn
@@ -61,15 +60,12 @@ export default function Active() {
 
   return (
     <>
-      <Header />
-      <h2 className="mb-8 mt-8 text-center text-4xl font-bold">프로젝트</h2>
-      <div className="flex items-center justify-start gap-4 p-4">
-        {isLoggedIn && (
-          <Button onClick={handleCreateProject}>프로젝트 등록</Button>
-        )}
-        <FilterBar onFilter={handleFilter} />
-      </div>
-      <CardList cards={paginatedCards} />
+  <h2 className="mb-8 mt-100 text-center text-4xl font-bold">프로젝트</h2>
+  <div className="flex items-center justify-start gap-4 p-4">
+    {isLoggedIn && <Button onClick={handleCreateProject}>프로젝트 등록</Button>}
+    <FilterBar onFilter={handleFilter} />
+  </div>
+  <CardList cards={paginatedCards} />
 
       {/* Shadcn Pagination 적용 */}
       <Pagination>

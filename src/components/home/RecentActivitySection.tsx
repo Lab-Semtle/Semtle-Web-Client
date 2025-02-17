@@ -90,13 +90,14 @@ const RecentActivitySection = () => {
         {/* 뉴스 카드 리스트 */}
         <FadeUp
           direction="up"
-          className="flex w-full flex-col gap-6 md:gap-8"
+          className="flex w-full max-w-[1200px] flex-col items-center justify-center gap-6"
           staggerChildren={0.2} // 카드들이 순차적으로 나타나도록 설정
         >
           {posts.map((post) => (
             <FadeUp key={post.id} direction="up">
-              <Card className="relative w-full max-w-[1000px] overflow-hidden border-none bg-transparent shadow-none md:flex md:flex-row">
-                <div className="aspect-[16/9] h-full w-full flex-shrink-0 md:w-1/3">
+              <Card className="relative mx-auto flex min-h-[220px] w-full max-w-[1000px] overflow-hidden border-none bg-transparent shadow-none md:flex-row">
+                {/* 이미지 컨테이너 */}
+                <div className="w-full flex-shrink-0 md:w-1/3">
                   <a
                     href="#"
                     className="block transition-opacity duration-200 hover:opacity-70"
@@ -106,25 +107,28 @@ const RecentActivitySection = () => {
                       alt={post.title}
                       width={500}
                       height={300}
-                      className="block h-full w-full rounded-lg object-cover md:rounded-xl"
+                      className="block aspect-[16/9] h-full w-full object-cover md:rounded-xl"
                     />
                   </a>
                 </div>
 
-                <div className="relative flex w-full flex-col md:w-2/3">
-                  <CardHeader className="pb-2 md:pb-3">
-                    <h3 className="text-[1.4rem] font-semibold text-foreground md:text-[1.5rem]">
-                      <a href="#" className="hover:underline">
-                        {post.title}
-                      </a>
-                    </h3>
-                  </CardHeader>
+                {/* 카드 내용 컨테이너 */}
+                <div className="relative flex w-full flex-col justify-between px-4 py-3 md:w-2/3">
+                  <div className="flex flex-col">
+                    <CardHeader className="pb-2 md:pb-3">
+                      <h3 className="text-[1.4rem] font-semibold text-foreground md:text-[1.5rem]">
+                        <a href="#" className="hover:underline">
+                          {post.title}
+                        </a>
+                      </h3>
+                    </CardHeader>
 
-                  <CardContent className="pb-3 md:pb-4">
-                    <p className="text-black dark:text-gray-200">
-                      {post.summary}
-                    </p>
-                  </CardContent>
+                    <CardContent className="flex-1">
+                      <p className="text-black dark:text-gray-200">
+                        {post.summary}
+                      </p>
+                    </CardContent>
+                  </div>
 
                   <CardFooter className="flex justify-end pb-1 md:pb-3">
                     <a

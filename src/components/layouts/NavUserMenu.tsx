@@ -29,12 +29,7 @@ export default function DesktopUserMenu() {
     return (
       <NavigationMenuList className="flex items-center gap-3">
         <NavigationMenuItem>
-          <form
-            action={signOutWithForm}
-            onSubmit={(e) => {
-              e.preventDefault();
-            }}
-          >
+          <form action={signOutWithForm}>
             <VariantShineButton
               type="submit"
               className="bg-blue-300 text-blue-950 hover:bg-blue-700 hover:text-gray-200 dark:bg-blue-700 dark:text-gray-200 dark:hover:bg-blue-300 dark:hover:text-blue-950"
@@ -72,6 +67,10 @@ function LoginMenu({ session }: { session: Session | null }) {
               session?.user?.profileImageUrl || '/images/default-profile.png'
             }
             alt={session?.user?.username || 'User'}
+            onError={(e) => {
+              (e.target as HTMLImageElement).src =
+                '/images/default-profile.png';
+            }}
             className="h-10 w-10 rounded-full border-2 border-gray-900"
           />
           <AvatarFallback>

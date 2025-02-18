@@ -25,6 +25,7 @@ import { ArrowLeft, LucideEye, LucideEyeOff } from 'lucide-react';
 import { signInWithCredentials } from '@/lib/auth/serverActions/auth'; // Next Auth
 
 export default function SignInPage() {
+  // 입력값 검증
   const { register, handleSubmit, formState } = useForm<
     z.infer<typeof loginSchema>
   >({
@@ -35,17 +36,19 @@ export default function SignInPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  // 로그인 API 호출 중 발생한 에러 처리 (서버액션과 상태 연결)
-  const [state, action] = useFormState(signInWithCredentials, {
-    message: '',
-  });
+  // // 로그인 상태 관리
+  // const [state, action] = useFormState(signInWithCredentials, {
+  //   message: '',
+  // });
 
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     console.log('[SignInPage] 제출된 로그인 데이터:', data);
+
     startTransition(async () => {
       try {
         await signInWithCredentials(data);
@@ -115,16 +118,7 @@ export default function SignInPage() {
             </div>
           </CardHeader>
           <CardContent>
-            {/* 에러 메시지 출력 */}
-            {state.message && (
-              <h2 className="mb-4 text-center text-red-500">{state.message}</h2>
-            )}
-            <form
-              action={action}
-              method="post"
-              onSubmit={handleSubmit(onSubmit)}
-              className="space-y-4"
-            >
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {/* 이메일 입력 폼 */}
               <div className="flex flex-col space-y-1">
                 <Input
@@ -148,7 +142,7 @@ export default function SignInPage() {
                     placeholder="비밀번호"
                     {...register('password')}
                     aria-invalid={!!errors.password} // 에러 발생 시 시각적 접근성 대응
-                    className="flex-1 border-none px-3 focus:outline-none focus:ring-0"
+                    className="flex-1 border-none px-3 focus:ring-0 focus:outline-none"
                   />
                   <button
                     type="button"
@@ -192,7 +186,7 @@ export default function SignInPage() {
           <CardFooter className="flex flex-col space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
             <Button
               variant="secondary"
-              onClick={() => router.push('/recruiting')}
+              onClick={() => router.push('/recruit')}
               className="w-full bg-white hover:bg-slate-300 sm:w-1/3"
             >
               가입하기

@@ -25,7 +25,7 @@ export async function updateUser(formData: FormData) {
   const updatedUser = await res.json();
   await updateSession({
     user: {
-      name: updatedUser.displayName,
+      username: updatedUser.displayName,
     },
   });
   redirect('/setup'); // 브라우저에 출력되는 화면 갱신 (업데이트할 경로)

@@ -1,59 +1,74 @@
-/** 목업 API */
+/** 로그인 관련 Mock API 핸들러 */
 import { http, HttpResponse } from 'msw';
-import { ApiResponse, ApiResponseError } from '@/types/apiTypes';
+import { ApiResponseWithData, ApiResponseError } from '@/types/apiTypes';
 
 export const authHandlers = [
   // 로그인 목업 API
-  http.post<never, { email: string; password: string }, ApiResponse>(
-    '/auth/signin',
-    async ({ request }) => {
-      const body = await request.json();
-      console.log('[Mock API] 받은 요청 데이터:', body);
+  http.post('/auth/signin', async ({ request }) => {
+    const body = await request.json();
+    console.log('[Mock API] 받은 요청 데이터:', body);
 
-      // 2. 유저 존재 여부 확인
-      console.log('[Mock API] 요청에서 받은 이메일:', body.email);
-      const user = users.find((u) => {
-        console.log('[Mock API] 현재 유저 이메일:', u.email);
-        return u.email === body.email;
-      });
-      console.log('[msw handlers] 매칭된 유저:', user);
+    // 요청에서 받은 이메일 확인
+    const user = users.find((u) => u.email === body.email);
 
-      if (!user) {
-        console.error('[Mock API] 등록되지 않은 이메일');
-        return HttpResponse.json<ApiResponseError>(
+    if (!user) {
+      console.error('[Mock API] 등록되지 않은 이메일');
+      return Promise.resolve(
+        HttpResponse.json<ApiResponseError>(
           {
             status: 401,
-            code: 'INVALID_EMAIL',
+            code: 'NON_EXISTENT_ACCOUNT',
             message: '등록되지 않은 이메일입니다.',
           },
           { status: 401 },
-        );
-      }
+        ),
+      );
+    }
 
-      // 3. 비밀번호 검증
-      if (user.password !== body.password) {
-        console.error('[Mock API] 비밀번호 불일치');
-        return HttpResponse.json<ApiResponseError>(
+    // 비밀번호 검증
+    if (user.password !== body.password) {
+      console.error('[Mock API] 비밀번호 불일치');
+      return Promise.resolve(
+        HttpResponse.json<ApiResponseError>(
           {
             status: 401,
-            code: 'INVALID_PASSWORD',
+            code: 'MISMATCHED_PASSWORD',
             message: '비밀번호가 일치하지 않습니다.',
           },
           { status: 401 },
-        );
-      }
+        ),
+      );
+    }
 
-      // 4. 성공적으로 로그인되었을 경우
-      console.log('[Mock API] 로그인 성공 - 유저 정보 반환');
-      return HttpResponse.json<ApiResponse>({
-        status: 200,
-        code: 'SUCCESS',
-      });
-    },
-  ),
+    // Mock 토큰 생성 (실제 JWT 생성 로직은 없음)
+    const accessToken = `mock_access_token_${user.id}`;
+    const refreshToken = `mock_refresh_token_${user.id}`;
+
+    console.log('[Mock API] 로그인 성공 - 유저 정보 반환');
+
+    return Promise.resolve(
+      HttpResponse.json<ApiResponseWithData<AuthMockResponse>>(
+        {
+          status: 200,
+          code: 'SUCCESS',
+          message: '로그인 성공', // <-- 추가 (MSW 타입 오류 해결)
+          data: {
+            uuid: user.id,
+            accessToken,
+            refreshToken,
+            username: user.fullname,
+            roles: [user.role],
+            manageApprovalStatus: true,
+            profileImageUrl: user.profileImageUrl,
+          },
+        },
+        { status: 200 },
+      ),
+    );
+  }),
 ];
 
-/** 목업 데이터 */
+/** 목업 유저 데이터 */
 const users = [
   {
     id: '1',
@@ -72,3 +87,14 @@ const users = [
     profileImageUrl: 'https://example.com/user2.png',
   },
 ];
+
+/** API 응답 타입 */
+interface AuthMockResponse {
+  uuid: string;
+  accessToken: string;
+  refreshToken: string;
+  username: string;
+  roles: string[];
+  manageApprovalStatus: boolean;
+  profileImageUrl?: string;
+}

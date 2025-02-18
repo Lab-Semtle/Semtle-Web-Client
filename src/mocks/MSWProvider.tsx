@@ -1,4 +1,5 @@
 /** 프로젝트 전체에 MSW 적용 */
+
 import { MSWComponent } from '@/mocks/MSWComponent';
 
 export function Providers({ children }: { children: React.ReactNode }) {

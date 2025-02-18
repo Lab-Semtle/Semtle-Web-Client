@@ -31,7 +31,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/lib/auth/auth.d.ts",
+    "src/types/auth.d.ts",
     "src/app/projects/active/post/[id]/page.jsx",
     "src/app/projects/active/update/[id]/page.jsx"
   ],

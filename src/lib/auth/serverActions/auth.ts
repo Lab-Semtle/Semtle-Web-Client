@@ -1,10 +1,9 @@
-/** 인증 관련 서버사이드 기능 */
-'use server';
+/** 서버사이드에서 인증 처리 */
 
+'use server';
 import { auth, signIn, signOut, update } from '@/lib/auth/config';
 import type { z } from 'zod';
 import { loginSchema } from '@/lib/validation/login-schema';
-// import { redirect } from 'next/navigation';
 
 // 이메일, 비밀번호 사용 로그인
 export const signInWithCredentials = async (
@@ -13,17 +12,18 @@ export const signInWithCredentials = async (
 ) => {
   try {
     await signIn('credentials', {
-      // displayName: formData.get('displayName') || '', // `'null'` 문자 방지
       email: formData.email,
       password: formData.password,
       // redirectTo: '/' // 로그인 후 메인 페이지로 이동
       // auth.js 기본 설정에서(config.ts) redirect callbacks를 설정한 경우, 해당 옵션 주석 처리할 것
-      // redirectTo는 try 문 안에서 동작 X
+      // 주의, redirectTo는 try 문 안에서 동작 X
     });
   } catch (error) {
-    return { message: error.cause.err.message };
+    if (error instanceof Error) {
+      return { message: error.message };
+    }
+    return { message: '알 수 없는 오류가 발생했습니다.' };
   }
-  // redirect('/'); // return { message: '메시지!' }
 };
 
 // 로그아웃

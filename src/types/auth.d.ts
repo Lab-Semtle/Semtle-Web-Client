@@ -12,6 +12,8 @@ export declare module 'next-auth' {
   }
 
   interface Session {
+    accessToken: string;
+    refreshToken: string;
     user: {
       uuid: string;
       username: string;
@@ -19,8 +21,6 @@ export declare module 'next-auth' {
       profileImageUrl?: string;
       manageApprovalStatus: boolean;
     };
-    accessToken: string;
-    refreshToken: string;
   }
 }
 

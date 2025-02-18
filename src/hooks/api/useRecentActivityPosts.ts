@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { initMSW } from '@/mocks/msw-init'; // MSW 초기화 함수
 import apiClient from '@/lib/api/apiClient'; // Fetch API Client
-import { ApiResponseWithData, isApiResponseError } from '@/types/apiTypes'; // API 반환 타입
+import { ApiResponseWithData, isApiResponseError } from '@/types/api'; // API 반환 타입
 import { API_ROUTES } from '@/lib/api/apiRoutes';
 
 interface ActivityPost {

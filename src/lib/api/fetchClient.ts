@@ -2,10 +2,7 @@
  * - API 요청을 추상화하여 GET, POST, PUT, DELETE 등의 요청을 간단하고 타입 안전하게 처리
  */
 
-import {
-  type ApiResponseError,
-  type ApiResponseWithData,
-} from '@/types/apiTypes';
+import { type ApiResponseError, type ApiResponseWithData } from '@/types/api';
 import { getSession } from '@/lib/auth/serverActions/auth';
 import { auth } from '@/lib/auth/config'; // 서버사이드에서 사용할 인증 메서드
 

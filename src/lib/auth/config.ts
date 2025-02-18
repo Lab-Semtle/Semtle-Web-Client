@@ -112,7 +112,7 @@ export const {
     // trigger : 갱신 이벤트, session : 갱신된 세션 정보
     jwt: async ({ token, user, trigger, session }) => {
       if (user) {
-        console.log('✅ [jwt] 토큰 저장:', user);
+        console.log('[jwt] 토큰 저장:', user);
         token.id = user.id;
         token.email = user.email;
         token.username = user.username;
@@ -166,6 +166,8 @@ async function _signIn(body: {
         body,
       },
     );
+
+    console.log('[_signIn] 응답 데이터:', res);
 
     // 응답이 유효한지 검증
     if (!res || !res.data || !res.data.accessToken || !res.data.uuid) {

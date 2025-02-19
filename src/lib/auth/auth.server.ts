@@ -1,7 +1,7 @@
 /** 서버사이드에서 인증 처리 */
 
 'use server';
-import { auth, signIn, signOut, update } from '@/lib/auth/config';
+import { auth, signIn, signOut, update } from '@/lib/auth/auth.config';
 import type { z } from 'zod';
 import { loginSchema } from '@/lib/validation/login-schema';
 
@@ -9,27 +9,32 @@ import { loginSchema } from '@/lib/validation/login-schema';
 export const signInWithCredentials = async (
   formData: z.infer<typeof loginSchema>,
 ) => {
+  console.log('[signInWithCredentials] 로그인 요청');
+
   try {
-    console.log('🚀 [signInWithCredentials] 로그인 요청');
-    await signIn('credentials', {
+    const result = await signIn('credentials', {
       email: formData.email,
       password: formData.password,
-      // redirectTo: '/'
-      // - 로그인 후 메인 페이지로 리다이렉트
-      // - auth.js 기본 설정에서(config.ts) redirect 콜백을 설정한 경우,
-      //   해당 옵션 주석 처리할 것
-      // - redirectTo 는 try 문 안에서 동작하지 않음.
+      redirect: false, // 🔥 리디렉트 방지 (서버에서 직접 핸들링)
     });
-  } catch (error) {
-    if (error instanceof Error) {
-      return { message: error.message };
+
+    if (result?.error) {
+      console.error('[signInWithCredentials] 로그인 실패:', result.error);
+      throw new Error(result.error);
     }
-    return { message: '알 수 없는 오류가 발생했습니다.' };
+
+    console.log('[signInWithCredentials] 로그인 성공');
+    return result;
+  } catch (error) {
+    console.error('[signInWithCredentials] 로그인 중 오류 발생:', error);
+    throw new Error(
+      (error as Error).message || '알 수 없는 오류가 발생했습니다.',
+    );
   }
 };
 
 // 로그아웃
-export const signOutWithForm = async (formData: FormData) => {
+export const signOutWithForm = async () => {
   console.log('🚀 [signOutWithForm] 로그아웃 요청');
   await signOut();
 };

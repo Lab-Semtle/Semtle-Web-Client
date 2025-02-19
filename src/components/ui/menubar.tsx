@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as MenubarPrimitive from '@radix-ui/react-menubar';
 import { Check, ChevronRight, Circle } from 'lucide-react';
 
-import { cn } from '@/lib/tailwind-utils';
+import { cn } from '@/lib/utils/tailwind-utils';
 
 const MenubarMenu = MenubarPrimitive.Menu;
 

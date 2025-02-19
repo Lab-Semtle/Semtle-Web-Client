@@ -1,4 +1,5 @@
 import { HttpResponse, http } from 'msw';
+import { API_ROUTES } from '@/constants/api';
 
 interface ActivityPost {
   id: number;
@@ -31,29 +32,28 @@ const recentPosts: ActivityPost[] = [
 
 // GET 요청을 처리하는 목업 핸들러
 export const activityHandlers = [
-  http.get('/index/activity/recent', ({ request }) => {
+  http.get(API_ROUTES.GET_RECENT_ACTIVITY_BASE, ({ request }) => {
     const url = new URL(request.url);
-    console.log('[MSW] 요청됨:', url.pathname); // 요청이 정상적으로 가로채졌는지 확인
+    console.log('[MSW] 요청됨:', url.pathname); // 요청 경로 출력
 
-    if (!url.pathname.endsWith('/index/activity/recent')) {
+    if (url.pathname !== API_ROUTES.GET_RECENT_ACTIVITY_BASE) {
       console.warn('[MSW] 잘못된 요청:', url.pathname);
       return HttpResponse.json({ message: 'Not Found' }, { status: 404 });
     }
 
-    const limit = url.searchParams.get('limit');
-    const posts = limit ? recentPosts.slice(0, Number(limit)) : recentPosts;
+    const limitParam = url.searchParams.get('limit');
+    const limit = limitParam ? Number(limitParam) : 3; // 기본값 3개
 
+    const posts = recentPosts.slice(0, limit);
     console.log('[MSW] 반환된 데이터:', posts);
 
     return HttpResponse.json(
       {
         status: 200,
         code: 'SUCCESS',
-        data: {
-          posts,
-        },
+        data: { posts },
       },
-      { status: 200 }, // HTTP 상태 코드 설정
+      { status: 200 },
     );
   }),
 ];

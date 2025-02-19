@@ -1,198 +1,78 @@
-// /** 로그인 관련 Mock API 핸들러 */
-// import { http, HttpResponse } from 'msw';
-// import { ApiResponseWithData, ApiResponseError } from '@/types/apiTypes';
+import { HttpResponse, http } from 'msw';
+import { API_ROUTES } from '@/constants/api';
 
-// export const authHandlers = [
-//   // 로그인 목업 API
-//   http.post('/auth/signin', async ({ request }) => {
-//     const body = await request.json();
-//     console.log('[Mock API] 받은 요청 데이터:', body);
+// 로그인 요청 타입 정의
+interface SigninRequest {
+  email: string;
+  password: string;
+}
 
-//     // 요청에서 받은 이메일 확인
-//     const user = users.find((u) => u.email === body.email);
-
-//     if (!user) {
-//       console.error('[Mock API] 등록되지 않은 이메일');
-//       return Promise.resolve(
-//         HttpResponse.json<ApiResponseError>(
-//           {
-//             status: 401,
-//             code: 'NON_EXISTENT_ACCOUNT',
-//             message: '등록되지 않은 이메일입니다.',
-//           },
-//           { status: 401 },
-//         ),
-//       );
-//     }
-
-//     // 비밀번호 검증
-//     if (user.password !== body.password) {
-//       console.error('[Mock API] 비밀번호 불일치');
-//       return Promise.resolve(
-//         HttpResponse.json<ApiResponseError>(
-//           {
-//             status: 401,
-//             code: 'MISMATCHED_PASSWORD',
-//             message: '비밀번호가 일치하지 않습니다.',
-//           },
-//           { status: 401 },
-//         ),
-//       );
-//     }
-
-//     // Mock 토큰 생성 (실제 JWT 생성 로직은 없음)
-//     const accessToken = `mock_access_token_${user.id}`;
-//     const refreshToken = `mock_refresh_token_${user.id}`;
-
-//     console.log('[Mock API] 로그인 성공 - 유저 정보 반환');
-
-//     return Promise.resolve(
-//       HttpResponse.json<ApiResponseWithData<AuthMockResponse>>(
-//         {
-//           status: 200,
-//           code: 'SUCCESS',
-//           message: '로그인 성공', // <-- 추가 (MSW 타입 오류 해결)
-//           data: {
-//             uuid: user.id,
-//             accessToken,
-//             refreshToken,
-//             username: user.fullname,
-//             roles: [user.role],
-//             manageApprovalStatus: true,
-//             profileImageUrl: user.profileImageUrl,
-//           },
-//         },
-//         { status: 200 },
-//       ),
-//     );
-//   }),
-// ];
-
-// /** 목업 유저 데이터 */
-// const users = [
-//   {
-//     id: '1',
-//     email: 'test1@semtle.com',
-//     fullname: '김민수',
-//     password: 'password123!',
-//     role: 'user',
-//     profileImageUrl: 'https://example.com/user1.png',
-//   },
-//   {
-//     id: '2',
-//     email: 'test2@semtle.com',
-//     fullname: '홍길동',
-//     password: 'password456!',
-//     role: 'admin',
-//     profileImageUrl: 'https://example.com/user2.png',
-//   },
-// ];
-
-// /** API 응답 타입 */
-// interface AuthMockResponse {
-//   uuid: string;
-//   accessToken: string;
-//   refreshToken: string;
-//   username: string;
-//   roles: string[];
-//   manageApprovalStatus: boolean;
-//   profileImageUrl?: string;
-// }
-
-import { http, HttpResponse } from 'msw';
-import { ApiResponseWithData, ApiResponseError } from '@/types/api';
-
-export const authHandlers = [
-  // 로그인 목업 API
-  http.post<
-    never,
-    { email: string; password: string },
-    ApiResponseError | ApiResponseWithData<AuthMockResponse>
-  >('/auth/signin', async ({ request }) => {
-    const body = await request.json();
-    console.log('[Mock API] 받은 요청 데이터:', body);
-
-    // 요청에서 받은 이메일 확인
-    const user = users.find((u) => u.email === body.email);
-
-    if (!user) {
-      console.error('[Mock API] 등록되지 않은 이메일');
-      return HttpResponse.json<ApiResponseError>(
-        {
-          status: 401,
-          code: 'NON_EXISTENT_ACCOUNT',
-          message: '등록되지 않은 이메일입니다.',
-        },
-        { status: 401 },
-      );
-    }
-
-    // 비밀번호 검증
-    if (user.password !== body.password) {
-      console.error('[Mock API] 비밀번호 불일치');
-      return HttpResponse.json<ApiResponseError>(
-        {
-          status: 401,
-          code: 'MISMATCHED_PASSWORD',
-          message: '비밀번호가 일치하지 않습니다.',
-        },
-        { status: 401 },
-      );
-    }
-
-    // Mock 토큰 생성 (실제 JWT 생성 로직은 없음)
-    const accessToken = `mock_access_token_${user.id}`;
-    const refreshToken = `mock_refresh_token_${user.id}`;
-
-    console.log('[Mock API] 로그인 성공 - 유저 정보 반환');
-
-    return HttpResponse.json<ApiResponseWithData<AuthMockResponse>>(
-      {
-        status: 200,
-        code: 'SUCCESS',
-        message: '로그인 성공',
-        data: {
-          uuid: user.id,
-          accessToken,
-          refreshToken,
-          username: user.fullname,
-          roles: [user.role],
-          manageApprovalStatus: true,
-          profileImageUrl: user.profileImageUrl,
-        },
-      },
-      { status: 200 },
-    );
-  }),
-];
-
-/** 목업 유저 데이터 */
-const users = [
-  {
-    id: '1',
-    email: 'test1@semtle.com',
-    fullname: '김민수',
-    password: 'password123!',
-    role: 'user',
-    profileImageUrl: 'https://example.com/user1.png',
-  },
-  {
-    id: '2',
-    email: 'test2@semtle.com',
-    fullname: '홍길동',
-    password: 'password456!',
-    role: 'admin',
-    profileImageUrl: 'https://example.com/user2.png',
-  },
-];
-
-/** API 응답 타입 */
-interface AuthMockResponse {
-  uuid: string;
+// 로그인 응답 타입 정의
+interface SigninResponse {
   accessToken: string;
   refreshToken: string;
+  id: string; // uuid
   username: string;
-  roles: string[];
+  roles: string;
   manageApprovalStatus: boolean;
   profileImageUrl?: string;
 }
+
+export const authHandlers = [
+  // 로그인 API Mock
+  http.post(API_ROUTES.SIGN_IN, async ({ request }) => {
+    const { email, password } = (await request.json()) as SigninRequest;
+
+    // 테스트 계정 (실제 API와 일치하도록 가정)
+    const VALID_USER: SigninResponse & SigninRequest = {
+      email: 'user@example.com',
+      password: 'password123!',
+      accessToken: 'mock_access_token_123',
+      refreshToken: 'mock_refresh_token_456',
+      id: 'eb2d22e0-fa90-4360-b47a-ce4f881d9c04', // UUID
+      username: '국태근',
+      roles: 'USER',
+      manageApprovalStatus: false,
+      profileImageUrl: '',
+    };
+
+    // 유효한 로그인 요청인지 확인
+    if (email === VALID_USER.email && password === VALID_USER.password) {
+      return HttpResponse.json(
+        {
+          accessToken: VALID_USER.accessToken,
+          refreshToken: VALID_USER.refreshToken,
+          id: VALID_USER.id,
+          username: VALID_USER.username,
+          roles: VALID_USER.roles,
+          manageApprovalStatus: VALID_USER.manageApprovalStatus,
+          profileImageUrl: VALID_USER.profileImageUrl,
+        },
+        { status: 200 }, // HTTP 200 OK
+      );
+    }
+
+    // 400: 잘못된 요청 (예: 필수 값 누락)
+    if (!email || !password) {
+      return HttpResponse.json({ status: 400 });
+    }
+
+    // 401: 인증 실패 (잘못된 이메일 또는 비밀번호)
+    if (email !== VALID_USER.email || password !== VALID_USER.password) {
+      return HttpResponse.json({ status: 401 });
+    }
+
+    // 403: 접근 권한 없음 (승인되지 않은 사용자)
+    if (!VALID_USER.manageApprovalStatus) {
+      return HttpResponse.json({ status: 403 });
+    }
+
+    // 404: 사용자를 찾을 수 없음
+    if (email !== VALID_USER.email) {
+      return HttpResponse.json({ status: 404 });
+    }
+
+    // 500: 서버 오류 (예: 내부 서버 오류)
+    return HttpResponse.json({ status: 500 });
+  }),
+];

@@ -3,7 +3,6 @@
 'use client';
 import { useState } from 'react';
 import { startTransition } from 'react';
-import { useFormState } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -22,7 +21,16 @@ import {
   CardFooter,
 } from '@/components/ui/card';
 import { ArrowLeft, LucideEye, LucideEyeOff } from 'lucide-react';
-import { signInWithCredentials } from '@/lib/auth/serverActions/auth'; // Next Auth
+import { signInWithCredentials } from '@/lib/auth/auth.server';
+
+// 서버에서 반환하는 상태 코드에 대한 매핑
+const ERROR_MESSAGES: Record<string, string> = {
+  '400': '잘못된 요청입니다.',
+  '401': '이메일 또는 비밀번호가 올바르지 않습니다.',
+  '403': '접근 권한이 없습니다.',
+  '404': '요청한 정보를 찾을 수 없습니다.',
+  '500': '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+};
 
 export default function SignInPage() {
   // 입력값 검증
@@ -36,55 +44,36 @@ export default function SignInPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  // // 로그인 상태 관리
-  // const [state, action] = useFormState(signInWithCredentials, {
-  //   message: '',
-  // });
-
-  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
-    console.log('[SignInPage] 제출된 로그인 데이터:', data);
+  // 로그인 요청 핸들러
+  const onSubmit = async (signinData: z.infer<typeof loginSchema>) => {
+    console.log('[SignInPage] 제출된 로그인 데이터:', signinData);
+    setLoading(true);
 
     startTransition(async () => {
       try {
-        await signInWithCredentials(data);
+        await signInWithCredentials(signinData);
         console.log('[SignInPage] 로그인 성공');
-      } catch (error: unknown) {
-        handleSignInError(error);
+      } catch (error) {
+        console.error('[SignInPage] 로그인 실패:', error);
+        const errorMessage =
+          (error as Error).message ||
+          '로그인 요청 중 알 수 없는 오류가 발생했습니다.';
+
+        // 서버에서 받은 응답 메시지를 토스트로 표시
+        toast({
+          variant: 'destructive',
+          title: '로그인 실패',
+          description: errorMessage,
+          duration: 2000,
+        });
       }
     });
-  };
-
-  const handleSignInError = (error: unknown) => {
-    let errorMessage = '알 수 없는 오류가 발생했습니다.';
-
-    if (error instanceof Error) {
-      errorMessage = error.message || '알 수 없는 오류가 발생했습니다.';
-    }
-
-    // 특정 에러 메시지에 따라 처리할 경우
-    switch (errorMessage) {
-      case 'NON_EXISTENT_ACCOUNT':
-        errorMessage = '등록되지 않은 이메일입니다.';
-        break;
-      case 'MISMATCHED_PASSWORD':
-        errorMessage = '비밀번호가 틀렸습니다.';
-        break;
-    }
-
-    // Toast 알림 호출
-    toast({
-      variant: 'destructive',
-      title: '로그인 실패',
-      description: errorMessage,
-      duration: 2000,
-    });
-
-    console.error('[SignInPage] 로그인 실패:', error);
   };
 
   return (
@@ -142,7 +131,7 @@ export default function SignInPage() {
                     placeholder="비밀번호"
                     {...register('password')}
                     aria-invalid={!!errors.password} // 에러 발생 시 시각적 접근성 대응
-                    className="flex-1 border-none px-3 focus:ring-0 focus:outline-none"
+                    className="flex-1 border-none px-3 focus:outline-none focus:ring-0"
                   />
                   <button
                     type="button"
@@ -178,7 +167,7 @@ export default function SignInPage() {
                   type="submit"
                   className="w-full bg-slate-950 hover:bg-slate-800"
                 >
-                  로그인
+                  {loading ? '로그인 중...' : '로그인'}
                 </Button>
               </div>
             </form>

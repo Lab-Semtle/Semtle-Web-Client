@@ -1,6 +1,5 @@
 /** 모바일 사이즈 화면에서 네비게이션 메뉴(사용자 메뉴 포함됨) */
 
-'use client';
 import Link from 'next/link';
 import {
   Sheet,
@@ -13,7 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import DarkModeButton from '@/components/button/DarkModeButton';
 import { MenuIcon } from 'lucide-react';
 import { useSession } from '@/hooks/use-session';
-import { signOutWithForm } from '@/lib/auth/serverActions/auth';
+import { signOutWithForm } from '@/lib/auth/auth.server';
 import { ROUTES } from '@/constants/routes';
 import { NAVIGATION_MENU } from '@/constants/navItems';
 
@@ -120,12 +119,7 @@ export default function NavMobileMenu({
                     </li>
                   ))}
                   <li>
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        signOutWithForm(); // 로그아웃 처리
-                      }}
-                    >
+                    <form action={signOutWithForm}>
                       <button
                         type="submit"
                         onClick={handleLinkClick}

@@ -10,6 +10,8 @@ import {
   type ApiResponseWithData,
   type ApiResponseWithMessage,
 } from '@/types/api';
+import { auth } from '@/lib/auth/auth.config';
+import { getSession } from '@/lib/auth/auth.server';
 
 type Params<T = unknown> = {
   [K in keyof T]?: string | number | boolean | null | undefined;
@@ -21,6 +23,7 @@ type FetchOptions<TBody = unknown, TParams = unknown> = Omit<
 > & {
   headers?: Record<string, string>;
   body?: TBody;
+  withAuth?: boolean;
   contentType?: string;
   params?: Params<TParams>;
 };
@@ -31,6 +34,13 @@ export class FetchClient {
   // 생성자
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
+  }
+
+  private async getSession() {
+    if (typeof window == 'undefined') {
+      return auth();
+    }
+    return getSession();
   }
 
   /**
@@ -62,18 +72,29 @@ export class FetchClient {
     | ApiResponseError
   > {
     const {
+      withAuth = false,
       contentType = 'application/json',
       headers,
       body,
       params,
       ...restOptions
     } = options;
+    const session = withAuth ? await getSession() : null;
 
     // 요청 헤더 설정
-    const allHeaders = new Headers({
-      'Content-Type': contentType,
-      ...headers,
-    });
+    const allHeaders = new Headers(
+      Object.assign(
+        {
+          'Content-Type': contentType,
+        },
+        withAuth && session
+          ? {
+              Authorization: `Bearer ${session?.accessToken}`,
+            }
+          : {},
+        headers,
+      ),
+    );
 
     // URL 파라미터가 존재할 경우, 쿼리 문자열로 변환하여 추가
     const queryString = params

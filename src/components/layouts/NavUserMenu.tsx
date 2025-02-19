@@ -18,42 +18,42 @@ import {
 import { NavLinkMenu } from '@/components/layouts/NavLinkMenu';
 import { VariantShineButton } from '@/components/button/VariantShineButton';
 import { useSession } from '@/hooks/use-session';
-import { signOutWithForm } from '@/lib/auth/serverActions/auth';
-import { Session } from 'next-auth';
+import { signOutWithForm } from '@/lib/auth/auth.server';
 import { ROUTES } from '@/constants/routes';
+import { Session } from 'next-auth';
 
-export default function DesktopUserMenu() {
-  const session = useSession();
-
-  if (session?.user) {
-    return (
-      <NavigationMenuList className="flex items-center gap-3">
-        <NavigationMenuItem>
-          <form action={signOutWithForm}>
-            <VariantShineButton
-              type="submit"
-              className="bg-blue-300 text-blue-950 hover:bg-blue-700 hover:text-gray-200 dark:bg-blue-700 dark:text-gray-200 dark:hover:bg-blue-300 dark:hover:text-blue-950"
-            >
-              로그아웃
-            </VariantShineButton>
-          </form>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <LoginMenu session={session} />
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    );
-  }
+export default function NavUserMenu() {
+  const session = useSession(); // 서버에서 세션 가져오기
 
   return (
-    <>
-      <NavLinkMenu href={ROUTES.RECRUIT} label="가입하기" />
-      <NavigationMenuItem>
-        <VariantShineButton className="bg-blue-300 text-blue-950 hover:bg-blue-700 hover:text-gray-200 dark:bg-blue-700 dark:text-gray-200 dark:hover:bg-blue-300 dark:hover:text-blue-950">
-          <Link href={ROUTES.AUTH_SIGNIN}>로그인</Link>
-        </VariantShineButton>
-      </NavigationMenuItem>
-    </>
+    <NavigationMenuList className="flex items-center gap-3">
+      {session?.user ? (
+        <>
+          <NavigationMenuItem>
+            <form action={signOutWithForm}>
+              <VariantShineButton
+                type="submit"
+                className="bg-blue-300 text-blue-950 hover:bg-blue-700 hover:text-gray-200 dark:bg-blue-700 dark:text-gray-200 dark:hover:bg-blue-300 dark:hover:text-blue-950"
+              >
+                로그아웃
+              </VariantShineButton>
+            </form>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <LoginMenu session={session} />
+          </NavigationMenuItem>
+        </>
+      ) : (
+        <>
+          <NavLinkMenu href={ROUTES.RECRUIT} label="가입하기" />
+          <NavigationMenuItem>
+            <VariantShineButton className="bg-blue-300 text-blue-950 hover:bg-blue-700 hover:text-gray-200 dark:bg-blue-700 dark:text-gray-200 dark:hover:bg-blue-300 dark:hover:text-blue-950">
+              <Link href={ROUTES.AUTH_SIGNIN}>로그인</Link>
+            </VariantShineButton>
+          </NavigationMenuItem>
+        </>
+      )}
+    </NavigationMenuList>
   );
 }
 

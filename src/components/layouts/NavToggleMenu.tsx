@@ -8,15 +8,13 @@ import {
   NavigationMenuLink,
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
-import { cn } from '@/lib/utils';
-import { Session } from 'next-auth';
+import { cn } from '@/lib/utils/utils';
+import { useSession } from '@/hooks/use-session';
 import { NAVIGATION_MENU } from '@/constants/navItems';
 
-export default function NavToogleMenu({
-  session,
-}: {
-  session?: Session | null;
-}) {
+export default function NavToogleMenu() {
+  const session = useSession();
+
   return (
     <NavigationMenu>
       <NavigationMenuList className="flex items-center gap-1">

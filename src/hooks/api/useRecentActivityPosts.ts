@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { initMSW } from '@/mocks/init'; // MSW 초기화 함수
-import apiClient from '@/lib/api/apiClient'; // Fetch API Client
-import { ApiResponseWithData, isApiResponseError } from '@/types/api'; // API 반환 타입
-import { API_ROUTES } from '@/lib/api/apiRoutes';
+import apiClient from '@/services/apiClient'; // Fetch API Client
+import { ApiResponseWithData } from '@/types/api'; // API 반환 타입
+import { GET_RECENT_ACTIVITY } from '@/constants/api';
 
 interface ActivityPost {
   id: number;
@@ -29,7 +29,7 @@ export function useRecentActivityPosts(limit = 3) {
         // API 호출
         const response = await apiClient.get<
           ApiResponseWithData<{ posts: ActivityPost[] }>
-        >(API_ROUTES.READ_RECENT_ACTIVITY(limit));
+        >(GET_RECENT_ACTIVITY(limit));
 
         if (isMounted && response?.data && 'posts' in response.data) {
           const { posts } = response.data;

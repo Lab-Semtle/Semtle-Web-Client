@@ -9,14 +9,12 @@ import {
 } from '@/components/ui/navigation-menu';
 import NavToogleMenu from '@/components/layouts/NavToggleMenu';
 import NavMobileMenu from '@/components/layouts/NavMobileMenu';
-import DesktopUserMenu from '@/components/layouts/NavUserMenu';
+import NavUserMenu from '@/components/layouts/NavUserMenu';
 import DarkModeButton from '@/components/button/DarkModeButton';
-import { useSession } from '@/hooks/use-session';
 import { useDarkMode } from '@/hooks/use-darkmode';
 import { ROUTES } from '@/constants/routes';
 
 export default function NavigationBar() {
-  const session = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false); // 메뉴 열림 구분
   const { isDarkMode, toggleDarkMode } = useDarkMode(); // 다크모드/라이트모드
   const [isDesktop, setIsDesktop] = useState(false); // 데스크톱/모바일
@@ -36,12 +34,11 @@ export default function NavigationBar() {
 
   return (
     <header>
-      {session?.user && <div>{session.user.username}</div>}
       <nav className="fixed top-0 z-50 flex h-[70px] w-full items-center justify-between bg-white/30 shadow-sm backdrop-blur-md transition-colors duration-300 dark:bg-gray-950/50">
         {/* 로고 */}
         <Link
           href={ROUTES.HOME}
-          className="ml-5 whitespace-nowrap font-yclover text-2xl font-bold text-gray-800 dark:text-white"
+          className="font-yclover ml-5 whitespace-nowrap text-2xl font-bold text-gray-800 dark:text-white"
         >
           아치셈틀
         </Link>
@@ -49,7 +46,7 @@ export default function NavigationBar() {
         {/* 중앙 메뉴 */}
         {isDesktop ? (
           <div className="flex flex-1 justify-center">
-            <NavToogleMenu session={session} />
+            <NavToogleMenu />
           </div>
         ) : (
           <NavMobileMenu
@@ -67,7 +64,7 @@ export default function NavigationBar() {
                 isDarkMode={isDarkMode}
                 toggleDarkMode={toggleDarkMode}
               />
-              <DesktopUserMenu />
+              <NavUserMenu />
             </NavigationMenuList>
           </NavigationMenu>
         )}

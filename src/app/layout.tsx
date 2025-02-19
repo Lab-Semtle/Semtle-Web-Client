@@ -3,8 +3,7 @@ import { Toaster } from '@/components/ui/toaster';
 import localFont from 'next/font/local';
 import '@/app/global.css';
 import { ThemeProvider } from 'next-themes';
-import { Providers } from '@/mocks/MSWProvider';
-import { initMSW } from '@/mocks/init';
+import { Providers } from '@/components/msw/MSWProvider';
 import Script from 'next/script';
 
 const suit = localFont({

@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils/utils';
+import { cn } from '@/lib/utils/tailwind-cn';
 import {
   Button,
   type ButtonProps as BaseButtonProps,

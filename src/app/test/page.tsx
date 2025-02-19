@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import apiClient from '@/services/apiClient';
+import apiClient from '@/services/api-client';
 
 export default function TestPage() {
   const [data, setData] = useState<string | null>(null);

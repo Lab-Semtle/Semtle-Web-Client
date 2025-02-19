@@ -8,7 +8,7 @@ import {
   NavigationMenuLink,
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
-import { cn } from '@/lib/utils/utils';
+import { cn } from '@/lib/utils/tailwind-cn';
 import { useSession } from '@/hooks/use-session';
 import { NAVIGATION_MENU } from '@/constants/navItems';
 

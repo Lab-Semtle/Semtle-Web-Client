@@ -6,7 +6,7 @@ import {
   NavigationMenuLink,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
-import { cn } from '@/lib/utils/utils';
+import { cn } from '@/lib/utils/tailwind-cn';
 
 interface NavItemProps {
   href: string;

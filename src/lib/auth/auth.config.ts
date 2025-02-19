@@ -2,7 +2,7 @@
 
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import apiClient from '@/services/apiClient';
+import apiClient from '@/services/api-client';
 import { API_ROUTES } from '@/constants/api';
 import { isApiResponseError } from '@/types/api';
 import { loginSchema } from '../validation/login-schema';

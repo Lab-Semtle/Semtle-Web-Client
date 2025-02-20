@@ -3,7 +3,12 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { loginSchema } from '../validation/login-schema';
-import { fetchSignIn } from '@/services/api/auth.signin';
+// import { fetchSignIn } from '@/services/api/auth.signin';
+
+const API_BASE_URL =
+  process.env.NODE_ENV === 'production'
+    ? process.env.NEXT_PUBLIC_API_BASE_URL_PROD
+    : process.env.NEXT_PUBLIC_API_BASE_URL_DEV;
 
 /**
  * handlers : 프로젝트 인증 관리를 위한 API 라우트(GET, POST 함수) 객체
@@ -36,7 +41,33 @@ export const {
         const { email, password } = validationFields.data;
 
         try {
-          const responseData = await fetchSignIn(email, password);
+          if (!API_BASE_URL) {
+            console.error('[authorize] API_BASE_URL이 설정되지 않았습니다.');
+            throw new Error('API_BASE_URL is not defined.');
+          }
+
+          console.log('[authorize] 현재 API_BASE_URL:', API_BASE_URL);
+          const SIGN_IN_URL = `${API_BASE_URL}/auth/signin`;
+
+          // 백엔드 로그인 API 호출
+          const response = await fetch(SIGN_IN_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+          });
+
+          console.log('[authorize] 로그인 API 응답 :', response);
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(
+              errorData?.message || `HTTP Error ${response.status}`,
+            );
+          }
+
+          const responseData = await response.json();
           console.log('[authorize] 로그인 성공:', responseData);
 
           return {
@@ -55,8 +86,7 @@ export const {
           //   return Promise.reject(new Error(statusCode.toString()));
           // }
           console.error('[authorize] 로그인 처리 중 예외 발생:', error);
-
-          return Promise.reject(new Error('500')); // 기본적으로 500 처리
+          return Promise.reject(new Error('401')); // 인증 실패 처리
         }
       },
     }),
@@ -95,18 +125,19 @@ export const {
     },
     // 로그인 이후, 원래 위치한 페이지로 리다이렉트
     // redirect사용 시, signIn(공급자, 옵션) 함수를 호출할 때 redirectTo 옵션 사용 X
-    redirect: async ({ url, baseUrl }) => {
-      if (url.startsWith('/')) return `${baseUrl}${url}`;
-      if (url) {
-        const { search, origin } = new URL(url);
-        const callbackUrl = new URLSearchParams(search).get('callbackUrl');
-        if (callbackUrl)
-          return callbackUrl.startsWith('/')
-            ? `${baseUrl}${callbackUrl}`
-            : callbackUrl;
-        if (origin === baseUrl) return url;
-      }
-      return baseUrl;
-    },
   },
 });
+
+// redirect: async ({ url, baseUrl }) => {
+//   if (url.startsWith('/')) return `${baseUrl}${url}`;
+//   if (url) {
+//     const { search, origin } = new URL(url);
+//     const callbackUrl = new URLSearchParams(search).get('callbackUrl');
+//     if (callbackUrl)
+//       return callbackUrl.startsWith('/')
+//         ? `${baseUrl}${callbackUrl}`
+//         : callbackUrl;
+//     if (origin === baseUrl) return url;
+//   }
+//   return baseUrl;
+// },

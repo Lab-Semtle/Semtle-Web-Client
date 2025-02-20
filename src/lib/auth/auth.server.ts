@@ -4,7 +4,6 @@
 import { auth, signIn, signOut, update } from '@/lib/auth/auth.config';
 import type { z } from 'zod';
 import { loginSchema } from '@/lib/validation/login-schema';
-const callbackUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
 
 // 이메일, 비밀번호 사용 로그인
 export const signInWithCredentials = async (
@@ -17,7 +16,6 @@ export const signInWithCredentials = async (
       email: formData.email,
       password: formData.password,
       redirect: false, // 리디렉트 방지 (서버에서 직접 핸들링)
-      callbackUrl, // 콜백 URL 추가?
     });
 
     if (result?.error) {

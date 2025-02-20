@@ -106,6 +106,8 @@ NEXT_PUBLIC_API_KEY=
 
 ...
 
+- 디버깅시, package.json에서 script -> dev에 cross-env NODE_OPTIONS='--inspect' 추가
+
 ## 배포 전 확인 필요
 
 - src/lib/auth/middleware.ts

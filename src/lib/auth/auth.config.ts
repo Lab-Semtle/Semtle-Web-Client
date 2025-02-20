@@ -2,28 +2,8 @@
 
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import apiClient from '@/services/api-client';
-import { API_ROUTES } from '@/constants/api';
-import { isApiResponseError } from '@/types/api';
 import { loginSchema } from '../validation/login-schema';
-import { CredentialsSignin } from 'next-auth';
-
-// 로그인 API 요청 타입
-interface SigninRequest {
-  email: string;
-  password: string;
-}
-
-// 로그인 API 응답 타입
-interface SigninResponse {
-  accessToken: string;
-  refreshToken: string;
-  id: string; // uuid
-  username: string;
-  role: string;
-  manageApprovalStatus: boolean;
-  profileImageUrl?: string;
-}
+import { fetchSignIn } from '@/services/api/auth.signin';
 
 /**
  * handlers : 프로젝트 인증 관리를 위한 API 라우트(GET, POST 함수) 객체
@@ -33,10 +13,10 @@ interface SigninResponse {
  * unstable_update: update : 세션 정보 갱신 비동기 함수
  */
 export const {
+  auth,
   handlers,
   signIn,
   signOut,
-  auth,
   unstable_update: update,
 } = NextAuth({
   providers: [
@@ -46,40 +26,35 @@ export const {
 
         // Zod 비동기 검증 (런타임 에러 방지)
         const validationFields = await loginSchema.safeParseAsync(credentials);
-        if (!validationFields.success) return null;
-
+        if (!validationFields.success) {
+          console.error(
+            '[authorize] 유효성 검사 실패:',
+            validationFields.error,
+          );
+          return null;
+        }
         const { email, password } = validationFields.data;
 
         try {
-          // 로그인 API 요청
-          const response = await apiClient.post<SigninResponse, SigninRequest>(
-            API_ROUTES.SIGN_IN,
-            { body: { email, password } },
-          );
-
-          if (
-            !response.data ||
-            !response.data.accessToken ||
-            !response.data.id
-          ) {
-            throw new Error('로그인 실패: 유효한 응답이 아닙니다.');
-          }
+          const responseData = await fetchSignIn(email, password);
+          console.log('[authorize] 로그인 성공:', responseData);
 
           return {
-            accessToken: response.data?.accessToken,
-            refreshToken: response.data?.refreshToken,
-            id: response.data?.id,
-            username: response.data?.username,
-            role: response.data?.role,
-            manageApprovalStatus: response.data?.manageApprovalStatus,
+            accessToken: responseData.accessToken,
+            refreshToken: responseData.refreshToken,
+            id: responseData.id,
+            username: responseData.username,
+            role: responseData.role,
+            manageApprovalStatus: responseData.manageApprovalStatus,
             profileImageUrl:
-              response.data?.profileImageUrl ?? '/images/default-profile.png',
+              responseData.profileImageUrl ?? '/images/default-profile.png',
           };
         } catch (error) {
-          if (isApiResponseError(error)) {
-            const statusCode = error.status || 500;
-            return Promise.reject(new Error(statusCode.toString()));
-          }
+          // if (isApiResponseError(error)) {
+          //   const statusCode = error.status || 500;
+          //   return Promise.reject(new Error(statusCode.toString()));
+          // }
+          console.error('[authorize] 로그인 처리 중 예외 발생:', error);
 
           return Promise.reject(new Error('500')); // 기본적으로 500 처리
         }

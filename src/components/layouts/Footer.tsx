@@ -1,6 +1,11 @@
 import Link from 'next/link';
 import React from 'react';
-import { SNS_LINKS, CONTACTS, COPYRIGHT, POLICIES } from '@/constants/footer';
+import {
+  SNS_LINKS,
+  CONTACTS,
+  COPYRIGHT,
+  POLICIES,
+} from '@/constants/footer-items';
 import AlertCard from '@/components/AlertCard';
 
 const Footer: React.FC = () => {

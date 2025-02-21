@@ -1,7 +1,6 @@
 /** 메인페이지 Recruit 섹션 */
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import {
   ArrowRight,
   GraduationCapIcon,
@@ -14,7 +13,7 @@ import {
   RECRUIT_TITLE,
   RECRUIT_DETAILS,
   RECRUIT_BUTTON_URL,
-} from '@/constants/recruit';
+} from '@/constants/home/recruit-items';
 import Link from 'next/link';
 
 const ICONS: Record<string, JSX.Element> = {

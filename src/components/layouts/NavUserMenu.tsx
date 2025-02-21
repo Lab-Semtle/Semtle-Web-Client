@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/navigation-menu';
 import { NavLinkMenu } from '@/components/layouts/NavLinkMenu';
 import { VariantShineButton } from '@/components/button/VariantShineButton';
-import { useSession } from '@/hooks/use-session';
+import { useSession } from '@/hooks/useSession';
 import { signOutWithForm } from '@/lib/auth/auth.server';
 import { ROUTES } from '@/constants/routes';
 import { Session } from 'next-auth';

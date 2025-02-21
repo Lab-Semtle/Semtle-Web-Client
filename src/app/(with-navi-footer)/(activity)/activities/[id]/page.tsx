@@ -13,7 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/useToast';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
@@ -286,12 +286,12 @@ export default function PostDetail() {
               <Button
                 variant="outline"
                 onClick={handleModify}
-                className="mr-5  hover:bg-semtleColor"
+                className="mr-5 hover:bg-semtleColor"
               >
                 <Pencil className="mr-1 h-4 w-4 opacity-100" />
                 수정
               </Button>
-              <div className=''>
+              <div className="">
                 <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger asChild>
                     <Button variant="destructive">

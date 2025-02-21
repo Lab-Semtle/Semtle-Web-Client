@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { initMSW } from '@/mocks/init'; // MSW 초기화 함수
 import apiClient from '@/services/api-client'; // Fetch API Client
 import { ApiResponseWithData } from '@/types/api'; // API 반환 타입
-import { GET_RECENT_ACTIVITY } from '@/constants/api';
+import { GET_RECENT_ACTIVITY } from '@/constants/api-endpoint';
 
 interface ActivityPost {
   id: number;

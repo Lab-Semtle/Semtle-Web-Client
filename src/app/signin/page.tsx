@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/useToast';
 import { loginSchema } from '@/lib/validation/login-schema';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

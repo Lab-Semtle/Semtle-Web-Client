@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { FadeUp } from '@/components/animation/FadeUp';
 import { ArrowRight } from 'lucide-react';
@@ -12,7 +11,7 @@ import {
   INTRO_DESCRIPTION,
   INTRO_BUTTON_URL,
   INTRO_CARDS,
-} from '@/constants/introItems';
+} from '@/constants/home/intro-items';
 
 const IntroSection = () => {
   return (

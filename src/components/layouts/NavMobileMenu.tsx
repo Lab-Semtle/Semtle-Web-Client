@@ -11,10 +11,10 @@ import {
 import { Separator } from '@/components/ui/separator';
 import DarkModeButton from '@/components/button/DarkModeButton';
 import { MenuIcon } from 'lucide-react';
-import { useSession } from '@/hooks/use-session';
+import { useSession } from '@/hooks/useSession';
 import { signOutWithForm } from '@/lib/auth/auth.server';
 import { ROUTES } from '@/constants/routes';
-import { NAVIGATION_MENU } from '@/constants/navItems';
+import { NAVIGATION_MENU } from '@/constants/nav-items';
 
 interface MobileMenuProps {
   setIsMenuOpen: (open: boolean) => void;

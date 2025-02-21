@@ -14,7 +14,7 @@ import {
   CAROUSEL_ITEM,
   CAROUSEL_BUTTON_TEXT,
   CAROUSEL_BUTTON_URL,
-} from '@/constants/carouselItems';
+} from '@/constants/home/carousel-items';
 
 const CarouselSection = () => {
   const settings = {

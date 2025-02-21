@@ -11,7 +11,7 @@ import NavToogleMenu from '@/components/layouts/NavToggleMenu';
 import NavMobileMenu from '@/components/layouts/NavMobileMenu';
 import NavUserMenu from '@/components/layouts/NavUserMenu';
 import DarkModeButton from '@/components/button/DarkModeButton';
-import { useDarkMode } from '@/hooks/use-darkmode';
+import { useDarkMode } from '@/hooks/useDarkMode';
 import { ROUTES } from '@/constants/routes';
 
 export default function NavigationBar() {
@@ -38,7 +38,7 @@ export default function NavigationBar() {
         {/* 로고 */}
         <Link
           href={ROUTES.HOME}
-          className="font-yclover ml-5 whitespace-nowrap text-2xl font-bold text-gray-800 dark:text-white"
+          className="ml-5 whitespace-nowrap font-yclover text-2xl font-bold text-gray-800 dark:text-white"
         >
           아치셈틀
         </Link>

@@ -6,7 +6,7 @@ import {
   AccordionContent,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { faqData } from '@/constants/faq';
+import { faqData } from '@/constants/faq-items';
 
 const FaqSection = () => (
   <section className="mx-auto mt-28 max-w-[800px] px-4 py-20">

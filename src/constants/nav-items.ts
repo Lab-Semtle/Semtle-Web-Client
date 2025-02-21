@@ -12,7 +12,7 @@ export const ABOUT_MENU = [
     desc: '아치셈틀을 운영하는 집행부 및 학회 구성원을 소개합니다.',
   },
   {
-    label: '학회 연혁',
+    label: '타임 라인',
     href: ROUTES.HISTORY,
     desc: '아치셈틀의 발자취를 한눈에! 학회의 주요 활동 기록을 확인하세요.',
   },

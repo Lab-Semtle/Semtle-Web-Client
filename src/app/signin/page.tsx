@@ -57,21 +57,43 @@ export default function SignInPage() {
 
     startTransition(async () => {
       try {
-        await signInWithCredentials(signinData);
-        console.log('[SignInPage] 로그인 성공');
-      } catch (error) {
-        console.error('[SignInPage] 로그인 실패:', error);
-        const errorMessage =
-          (error as Error).message ||
-          '로그인 요청 중 알 수 없는 오류가 발생했습니다.';
+        const result = await signInWithCredentials(signinData);
 
-        // 서버에서 받은 응답 메시지를 토스트로 표시
+        if (result?.error) {
+          console.error('[SignInPage] 로그인 실패:', result.error);
+          const errorMessage =
+            ERROR_MESSAGES[result.error] ||
+            '로그인 요청 중 알 수 없는 오류가 발생했습니다.';
+
+          toast({
+            variant: 'destructive',
+            title: '로그인 실패',
+            description: errorMessage,
+            duration: 2000,
+          });
+
+          setLoading(false);
+          return;
+        }
+
+        console.log('[SignInPage] 로그인 성공');
+        toast({
+          title: '로그인 성공',
+          description: '홈 화면으로 이동합니다.',
+          duration: 1000,
+        });
+
+        router.push('/');
+      } catch (error) {
+        console.error('[SignInPage] 로그인 예외 발생:', error);
         toast({
           variant: 'destructive',
           title: '로그인 실패',
-          description: errorMessage,
+          description: '예기치 않은 오류가 발생했습니다.',
           duration: 2000,
         });
+      } finally {
+        setLoading(false);
       }
     });
   };

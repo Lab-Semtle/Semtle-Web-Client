@@ -2,7 +2,6 @@
 
 export const API_ROUTES = {
   TEST: '/api/test',
-  SIGN_IN: '/api/auth/signin',
   GET_RECENT_ACTIVITY_BASE: '/index/activity/recent',
 } as const;
 

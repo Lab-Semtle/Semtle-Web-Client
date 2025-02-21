@@ -3,12 +3,11 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { loginSchema } from '../validation/login-schema';
-// import { fetchSignIn } from '@/services/api/auth.signin';
 
-const API_BASE_URL =
-  process.env.NODE_ENV === 'production'
-    ? process.env.NEXT_PUBLIC_API_BASE_URL_PROD
-    : process.env.NEXT_PUBLIC_API_BASE_URL_DEV;
+// const API_BASE_URL =
+//   process.env.NODE_ENV === 'production'
+//     ? process.env.NEXT_PUBLIC_API_BASE_URL_PROD
+//     : process.env.NEXT_PUBLIC_API_BASE_URL_DEV;
 
 /**
  * handlers : 프로젝트 인증 관리를 위한 API 라우트(GET, POST 함수) 객체
@@ -24,6 +23,9 @@ export const {
   signOut,
   unstable_update: update,
 } = NextAuth({
+  pages: {
+    signIn: '/signin', // 로그인 페이지 경로
+  },
   providers: [
     Credentials({
       authorize: async (credentials) => {
@@ -41,33 +43,59 @@ export const {
         const { email, password } = validationFields.data;
 
         try {
-          if (!API_BASE_URL) {
-            console.error('[authorize] API_BASE_URL이 설정되지 않았습니다.');
-            throw new Error('API_BASE_URL is not defined.');
+          // if (!API_BASE_URL) {
+          //   console.error('[authorize] API_BASE_URL이 설정되지 않았습니다.');
+          //   throw new Error('API_BASE_URL is not defined.');
+          // }
+
+          // console.log('[authorize] 현재 API_BASE_URL:', API_BASE_URL);
+          // const SIGN_IN_URL = `${API_BASE_URL}/auth/signin`; //
+
+          // // 백엔드 로그인 API 호출
+          // const response = await fetch(SIGN_IN_URL, {
+          //   method: 'POST',
+          //   headers: {
+          //     'Content-Type': 'application/json',
+          //   },
+          //   body: JSON.stringify({ email, password }),
+          // });
+
+          // console.log('[authorize] 로그인 API 응답 :', response);
+
+          // if (!response.ok) {
+          //   const errorData = await response.json();
+          //   throw new Error(
+          //     errorData?.message || `HTTP Error ${response.status}`,
+          //   );
+          // }
+
+          // const responseData = await response.json();
+          // console.log('[authorize] 로그인 성공:', responseData);
+
+          /** API 요청 MSW 와 충돌 문제... 일단 테스트로 사용자 정보 강제 주입 */
+          console.log('[authorize] 백엔드 API 없이 임시 로그인 실행 중...');
+
+          /** 임시 로그인 검증 추가 */
+          const responseData = {
+            email: 'test@semtle.com',
+            password: 'password123!',
+            accessToken: 'mock_access_token_123',
+            refreshToken: 'mock_refresh_token_456',
+            id: 'mock_user_id',
+            username: '테스트 유저',
+            role: 'USER',
+            manageApprovalStatus: true,
+            profileImageUrl: '/images/default-profile.png',
+          };
+
+          if (
+            email !== responseData.email ||
+            password !== responseData.password
+          ) {
+            console.log('[authorize] 로그인 실패: 잘못된 이메일 또는 비밀번호');
+            return null; // 로그인 실패 시 NextAuth가 자동으로 로그인 페이지로 리디렉트
           }
 
-          console.log('[authorize] 현재 API_BASE_URL:', API_BASE_URL);
-          const SIGN_IN_URL = `${API_BASE_URL}/auth/signin`;
-
-          // 백엔드 로그인 API 호출
-          const response = await fetch(SIGN_IN_URL, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password }),
-          });
-
-          console.log('[authorize] 로그인 API 응답 :', response);
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(
-              errorData?.message || `HTTP Error ${response.status}`,
-            );
-          }
-
-          const responseData = await response.json();
           console.log('[authorize] 로그인 성공:', responseData);
 
           return {
@@ -94,9 +122,6 @@ export const {
   session: {
     strategy: 'jwt',
     maxAge: 60 * 60 * 24, // 세션 만료 시간 (24시간)
-  },
-  pages: {
-    signIn: '/signin', // 로그인 페이지 경로
   },
   callbacks: {
     signIn: async () => {

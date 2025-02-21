@@ -31,6 +31,8 @@ export function useRecentActivityPosts(limit = 3) {
           ApiResponseWithData<{ posts: ActivityPost[] }>
         >(GET_RECENT_ACTIVITY(limit));
 
+        console.log('[API 응답 데이터]:', response.data);
+
         if (isMounted && response?.data && 'posts' in response.data) {
           const { posts } = response.data;
           if (Array.isArray(posts)) {

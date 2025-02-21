@@ -10,7 +10,7 @@ import {
   CardHeader,
 } from '@/components/ui/card';
 import { FadeUp } from '@/components/animation/FadeUp';
-import { useRecentActivityPosts } from '@/hooks/api/use-recent-posts.activity';
+import { useRecentActivityPosts } from '@/services/api/get-recent-posts.activity';
 
 const RecentActivitySection = () => {
   const { posts, loading, error } = useRecentActivityPosts(3); // 3개 조회

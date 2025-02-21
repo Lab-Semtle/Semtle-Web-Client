@@ -10,7 +10,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import PostCard from '@/components/PostCard';
+import PostCard from '@/components/common/PostCard';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
@@ -92,19 +92,19 @@ export default function SecretPage() {
   const postsPerPage = 8;
   const handleSearch = () => {
     if (searchTerm) {
-      const filtered = secretPost.posts.filter(
-        (post) => post.title.toLowerCase().includes(searchTerm.toLowerCase()), 
+      const filtered = secretPost.posts.filter((post) =>
+        post.title.toLowerCase().includes(searchTerm.toLowerCase()),
       );
       setFilteredPosts(filtered);
     } else {
-      setFilteredPosts(secretPost.posts); 
+      setFilteredPosts(secretPost.posts);
     }
     setCurrentPage(1);
   };
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      handleSearch(); 
+      handleSearch();
     }
   };
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
@@ -146,7 +146,7 @@ export default function SecretPage() {
         {currentPosts.length === 0 ? (
           <p>검색 결과가 없습니다.</p>
         ) : (
-          currentPosts.map((post,index) => (
+          currentPosts.map((post, index) => (
             <PostCard
               key={index}
               id={post.post_id}

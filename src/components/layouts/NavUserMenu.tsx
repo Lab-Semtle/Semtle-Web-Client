@@ -16,7 +16,7 @@ import {
   NavigationMenuList,
 } from '@/components/ui/navigation-menu';
 import { NavLinkMenu } from '@/components/layouts/NavLinkMenu';
-import { VariantShineButton } from '@/components/button/VariantShineButton';
+import { VariantShineButton } from '@/components/common/VariantShineButton';
 import { useSession } from '@/hooks/useSession';
 import { signOutWithForm } from '@/lib/auth/auth.server';
 import { ROUTES } from '@/constants/routes';

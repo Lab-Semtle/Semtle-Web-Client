@@ -6,7 +6,7 @@ import {
   COPYRIGHT,
   POLICIES,
 } from '@/constants/footer-items';
-import AlertCard from '@/components/AlertCard';
+import AlertCard from '@/components/common/AlertCard';
 
 const Footer: React.FC = () => {
   return (

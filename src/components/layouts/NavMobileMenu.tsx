@@ -9,7 +9,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
-import DarkModeButton from '@/components/button/DarkModeButton';
+import DarkModeButton from '@/components/common/DarkModeButton';
 import { MenuIcon } from 'lucide-react';
 import { useSession } from '@/hooks/useSession';
 import { signOutWithForm } from '@/lib/auth/auth.server';

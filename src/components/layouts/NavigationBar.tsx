@@ -10,7 +10,7 @@ import {
 import NavToogleMenu from '@/components/layouts/NavToggleMenu';
 import NavMobileMenu from '@/components/layouts/NavMobileMenu';
 import NavUserMenu from '@/components/layouts/NavUserMenu';
-import DarkModeButton from '@/components/button/DarkModeButton';
+import DarkModeButton from '@/components/common/DarkModeButton';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { ROUTES } from '@/constants/routes';
 

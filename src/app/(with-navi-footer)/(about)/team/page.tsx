@@ -1,5 +1,5 @@
 import { Label } from '@/components/ui/label';
-import ProfileCardList from '@/components/ProfileCardList';
+import ProfileCardList from '@/components/common/ProfileCardList';
 
 export default function TeamPage() {
   const boardMembers = [

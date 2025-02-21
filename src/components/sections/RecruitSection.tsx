@@ -8,7 +8,7 @@ import {
   Layers3Icon,
   UsersRoundIcon,
 } from 'lucide-react';
-import { VariantShineButton } from '@/components/button/VariantShineButton';
+import { VariantShineButton } from '@/components/common/VariantShineButton';
 import {
   RECRUIT_TITLE,
   RECRUIT_DETAILS,

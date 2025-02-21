@@ -8,8 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 
-import SecretFileUploader from './SecretFileUploader';
-import SecretImageUploader from './SecretImageUploader';
+import SecretFileUploader from './uploader/SecretFileUploader';
+import SecretImageUploader from './uploader/SecretImageUploader';
 
 type FileItem = {
   id?: string;

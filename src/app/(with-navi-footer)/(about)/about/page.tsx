@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Label } from '@/components/ui/label';
-import NewsDirector from '@/components/NewsDirector';
+import NewsDirector from '@/components/sections/NewsDirector';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import * as React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,8 +9,8 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel';
-import KakaoMap from '@/components/KakaoMap';
-import ButtonLink from '@/components/button/LinkButton';
+import KakaoMap from '@/components/common/KakaoMap';
+import ButtonLink from '@/components/common/LinkButton';
 
 //NOTE - 행사탭 Data Fetching
 // async function fetchEventTab() {

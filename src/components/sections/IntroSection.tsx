@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { FadeUp } from '@/components/animation/FadeUp';
 import { ArrowRight } from 'lucide-react';
-import { VariantShineButton } from '@/components/button/VariantShineButton';
+import { VariantShineButton } from '@/components/common/VariantShineButton';
 import {
   INTRO_HEADING,
   INTRO_DESCRIPTION,

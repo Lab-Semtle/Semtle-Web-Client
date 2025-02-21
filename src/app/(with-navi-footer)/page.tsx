@@ -1,10 +1,10 @@
 'use client';
 import Image from 'next/image';
-import CarouselSection from '@/components/home/CarouselSection';
-import IntroSection from '@/components/home/IntroSection';
-import RecentActivitySection from '@/components/home/RecentActivitySection';
-import FaqSection from '@/components/home/FaqSection';
-import RecruitSection from '@/components/home/RecruitSection';
+import CarouselSection from '@/components/sections/CarouselSection';
+import IntroSection from '@/components/sections/IntroSection';
+import RecentActivitySection from '@/components/sections/RecentActivitySection';
+import FaqSection from '@/components/sections/FaqSection';
+import RecruitSection from '@/components/sections/RecruitSection';
 
 export default function HomePage() {
   return (

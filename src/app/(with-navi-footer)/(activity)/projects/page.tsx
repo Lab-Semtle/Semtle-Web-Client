@@ -11,9 +11,9 @@ import {
   PaginationNext,
   PaginationLink,
 } from '@/components/ui/pagination';
-import FilterBar from '@/components/FilterBar';
-import CardListA from '@/components/CardListA';
-import CardListC from '@/components/CardListC';
+import FilterBar from '@/components/common/FilterBar';
+import CardListA from '@/components/common/CardListA';
+import CardListC from '@/components/common/CardListC';
 
 type Card = {
   id: number;
@@ -68,7 +68,7 @@ export default function ProjectPage() {
   const handleFilter = (filter: Filter) => {
     const sourceCards = activeTab === 'active' ? activeCards : completedCards;
     const filtered = sourceCards.filter((card) =>
-      card.title.includes(filter.searchTerm)
+      card.title.includes(filter.searchTerm),
     );
     setFilteredCards(filtered);
     setCurrentPage(1);
@@ -79,44 +79,44 @@ export default function ProjectPage() {
     setCurrentPage(page);
   };
 
-// 프로젝트 등록 버튼 클릭 시 이동
-const handleCreateProject = () => {
-  const path =
-    activeTab === 'active'
-      ? '/projects/active/create'
-      : '/projects/completed/new';
-  router.push(path);
-};
-
+  // 프로젝트 등록 버튼 클릭 시 이동
+  const handleCreateProject = () => {
+    const path =
+      activeTab === 'active'
+        ? '/projects/active/create'
+        : '/projects/completed/new';
+    router.push(path);
+  };
 
   // 프로젝트 삭제 (완료된 프로젝트에서만 가능)
   const handleDelete = (selectedCardIds: number[]) => {
     setCompletedCards((prev) =>
-      prev.filter((card) => !selectedCardIds.includes(card.id))
+      prev.filter((card) => !selectedCardIds.includes(card.id)),
     );
     setFilteredCards((prev) =>
-      prev.filter((card) => !selectedCardIds.includes(card.id))
+      prev.filter((card) => !selectedCardIds.includes(card.id)),
     );
   };
 
   // 현재 페이지에 보여줄 데이터
   const paginatedCards = filteredCards.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   const totalPages = Math.ceil(filteredCards.length / itemsPerPage);
 
   return (
     <>
-
       <h2 className="mb-8 mt-20 text-center text-4xl font-bold">프로젝트</h2>
 
       {/* 탭 UI */}
       <div className="flex justify-center space-x-4 border-b pb-2">
         <button
           className={`px-4 py-2 font-semibold ${
-            activeTab === 'active' ? 'border-b-4 border-blue-500' : 'text-gray-500'
+            activeTab === 'active'
+              ? 'border-b-4 border-blue-500'
+              : 'text-gray-500'
           }`}
           onClick={() => {
             setActiveTab('active');
@@ -128,7 +128,9 @@ const handleCreateProject = () => {
         </button>
         <button
           className={`px-4 py-2 font-semibold ${
-            activeTab === 'completed' ? 'border-b-4 border-blue-500' : 'text-gray-500'
+            activeTab === 'completed'
+              ? 'border-b-4 border-blue-500'
+              : 'text-gray-500'
           }`}
           onClick={() => {
             setActiveTab('completed');
@@ -140,26 +142,19 @@ const handleCreateProject = () => {
         </button>
       </div>
 
-{/* 필터 + 버튼 */}
-<div className="flex items-center justify-start gap-4 p-4">
-  <Button onClick={handleCreateProject}>
-    {activeTab === 'active' ? '프로젝트 등록' : '완료된 프로젝트 등록'}
-  </Button>
-  <FilterBar onFilter={handleFilter} />
-</div>
-
+      {/* 필터 + 버튼 */}
+      <div className="flex items-center justify-start gap-4 p-4">
+        <Button onClick={handleCreateProject}>
+          {activeTab === 'active' ? '프로젝트 등록' : '완료된 프로젝트 등록'}
+        </Button>
+        <FilterBar onFilter={handleFilter} />
+      </div>
 
       {/* 카드 리스트 */}
       {activeTab === 'active' ? (
-        <CardListA
-          cards={paginatedCards}
-          onDelete={undefined}
-        />
+        <CardListA cards={paginatedCards} onDelete={undefined} />
       ) : (
-        <CardListC
-          cards={paginatedCards}
-          onDelete={handleDelete}
-        />
+        <CardListC cards={paginatedCards} onDelete={handleDelete} />
       )}
 
       {/* 페이지네이션 */}

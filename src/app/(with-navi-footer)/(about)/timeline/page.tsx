@@ -1,3 +1,6 @@
+'use client';
+
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Carousel,
   CarouselContent,
@@ -8,7 +11,7 @@ import {
 import { TimelineData } from '@/constants/TimelineData';
 import type { TimelineElement } from '@/types/timeline';
 
-// 연도별 그룹화 유틸함수
+/** 연도별 그룹화 유틸함수 */
 function groupByYear(
   timelineData: TimelineElement[],
 ): Record<number, TimelineElement[]> {
@@ -20,8 +23,10 @@ function groupByYear(
   }, {});
 }
 
-export default function HistoryPage() {
-  const groupedData = groupByYear(TimelineData); // 연도별 그룹화
+export default function TimelinePage() {
+  const groupedData = groupByYear(TimelineData); // 연도별로 그룹화
+  const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <main className="flex flex-col items-center px-6 pt-32">
@@ -42,13 +47,30 @@ export default function HistoryPage() {
                     key={index}
                     className="basis-full pl-2 md:basis-1/2 md:pl-4 lg:basis-1/3"
                   >
-                    <div className="flex aspect-square flex-col items-center justify-center rounded-lg border bg-white p-4 shadow-md">
-                      <span className="text-center text-lg font-semibold text-black">
-                        {item.title}
-                      </span>
-                      <p className="mt-2 text-center text-gray-900">
-                        {item.description}
-                      </p>
+                    <div
+                      className="relative flex aspect-square cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border shadow-md"
+                      onClick={() =>
+                        router.push(`${pathname}/story/${item.id}`)
+                      }
+                    >
+                      {/* 흐릿한 배경 이미지 */}
+                      <div
+                        className="absolute inset-0 bg-cover bg-center"
+                        style={{
+                          backgroundImage: `url(${item.imageUrl || '/images/semtle_logo_sqare_white.jpg'})`,
+                          filter: 'blur(8px)',
+                        }}
+                      />
+                      {/* 반투명 오버레이 */}
+                      <div className="absolute inset-0 bg-black/50"></div>
+
+                      {/* 텍스트 컨텐츠 */}
+                      <div className="relative z-10 p-4 text-center">
+                        <span className="text-lg font-semibold text-white">
+                          {item.title}
+                        </span>
+                        <p className="mt-2 text-white">{item.summary}</p>
+                      </div>
                     </div>
                   </CarouselItem>
                 ))}

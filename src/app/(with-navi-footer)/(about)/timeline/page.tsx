@@ -1,6 +1,7 @@
-'use client';
+/** 타임라인 페이지 */
 
-import { usePathname, useRouter } from 'next/navigation';
+'use client';
+import { useRouter } from 'next/navigation';
 import {
   Carousel,
   CarouselContent,
@@ -26,7 +27,6 @@ function groupByYear(
 export default function TimelinePage() {
   const groupedData = groupByYear(TimelineData); // 연도별로 그룹화
   const router = useRouter();
-  const pathname = usePathname();
 
   return (
     <main className="flex flex-col items-center px-6 pt-32">
@@ -50,7 +50,9 @@ export default function TimelinePage() {
                     <div
                       className="relative flex aspect-square cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border shadow-md"
                       onClick={() =>
-                        router.push(`${pathname}/story/${item.id}`)
+                        router.push(`/timeline/${item.id}`, {
+                          scroll: false,
+                        })
                       }
                     >
                       {/* 흐릿한 배경 이미지 */}

@@ -13,7 +13,7 @@ export default function RulesPage() {
 
   // Markdown 파일 불러오기
   useEffect(() => {
-    fetch('/rules.md')
+    fetch('/docs/rules.md')
       .then((res) => res.text())
       .then((data) => setContent(data));
   }, []);
@@ -59,7 +59,7 @@ export default function RulesPage() {
           components={{
             h1: ({ children }) => (
               <h2
-                className="mb-4 mt-12 text-3xl font-bold"
+                className="mb-4 mt-16 text-center text-3xl font-bold"
                 id={children?.toString()}
                 ref={(el) => {
                   if (el) sectionsRef.current[children?.toString() || ''] = el;

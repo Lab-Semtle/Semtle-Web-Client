@@ -11,14 +11,14 @@ export default function RulesPage() {
   const [activeSection, setActiveSection] = useState('');
   const sectionsRef = useRef<Record<string, HTMLHeadingElement | null>>({});
 
-  // 📌 Markdown 파일 불러오기
+  // Markdown 파일 불러오기
   useEffect(() => {
     fetch('/rules.md')
       .then((res) => res.text())
       .then((data) => setContent(data));
   }, []);
 
-  // 📌 현재 보고 있는 섹션 감지
+  // 현재 보고 있는 섹션 감지
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
@@ -52,9 +52,9 @@ export default function RulesPage() {
 
   return (
     <div className="relative flex justify-center">
-      {/* 📌 회칙 본문 */}
+      {/* 회칙 본문 */}
       <main className="prose dark:prose-invert max-w-4xl flex-1 px-6 pt-24">
-        <h1 className="mb-6 text-4xl font-bold">📖 학회 회칙</h1>
+        <h1 className="mb-6 text-center text-4xl font-bold">📖 학회 회칙</h1>
         <ReactMarkdown
           components={{
             h1: ({ children }) => (
@@ -72,12 +72,15 @@ export default function RulesPage() {
               <h3 className="mb-2 mt-8 text-xl font-semibold">{children}</h3>
             ),
             p: ({ children }) => (
-              <p className="mb-4 text-gray-700 dark:text-gray-300">
+              <p className="mb-4 text-black dark:text-white">{children}</p>
+            ),
+            ol: ({ children }) => (
+              <ol className="mb-4 list-outside list-decimal text-black dark:text-white">
                 {children}
-              </p>
+              </ol>
             ),
             ul: ({ children }) => (
-              <ul className="mb-4 list-inside list-disc">{children}</ul>
+              <ul className="mb-4 list-disc">{children}</ul>
             ),
             li: ({ children }) => <li className="ml-4">{children}</li>,
             hr: () => (
@@ -89,7 +92,7 @@ export default function RulesPage() {
         </ReactMarkdown>
       </main>
 
-      {/* 📌 우측 고정 메뉴 (ShadCN Card 컴포넌트) */}
+      {/* 우측 고정 메뉴 (ShadCN Card 컴포넌트) */}
       <div className="hidden lg:block">
         <Card className="sticky top-24 ml-8 w-64 rounded-xl bg-white shadow-md dark:bg-gray-900">
           <CardHeader>

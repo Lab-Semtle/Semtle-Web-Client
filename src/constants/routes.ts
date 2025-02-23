@@ -9,7 +9,7 @@ export const ROUTES = {
   RULES: '/rules',
   SECRET_BOARD: '/secret',
   PROFILE_SETUP: '/setup',
-  PROFILE_MYPAGE: '/mypage',
+  PROFILE_MYPAGE: '/mypage/projects',
   RECRUIT: '/recruit',
   EXECUTIVE: '/executive',
 

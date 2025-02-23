@@ -1,18 +1,20 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["next-auth", "react", "react-dom"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "CommonJS",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
     "plugins": [
       {
         "name": "next"
@@ -20,8 +22,22 @@
     ],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "typeRoots": ["./src/types", "./node_modules/@types"],
+    "moduleResolution": "node"
   },
+<<<<<<< HEAD
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/projects/hire/[id]/page.jsx", "src/app/projects/hire/update/[id]/page.jsx"],
+=======
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/types/auth.d.ts",
+    "src/app/projects/active/post/[id]/page.jsx",
+    "src/app/projects/active/update/[id]/page.jsx"
+  ],
+>>>>>>> 8189d66a040fe2e8f77187589981d5aadc6c7e3f
   "exclude": ["node_modules"]
 }

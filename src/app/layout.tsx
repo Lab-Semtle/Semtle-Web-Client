@@ -1,25 +1,34 @@
 import type { Metadata } from 'next';
+import { Toaster } from '@/components/ui/toaster';
 import localFont from 'next/font/local';
 import '@/app/global.css';
-import GlobalLayout from '@/components/GlobalLayout';
+import { ThemeProvider } from 'next-themes';
+import { Providers } from '@/components/msw/MSWProvider';
+import Script from 'next/script';
+
+const suit = localFont({
+  src: './fonts/SUIT-Variable.woff2',
+  display: 'swap',
+  variable: '--font-suit',
+});
+
+const yclover = localFont({
+  src: './fonts/YClover-Bold.woff2',
+  display: 'swap',
+  variable: '--font-yclover',
+});
+
+const moneygraphy = localFont({
+  src: './fonts/Moneygraphy-Rounded.woff2',
+  display: 'swap',
+  variable: '--font-moneygraphy',
+});
 
 const pretendard = localFont({
-  src: '../../public/fonts/PretendardVariable.woff2',
+  src: './fonts/PretendardVariable.woff2',
   display: 'swap',
   weight: '45 920',
   variable: '--font-pretendard',
-});
-
-const geistSans = localFont({
-  src: '../../public/fonts/GeistVF.woff',
-  variable: '--font-geist-sans',
-  weight: '100 900',
-});
-
-const geistMono = localFont({
-  src: '../../public/fonts/GeistMonoVF.woff',
-  variable: '--font-geist-mono',
-  weight: '100 900',
 });
 
 export const metadata: Metadata = {
@@ -33,12 +42,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="ko"
-      className={`${pretendard.variable} ${geistSans.variable} ${geistMono.variable}`}
-    >
-      <body className="font-pretendard antialiased">
-        <GlobalLayout>{children}</GlobalLayout>
+    <html lang="ko" suppressHydrationWarning>
+      <body
+        className={`${moneygraphy.variable} ${pretendard.variable} ${yclover.variable} ${suit.variable} font-pretendard antialiased`}
+      >
+        <Providers>
+          <ThemeProvider attribute="class" defaultTheme="system">
+            <main>{children}</main>
+            <Script
+              type="text/javascript"
+              src={`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY}&autoload=false&libraries=services`}
+            ></Script>
+          </ThemeProvider>
+        </Providers>
+        <Toaster />
       </body>
     </html>
   );

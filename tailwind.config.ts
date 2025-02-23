@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss';
+import tailwindcssAnimate from 'tailwindcss-animate';
 
-export default {
+const config: Config = {
   darkMode: ['class'],
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -61,6 +62,13 @@ export default {
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))',
         },
+        backdropBlur: {
+          none: '0',
+          sm: '4px',
+          md: '8px',
+          lg: '12px',
+          xl: '16px',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -84,15 +92,34 @@ export default {
             height: '0',
           },
         },
+        'bg-shine': {
+          from: {
+            backgroundPosition: '0 0',
+          },
+          to: {
+            backgroundPosition: '-200% 0',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'bg-shine': 'bg-shine 2.1s linear infinite',
       },
       fontFamily: {
         pretendard: ['var(--font-pretendard)'],
+        moneygraphy: ['var(--font-moneygraphy)'],
+        yclover: ['var(--font-yclover)'],
+        suit: ['var(--font-suit)'],
+      },
+      screens: {
+        sm: '640px', // 스마트폰
+        md: '768px', // 테블릿
+        lg: '1024px', // 데스크톱
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
-} satisfies Config;
+  plugins: [tailwindcssAnimate],
+};
+
+export default config;

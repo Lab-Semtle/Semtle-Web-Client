@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 
 const RecruitmentPostViewPage = () => {
   const router = useRouter();
+  
   const { id } = useParams();
   const [postData, setPostData] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -118,7 +119,7 @@ const RecruitmentPostViewPage = () => {
         </div>
 
         <div className="mb-6 flex justify-center space-x-4">
-          <Button variant="primary">참여 신청하기</Button>
+          <Button variant="primary" onClick={() => router.push(`/projects/active/apply/${id}`)}>참여 신청하기</Button>
         </div>
 
         <div className="flex justify-between space-x-4">

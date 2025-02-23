@@ -83,8 +83,8 @@ export default function ProjectPage() {
 const handleCreateProject = () => {
   const path =
     activeTab === 'active'
-      ? '/projects/active/create'
-      : '/projects/completed/new';
+      ? '/projects/hire/create'
+      : '/projects/showcase/create';
   router.push(path);
 };
 

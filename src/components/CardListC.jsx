@@ -18,7 +18,7 @@ const CardListC = ({ cards, onDelete }) => {
 
   // 카드 클릭 시 상세 페이지 이동
   const handleCardClick = (id) => {
-    router.push(`/projects/completed/post/${id}`); // 동적 라우팅 이동
+    router.push(`/projects/showcase/${id}`); // 동적 라우팅 이동
   };
 
   // 삭제 버튼 클릭 처리

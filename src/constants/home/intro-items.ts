@@ -16,7 +16,7 @@ export const INTRO_CARDS = [
     description: `아치셈틀에서는 자체적으로 팀을 구성해 해커톤, 경진대회, 공모전 등에 참가하거나, 
     사이드 프로젝트를 통해 실제 결과물을 만들어내는 경험을 할 수 있습니다.`,
     label: 'Activities',
-    image: '/1.jpg',
+    image: '/images/semtle2022/Project-2022-1.jpeg',
   },
   {
     id: 'intro-2',
@@ -24,7 +24,7 @@ export const INTRO_CARDS = [
     description: `선후배 간 꿀팁이나 관심 분야에 대한 정보를 자유롭게 나눌 수 있는 환경을 제공합니다. 
     또한 MT, 체육대회, 홈커밍 등 다양한 네트워킹 활동을 통해 학부 행사와는 또 다른, 더욱 끈끈한 커뮤니티를 경험할 수 있습니다.`,
     label: 'Seminar',
-    image: '/2.jpg',
+    image: '/images/semtle2022/MT-2022-32.jpeg',
   },
   {
     id: 'intro-3',
@@ -32,6 +32,6 @@ export const INTRO_CARDS = [
     description: `최신 트렌드와 전공 과목에서 어려웠던 부분을 세미나와 스터디를 통해 해소할 수 있습니다. 
     학회원들이 서로 가르치고 배우며 함께 성장할 수 있는 환경을 만들어가고자 합니다.`,
     label: 'Projects',
-    image: '/3.jpg',
+    image: '/images/semtle2022/Seminar-2022-3.jpeg',
   },
 ];

@@ -133,11 +133,12 @@ const RecruitmentPostPage = () => {
       <div className="mb-6">
         <label className="font-semibold text-gray-700">프로젝트 타입</label>
         <Select
-          value={postData.projectType}
-          onValueChange={(value) =>
-            setPostData({ ...postData, projectType: value })
-          }
-        >
+  value={postData.projectType}
+  onValueChange={(value: string) =>
+    setPostData({ ...postData, projectType: value })
+  }
+>
+
           <SelectTrigger className="w-full rounded-md border border-gray-300 bg-gray-50 p-3">
             {postData.projectType}
           </SelectTrigger>

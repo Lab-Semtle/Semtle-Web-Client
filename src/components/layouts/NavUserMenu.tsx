@@ -25,6 +25,9 @@ import { Session } from 'next-auth';
 export default function NavUserMenu() {
   const session = useSession(); // 서버에서 세션 가져오기
 
+  console.log('[NavUserMenu] 세션 상태:', status);
+  console.log('[NavUserMenu] 세션 데이터:', session);
+
   return (
     <NavigationMenuList className="flex items-center gap-3">
       {session?.user ? (
@@ -51,10 +54,8 @@ function LoginMenu({ session }: { session: Session | null }) {
       <DropdownMenuTrigger asChild>
         <Avatar className="cursor-pointer">
           <AvatarImage
-            src={
-              session?.user?.profileImageUrl || '/images/default-profile.png'
-            }
-            alt={session?.user?.username || 'User'}
+            src={session?.profileImageUrl || '/images/default-profile.png'}
+            alt={session?.username || 'User'}
             onError={(e) => {
               (e.target as HTMLImageElement).src =
                 '/images/default-profile.png';
@@ -62,17 +63,17 @@ function LoginMenu({ session }: { session: Session | null }) {
             className="h-10 w-10 rounded-full border-2 border-gray-900"
           />
           <AvatarFallback>
-            {session?.user?.username?.slice(0, 2) || '셈틀'}
+            {session?.username?.slice(0, 2) || '셈틀'}
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-40">
         <DropdownMenuLabel>
           <span className="block font-bold">
-            {session?.user?.username || '사용자'}
+            {session?.username || '사용자'}
           </span>
           <span className="block text-sm text-gray-500 dark:text-gray-400">
-            {session?.user?.role || '알 수 없음'}
+            {session?.role || '알 수 없음'}
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

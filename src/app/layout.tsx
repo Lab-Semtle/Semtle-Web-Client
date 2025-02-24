@@ -5,6 +5,7 @@ import '@/app/global.css';
 import { ThemeProvider } from 'next-themes';
 import { Providers } from '@/components/msw/MSWProvider';
 import Script from 'next/script';
+import { SessionProvider } from 'next-auth/react';
 
 const suit = localFont({
   src: './fonts/SUIT-Variable.woff2',
@@ -48,11 +49,13 @@ export default function RootLayout({
       >
         <Providers>
           <ThemeProvider attribute="class" defaultTheme="system">
-            <main>{children}</main>
-            <Script
-              type="text/javascript"
-              src={`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY}&autoload=false&libraries=services`}
-            ></Script>
+            <SessionProvider>
+              <main>{children}</main>
+              <Script
+                type="text/javascript"
+                src={`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY}&autoload=false&libraries=services`}
+              ></Script>
+            </SessionProvider>
           </ThemeProvider>
         </Providers>
         <Toaster />

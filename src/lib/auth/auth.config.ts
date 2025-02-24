@@ -3,11 +3,7 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { loginSchema } from '../validation/login-schema';
-
-// const API_BASE_URL =
-//   process.env.NODE_ENV === 'production'
-//     ? process.env.NEXT_PUBLIC_API_BASE_URL_PROD
-//     : process.env.NEXT_PUBLIC_API_BASE_URL_DEV;
+import { API_ROUTES } from '@/constants/api-endpoint';
 
 /**
  * handlers : 프로젝트 인증 관리를 위한 API 라우트(GET, POST 함수) 객체
@@ -17,11 +13,11 @@ import { loginSchema } from '../validation/login-schema';
  * unstable_update: update : 세션 정보 갱신 비동기 함수
  */
 export const {
-  auth,
-  handlers,
-  signIn,
-  signOut,
-  unstable_update: update,
+  auth, // 서버 컴포넌트 세션 확인
+  handlers, // api route 핸들러
+  signIn, // 로그인 실행
+  signOut, // 로그아웃 실행
+  unstable_update: update, // 세션 갱신
 } = NextAuth({
   pages: {
     signIn: '/signin', // 로그인 페이지 경로
@@ -43,78 +39,37 @@ export const {
         const { email, password } = validationFields.data;
 
         try {
-          // if (!API_BASE_URL) {
-          //   console.error('[authorize] API_BASE_URL이 설정되지 않았습니다.');
-          //   throw new Error('API_BASE_URL is not defined.');
-          // }
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL_DEV}${API_ROUTES.AUTH_SIGNIN}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, password }),
+            },
+          );
 
-          // console.log('[authorize] 현재 API_BASE_URL:', API_BASE_URL);
-          // const SIGN_IN_URL = `${API_BASE_URL}/auth/signin`; //
-
-          // // 백엔드 로그인 API 호출
-          // const response = await fetch(SIGN_IN_URL, {
-          //   method: 'POST',
-          //   headers: {
-          //     'Content-Type': 'application/json',
-          //   },
-          //   body: JSON.stringify({ email, password }),
-          // });
-
-          // console.log('[authorize] 로그인 API 응답 :', response);
-
-          // if (!response.ok) {
-          //   const errorData = await response.json();
-          //   throw new Error(
-          //     errorData?.message || `HTTP Error ${response.status}`,
-          //   );
-          // }
-
-          // const responseData = await response.json();
-          // console.log('[authorize] 로그인 성공:', responseData);
-
-          /** API 요청 MSW 와 충돌 문제... 일단 테스트로 사용자 정보 강제 주입 */
-          console.log('[authorize] 백엔드 API 없이 임시 로그인 실행 중...');
-
-          /** 임시 로그인 검증 추가 */
-          const responseData = {
-            email: 'test@semtle.com',
-            password: 'password123!',
-            accessToken: 'mock_access_token_123',
-            refreshToken: 'mock_refresh_token_456',
-            id: 'mock_user_id',
-            username: '테스트 유저',
-            role: 'USER',
-            manageApprovalStatus: true,
-            profileImageUrl: '/images/default-profile.png',
-          };
-
-          if (
-            email !== responseData.email ||
-            password !== responseData.password
-          ) {
-            console.log('[authorize] 로그인 실패: 잘못된 이메일 또는 비밀번호');
-            return null; // 로그인 실패 시 NextAuth가 자동으로 로그인 페이지로 리디렉트
+          if (!response.ok) {
+            console.error(`[authorize] 로그인 실패: ${response.status}`);
+            return null; // 로그인 실패
           }
 
-          console.log('[authorize] 로그인 성공:', responseData);
+          const userData = await response.json();
+          console.log('[authorize] 로그인 성공:', userData);
 
+          // 3. NextAuth 세션으로 반환
           return {
-            accessToken: responseData.accessToken,
-            refreshToken: responseData.refreshToken,
-            id: responseData.id,
-            username: responseData.username,
-            role: responseData.role,
-            manageApprovalStatus: responseData.manageApprovalStatus,
+            accessToken: userData.accessToken,
+            refreshToken: userData.refreshToken,
+            id: userData.id,
+            username: userData.username,
+            role: userData.role,
+            manageApprovalStatus: userData.manageApprovalStatus,
             profileImageUrl:
-              responseData.profileImageUrl ?? '/images/default-profile.png',
+              userData.profileImageUrl ?? '/images/default-profile.png',
           };
         } catch (error) {
-          // if (isApiResponseError(error)) {
-          //   const statusCode = error.status || 500;
-          //   return Promise.reject(new Error(statusCode.toString()));
-          // }
           console.error('[authorize] 로그인 처리 중 예외 발생:', error);
-          return Promise.reject(new Error('401')); // 인증 실패 처리
+          return null;
         }
       },
     }),

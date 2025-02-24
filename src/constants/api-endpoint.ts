@@ -4,7 +4,8 @@
 
 export const API_ROUTES = {
   TEST: '/api/test',
-  GET_RECENT_ACTIVITY_BASE: '/api/index/activity/recent',
+  AUTH_SIGNIN: '/api/auth/signin', // 로그인
+  GET_RECENT_ACTIVITY_BASE: '/api/index/activity/recent', // 최근 활동게시물 조회
 } as const;
 
 // 동적 경로 처리

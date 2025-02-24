@@ -4,27 +4,13 @@ import { format } from 'date-fns';
 import {
   ArrowLeft,
   ArrowRight,
-  Pencil,
-  Trash2,
   ListFilter,
-  Eye,
-  Heart,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogFooter,
-  DialogTitle,
-} from '@/components/ui/dialog';
 
 interface PostDetailProps {
   post?: {
@@ -34,16 +20,7 @@ interface PostDetailProps {
     image: string;
     date: string;
     category: string;
-    views: number;
-    likes: number;
   };
-}
-
-interface Comment {
-  id: number;
-  author: string;
-  content: string;
-  date: string;
 }
 
 const postData = [
@@ -55,8 +32,6 @@ const postData = [
     image: '/1.jpg',
     date: '2024-01-05T10:00:00.000Z',
     category: '세미나',
-    views: 1234,
-    likes: 56,
   },
   {
     id: 2,
@@ -65,8 +40,6 @@ const postData = [
     image: '/2.jpg',
     date: '2024-01-10T14:00:00.000Z',
     category: '행사',
-    views: 1234,
-    likes: 56,
   },
   {
     id: 3,
@@ -75,8 +48,6 @@ const postData = [
     image: '/3.jpg',
     date: '2024-01-15T18:00:00.000Z',
     category: '기타',
-    views: 1234,
-    likes: 56,
   },
   {
     id: 4,
@@ -86,8 +57,6 @@ const postData = [
     image: '/4.jpg',
     date: '2024-01-20T09:00:00.000Z',
     category: '세미나',
-    views: 1234,
-    likes: 56,
   },
 ];
 
@@ -96,27 +65,8 @@ export default function PostDetail() {
     undefined,
   );
   const [loading, setLoading] = useState(true);
-  const [comments, setComments] = useState<Comment[]>([
-    {
-      id: 1,
-      author: '사용자1',
-      content: '좋은 글 감사합니다!',
-      date: new Date().toISOString(),
-    },
-    {
-      id: 2,
-      author: '사용자2',
-      content: '궁금한 점이 있는데요.',
-      date: new Date().toISOString(),
-    },
-  ]);
-  const [newComment, setNewComment] = useState('');
   const params = useParams();
   const router = useRouter();
-  const [liked, setLiked] = useState(false);
-  const [likes, setLikes] = useState(post?.likes ?? 0); // post가 undefined일 경우 0으로 설정
-  const { toast } = useToast();
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -143,36 +93,10 @@ export default function PostDetail() {
     return null;
   }
 
-  const handleDeleteConfirm = () => {
-    setOpen(false); // 모달 닫기
-    toast({
-      title: '게시물이 삭제되었습니다.',
-      description: '이전 페이지로 이동합니다...',
-      variant: 'destructive',
-    });
-
-    setTimeout(() => {
-      console.log('Delete post:', post?.id);
-      router.push('/activities'); // 삭제 후 목록 페이지로 이동
-    }, 2000);
-  };
-
   const handleModify = () => {
     router.push(`/activities/edit/${post.id}`);
   };
 
-  const handleAddComment = () => {
-    if (newComment.trim() === '') return alert('댓글 내용을 입력해주세요.');
-    const newId = comments.length + 1;
-    const newCommentObj: Comment = {
-      id: newId,
-      author: '익명',
-      content: newComment,
-      date: new Date().toISOString(),
-    };
-    setComments([newCommentObj, ...comments]);
-    setNewComment('');
-  };
 
   const handleNext = () => {
     const currentIndex = postData.findIndex((p) => p.id === post.id);
@@ -191,11 +115,6 @@ export default function PostDetail() {
     router.push(`/activities`);
   };
 
-  const handleLike = () => {
-    setLiked(!liked);
-    setLikes((prev) => (liked ? prev - 1 : prev + 1));
-  };
-
   return (
     <div className="container mx-auto mt-[70px] max-w-4xl p-4">
       <Card className="border-none shadow-none">
@@ -207,7 +126,7 @@ export default function PostDetail() {
                 <span>작성일: {format(new Date(post.date), 'yyyy.MM.dd')}</span>
                 <span>분류: {post.category}</span>
               </div>
-              <div className="flex items-center gap-4">
+              {/* <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1 text-gray-600">
                   <Eye className="h-4 w-4" />
                   <span>{post.views}</span>
@@ -219,10 +138,10 @@ export default function PostDetail() {
                   <Heart className={`h-4 w-4 ${liked ? 'fill-red-500' : ''}`} />
                   <span>{likes}</span>
                 </button>
-              </div>
+              </div> */}
             </div>
 
-            <div className="aspect-video w-full overflow-hidden rounded-lg bg-white">
+            <div className="aspect-video w-full overflow-hidden rounded-lg bg-gray-100">
               <Image
                 src={post.image || '/placeholder.svg'}
                 alt=""
@@ -281,16 +200,6 @@ export default function PostDetail() {
                   <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
               </div>
-            </div>
-            <div className="flex items-center justify-center">
-              <Button
-                variant="outline"
-                onClick={handleModify}
-                className="mr-5  hover:bg-semtleColor"
-              >
-                <Pencil className="mr-1 h-4 w-4 opacity-100" />
-                수정
-              </Button>
             </div>
           </div>
         </CardContent>

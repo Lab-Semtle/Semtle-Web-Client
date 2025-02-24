@@ -1,9 +1,3 @@
-/** 로그인 페이지
- *
- * 로그인 페이지 모달 창으로 변경하기
- * 비밀번호 찾기 포함
- */
-
 'use client';
 import { useState } from 'react';
 import { startTransition } from 'react';
@@ -26,8 +20,8 @@ import {
 } from '@/components/ui/card';
 import { ArrowLeft, LucideEye, LucideEyeOff } from 'lucide-react';
 import { signInWithCredentials } from '@/lib/auth/auth.server';
+import { useTheme } from 'next-themes';
 
-// 서버에서 반환하는 상태 코드에 대한 매핑
 const ERROR_MESSAGES: Record<string, string> = {
   '400': '잘못된 요청입니다.',
   '401': '이메일 또는 비밀번호가 올바르지 않습니다.',
@@ -37,7 +31,6 @@ const ERROR_MESSAGES: Record<string, string> = {
 };
 
 export default function SignInPage() {
-  // 입력값 검증
   const { register, handleSubmit, formState } = useForm<
     z.infer<typeof loginSchema>
   >({
@@ -47,6 +40,7 @@ export default function SignInPage() {
   const { errors } = formState;
   const router = useRouter();
   const { toast } = useToast();
+  const { theme } = useTheme(); // 테마 감지
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -54,9 +48,7 @@ export default function SignInPage() {
     setShowPassword(!showPassword);
   };
 
-  // 로그인 요청 핸들러
   const onSubmit = async (signinData: z.infer<typeof loginSchema>) => {
-    console.log('[SignInPage] 제출된 로그인 데이터:', signinData);
     setLoading(true);
 
     startTransition(async () => {
@@ -64,7 +56,6 @@ export default function SignInPage() {
         const result = await signInWithCredentials(signinData);
 
         if (result?.error) {
-          console.error('[SignInPage] 로그인 실패:', result.error);
           const errorMessage =
             ERROR_MESSAGES[result.error] ||
             '로그인 요청 중 알 수 없는 오류가 발생했습니다.';
@@ -80,7 +71,6 @@ export default function SignInPage() {
           return;
         }
 
-        console.log('[SignInPage] 로그인 성공');
         toast({
           title: '로그인 성공',
           description: '홈 화면으로 이동합니다.',
@@ -89,7 +79,6 @@ export default function SignInPage() {
 
         router.push('/');
       } catch (error) {
-        console.error('[SignInPage] 로그인 예외 발생:', error);
         toast({
           variant: 'destructive',
           title: '로그인 실패',
@@ -103,38 +92,60 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-xs space-y-6 sm:max-w-md lg:max-w-lg">
+    <div className="relative flex min-h-screen items-center justify-center px-4 sm:px-6 lg:px-8">
+      {/* 배경 이미지 */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/images/kmou_2022.jpg" // 배경 이미지 경로
+          alt="background"
+          layout="fill"
+          objectFit="cover"
+          className="contrast-95 brightness-90 dark:brightness-50 dark:grayscale"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/30 dark:bg-black/50" />
+      </div>
+
+      <div className="relative z-10 w-full max-w-xs space-y-6 sm:max-w-md lg:max-w-lg">
         {/* 홈으로 돌아가기 버튼 */}
         <div className="text-left">
-          <Button onClick={() => router.push('/')} variant="ghost">
-            <ArrowLeft className="mr-1" /> 홈으로 돌아가기
+          <Button
+            onClick={() => router.push('/')}
+            variant="ghost"
+            className="flex items-center rounded-md bg-gray-200 px-4 py-2 text-gray-950 shadow-sm hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+          >
+            <ArrowLeft className="mr-2 size-7 text-gray-900 dark:text-white" />
+            홈으로 돌아가기
           </Button>
         </div>
 
         {/* 로그인 카드 섹션 */}
-        <Card>
+        <Card className="bg-white/90 shadow-lg backdrop-blur-md dark:bg-gray-800/80 dark:shadow-gray-700/50">
           <CardHeader className="text-center">
-            {/* 로고 */}
+            {/* 로고*/}
             <div className="flex flex-col items-center">
               <Image
-                src="/images/semtle_logo_square_none.png"
-                alt="semtle logo square none"
-                width={80}
-                height={80}
-                className="sm:h-20 sm:w-20 lg:h-28 lg:w-28"
+                src={
+                  theme === 'dark'
+                    ? '/logo/Logo-Blue-None-v2025.svg'
+                    : '/logo/Logo-Sky-None-v2025.svg'
+                }
+                alt="semtle logo"
+                width={160}
+                height={160}
+                className="sm:h-44 sm:w-44 lg:h-48 lg:w-48"
               />
-              <CardTitle className="mt-4 text-base sm:text-lg lg:text-xl">
+              <CardTitle className="mt-4 text-lg text-gray-900 dark:text-gray-100 sm:text-xl lg:text-2xl">
                 아치셈틀 공식 홈페이지에 오신 것을 환영합니다!
               </CardTitle>
-              <CardDescription className="text-sm text-gray-600 sm:text-base">
+              <CardDescription className="text-sm text-gray-600 dark:text-gray-400 sm:text-base">
                 학교 이메일주소와 비밀번호를 입력하여 로그인을 진행해주세요.
               </CardDescription>
             </div>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              {/* 이메일 입력 폼 */}
+              {/* 이메일 입력 */}
               <div className="flex flex-col space-y-1">
                 <Input
                   id="email"
@@ -142,6 +153,7 @@ export default function SignInPage() {
                   placeholder="학교 이메일"
                   {...register('email')}
                   aria-invalid={!!errors.email}
+                  className="bg-gray-100 text-gray-900 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
                 />
                 {errors.email && (
                   <p className="text-sm text-red-500">{errors.email.message}</p>
@@ -150,36 +162,27 @@ export default function SignInPage() {
 
               {/* 비밀번호 입력 */}
               <div className="flex flex-col space-y-1">
-                <div className="flex items-center rounded-md border">
+                <div className="flex items-center rounded-md border bg-gray-100 dark:border-gray-600 dark:bg-gray-700">
                   <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="비밀번호"
                     {...register('password')}
-                    aria-invalid={!!errors.password} // 에러 발생 시 시각적 접근성 대응
-                    className="flex-1 border-none px-3 focus:outline-none focus:ring-0"
+                    aria-invalid={!!errors.password}
+                    className="flex-1 border-none bg-transparent px-3 text-gray-900 focus:outline-none focus:ring-0 dark:text-gray-200"
                   />
                   <button
                     type="button"
                     onClick={togglePasswordVisibility}
-                    className="px-3 text-gray-500"
+                    className="px-3 text-gray-500 dark:text-gray-300"
                   >
                     {showPassword ? (
-                      <LucideEyeOff
-                        width={20}
-                        height={20}
-                        className="text-gray-500"
-                      />
+                      <LucideEyeOff width={20} height={20} />
                     ) : (
-                      <LucideEye
-                        width={20}
-                        height={20}
-                        className="text-gray-500"
-                      />
+                      <LucideEye width={20} height={20} />
                     )}
                   </button>
                 </div>
-                {/* 에러 메세지 표시 */}
                 {errors.password && (
                   <p className="text-sm text-red-500">
                     {errors.password.message}
@@ -191,7 +194,7 @@ export default function SignInPage() {
               <div className="space-y-2">
                 <Button
                   type="submit"
-                  className="w-full bg-slate-950 hover:bg-slate-800"
+                  className="w-full bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-400"
                 >
                   {loading ? '로그인 중...' : '로그인'}
                 </Button>
@@ -199,14 +202,13 @@ export default function SignInPage() {
             </form>
           </CardContent>
           <CardFooter className="flex flex-col space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
-            <Button
-              variant="secondary"
-              onClick={() => router.push('/recruit')}
-              className="w-full bg-white hover:bg-slate-300 sm:w-1/3"
-            >
+            <Button variant="secondary" className="w-full sm:w-1/3">
               가입하기
             </Button>
-            <Button variant="link" className="w-full text-sm sm:w-1/3">
+            <Button
+              variant="link"
+              className="w-full text-gray-600 dark:text-gray-300 sm:w-1/3"
+            >
               비밀번호를 잊으셨나요?
             </Button>
           </CardFooter>

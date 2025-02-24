@@ -1,73 +1,12 @@
-// import { useEffect, useState } from 'react';
-// import apiClient from '@/services/api-client'; // Fetch API Client
-// import { ApiResponseWithData } from '@/types/api'; // API 반환 타입
-// import { GET_RECENT_ACTIVITY } from '@/constants/api-endpoint';
-
-// interface ActivityPost {
-//   id: number;
-//   title: string;
-//   summary: string;
-//   createdAt: string;
-// }
-
-// export function useRecentActivityPosts(limit = 3) {
-//   const [posts, setPosts] = useState<ActivityPost[]>([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState<string | null>(null);
-
-//   useEffect(() => {
-//     let isMounted = true;
-
-//     async function loadData() {
-//       try {
-//         // API 호출
-//         const response = await apiClient.get<
-//           ApiResponseWithData<{ posts: ActivityPost[] }>
-//         >(GET_RECENT_ACTIVITY(limit));
-
-//         console.log('[API 응답 데이터]:', response.data);
-
-//         if (isMounted && response?.data && 'posts' in response.data) {
-//           const { posts } = response.data;
-//           if (Array.isArray(posts)) {
-//             setPosts(posts);
-//           } else {
-//             throw new Error(
-//               'Invalid response structure: posts is not an array',
-//             );
-//           }
-//         } else {
-//           throw new Error('Invalid response structure');
-//         }
-
-//       } catch (error) {
-//         console.error('Error fetching recent activity posts:', error);
-//         setError('Failed to load news');
-//         throw error;
-//       } finally {
-//         if (isMounted) setLoading(false);
-//       }
-//     }
-
-//     loadData();
-
-//     return () => {
-//       isMounted = false;
-//     };
-//   }, [limit]);
-
-//   return { posts, loading, error };
-// }
-
-import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 import apiClient from '@/services/api-client';
 import { ApiResponseWithData } from '@/types/api';
 import { GET_RECENT_ACTIVITY } from '@/constants/api-endpoint';
 
 interface ActivityPost {
-  board_id: number; // 명세서에 따른 ID 필드 변경
+  board_id: number;
   title: string;
-  content: string; // 명세서에 따른 필드 변경 (기존 summary → content)
+  content: string;
   createdAt: string;
   images: string[];
   writer: string;
@@ -81,48 +20,39 @@ interface RecentActivityResponse {
   posts: ActivityPost[];
 }
 
-export function useRecentActivityPosts(limit = 3) {
-  const [posts, setPosts] = useState<ActivityPost[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+// SWR을 활용한 API 요청 함수 (apiClient 기반)
+const fetcher = async (url: string) => {
+  const response =
+    await apiClient.get<ApiResponseWithData<RecentActivityResponse>>(url);
 
-  useEffect(() => {
-    let isMounted = true;
+  console.log('[API 응답 데이터]:', response.data);
 
-    async function loadData() {
-      try {
-        const response = await apiClient.get<
-          ApiResponseWithData<RecentActivityResponse>
-        >(GET_RECENT_ACTIVITY(limit));
-
-        console.log('[API 응답 데이터]:', response.data);
-
-        if (isMounted && response?.data && 'posts' in response.data) {
-          const { posts } = response.data;
-          if (Array.isArray(posts)) {
-            setPosts(posts);
-          } else {
-            throw new Error(
-              'Invalid response structure: posts is not an array',
-            );
-          }
-        } else {
-          throw new Error('Invalid response structure');
-        }
-      } catch (error) {
-        console.error('Error fetching recent activity posts:', error);
-        setError('Failed to load news');
-      } finally {
-        if (isMounted) setLoading(false);
-      }
+  if (response?.data && 'posts' in response.data) {
+    const { posts } = response.data;
+    if (Array.isArray(posts)) {
+      return posts;
+    } else {
+      throw new Error('Invalid response structure: posts is not an array');
     }
+  } else {
+    throw new Error('Invalid response structure');
+  }
+};
 
-    loadData();
+// useSWR을 사용해서 캐싱 적용
+export function useRecentActivityPosts(limit = 3) {
+  const { data, error, isLoading } = useSWR(
+    `${GET_RECENT_ACTIVITY(limit)}`,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 5000,
+    },
+  );
 
-    return () => {
-      isMounted = false;
-    };
-  }, [limit]);
-
-  return { posts, loading, error };
+  return {
+    posts: data || [], // 데이터가 없으면 빈 배열 반환
+    loading: isLoading,
+    error: error ? 'Failed to load news' : null,
+  };
 }

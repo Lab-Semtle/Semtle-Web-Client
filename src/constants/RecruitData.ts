@@ -1,3 +1,18 @@
+export const recruitImage = '/images/example/sample-1.jpg';
+
+export const recruitConditions = [
+  '✔ 한국해양대학교 인공지능공학부 및 컴퓨터공학부 재학생',
+  '✔ 프로그래밍에 관심 있는 사람',
+  '✔ 적극적으로 활동할 수 있는 사람',
+];
+
+export const recruitSchedule = [
+  '📌 모집 시작: 2024년 8월 1일',
+  '⏳ 모집 마감: 2024년 8월 31일',
+];
+
+export const recruitApplyUrl = 'https://join-us.example.com';
+
 export const faqData = [
   {
     faqQuestion: '신입 학회원 모집은 어떻게 진행되나요?',
@@ -21,13 +36,13 @@ export const faqData = [
     faqQuestion: '개발 경험이 없어도 참여할 수 있나요?',
     faqAnswer:
       '네, 개발 경험이 없어도 학회 활동을 통해 배울 수 있도록 다양한 프로젝트와 스터디를 운영할 계획입니다.',
-    id: 5,
+    id: 4,
   },
   {
     faqQuestion: '세미나와 스터디는 어떤 방식으로 진행되나요?',
     faqAnswer: `세미나는 정기적으로 진행되며, 매 회차 선배들이 직접 주제를 선정하거나 희망하는 주제를 전달받아 강연을 진행합니다. 
       스터디는 홈페이지를 통해 모집할 수 있으며, 관심 분야에 따라 자율적으로 팀을 구성하여 운영됩니다.`,
-    id: 4,
+    id: 5,
   },
   {
     faqQuestion: '학회원이 되면 반드시 프로젝트를 해야 하나요?',

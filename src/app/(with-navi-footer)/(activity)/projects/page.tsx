@@ -83,8 +83,8 @@ export default function ProjectPage() {
 const handleCreateProject = () => {
   const path =
     activeTab === 'active'
-      ? '/projects/hire/create'
-      : '/projects/showcase/create';
+      ? '/projects/active/create'
+      : '/projects/completed/new';
   router.push(path);
 };
 
@@ -153,7 +153,7 @@ const handleCreateProject = () => {
       {activeTab === 'active' ? (
         <CardListA
           cards={paginatedCards}
-          onDelete={undefined}
+          //onDelete={undefined}
         />
       ) : (
         <CardListC
@@ -163,34 +163,41 @@ const handleCreateProject = () => {
       )}
 
       {/* 페이지네이션 */}
-      {totalPages > 1 && (
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-              />
-            </PaginationItem>
-            {Array.from({ length: totalPages }, (_, index) => (
-              <PaginationItem key={index}>
-                <PaginationLink
-                  isActive={currentPage === index + 1}
-                  onClick={() => handlePageChange(index + 1)}
-                >
-                  {index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      )}
+{totalPages > 1 && (
+  <Pagination>
+    <PaginationContent>
+      <PaginationItem>
+        <PaginationPrevious
+          onClick={() => {
+            if (currentPage > 1) handlePageChange(currentPage - 1);
+          }}
+          aria-disabled={currentPage === 1}
+          className={currentPage === 1 ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}
+        />
+      </PaginationItem>
+      {Array.from({ length: totalPages }, (_, index) => (
+        <PaginationItem key={index}>
+          <PaginationLink
+            isActive={currentPage === index + 1}
+            onClick={() => handlePageChange(index + 1)}
+          >
+            {index + 1}
+          </PaginationLink>
+        </PaginationItem>
+      ))}
+      <PaginationItem>
+        <PaginationNext
+          onClick={() => {
+            if (currentPage < totalPages) handlePageChange(currentPage + 1);
+          }}
+          aria-disabled={currentPage === totalPages}
+          className={currentPage === totalPages ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}
+        />
+      </PaginationItem>
+    </PaginationContent>
+  </Pagination>
+)}
+
     </>
   );
 }

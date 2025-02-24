@@ -26,31 +26,31 @@ export default function Modal({ children }: { children: React.ReactNode }) {
   return createPortal(
     <motion.dialog
       ref={dialogRef}
-      onClose={() => router.back()} // ESC 버튼 닫기
+      onClose={() => router.back()}
       onClick={(e) => {
         if ((e.target as HTMLElement).nodeName === 'DIALOG') {
-          router.back(); // 모달 바깥 클릭 시 닫기
+          router.back();
         }
       }}
-      initial={{ opacity: 0, scale: 0.9 }}
+      initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md"
+      exit={{ opacity: 0, scale: 0.95 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md"
     >
       <motion.div
-        className="relative max-w-lg rounded-lg bg-white p-6 shadow-lg"
-        initial={{ scale: 0.8 }}
+        className="relative w-full max-w-5xl rounded-lg bg-white p-8 shadow-xl dark:bg-gray-900"
+        initial={{ scale: 0.95 }}
         animate={{ scale: 1 }}
-        exit={{ scale: 0.8 }}
+        exit={{ scale: 0.95 }}
         onClick={(e) => e.stopPropagation()} // 내부 클릭 시 닫히지 않음
       >
         <button
-          className="absolute right-2 top-2 text-gray-600"
+          className="absolute right-4 top-4 text-gray-600 dark:text-gray-400"
           onClick={() => router.back()}
         >
           <XIcon className="h-6 w-6" />
         </button>
-        <div className="max-h-[80vh] overflow-y-auto px-4">{children}</div>
+        {children}
       </motion.div>
     </motion.dialog>,
     document.getElementById('modal-root') as HTMLElement,

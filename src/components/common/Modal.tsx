@@ -4,18 +4,23 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
+import { XIcon } from 'lucide-react';
 
 export default function Modal({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
+    document.body.style.overflow = 'hidden';
+
     if (!dialogRef.current?.open) {
       dialogRef.current?.showModal();
-      dialogRef.current?.scrollTo({
-        top: 0,
-      });
+      dialogRef.current?.scrollTo({ top: 0 });
     }
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
   }, []);
 
   return createPortal(
@@ -43,9 +48,9 @@ export default function Modal({ children }: { children: React.ReactNode }) {
           className="absolute right-2 top-2 text-gray-600"
           onClick={() => router.back()}
         >
-          ✕
+          <XIcon className="h-6 w-6" />
         </button>
-        {children}
+        <div className="max-h-[80vh] overflow-y-auto px-4">{children}</div>
       </motion.div>
     </motion.dialog>,
     document.getElementById('modal-root') as HTMLElement,

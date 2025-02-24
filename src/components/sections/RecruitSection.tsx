@@ -24,7 +24,7 @@ const ICONS: Record<string, JSX.Element> = {
 };
 
 const RecruitSection = () => (
-  <section className="mx-auto mt-20 max-w-[800px] px-4 py-20 text-center">
+  <section className="mx-auto mt-20 max-w-[800px] px-4 py-14 text-center">
     {/* 섹션 제목 */}
     <h2 className="mb-24 text-pretty text-center text-3xl font-extrabold md:mb-20 md:text-4xl lg:mb-16 lg:max-w-3xl lg:text-5xl">
       {RECRUIT_TITLE}
@@ -40,7 +40,7 @@ const RecruitSection = () => (
           {ICONS[id]}
           <div className="text-center md:text-left">
             <h3 className="text-xl font-semibold">{title}</h3>
-            <p className="text-base text-gray-600 dark:text-gray-400">
+            <p className="font-medium, text-base text-gray-600 dark:text-gray-400 lg:text-lg lg:leading-normal">
               {description}
             </p>
           </div>

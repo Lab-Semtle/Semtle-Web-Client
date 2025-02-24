@@ -1,19 +1,14 @@
-/** 메인페이지 최근 활동 게시판 게시물 3개 조회 섹션  */
-
 'use client';
+
 import Image from 'next/image';
-import { ArrowRight } from 'lucide-react';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { FadeUp } from '@/components/animation/FadeUp';
 import { useRecentActivityPosts } from '@/hooks/api/useFetchRecentActivity';
+import { useRouter } from 'next/navigation';
 
 const RecentActivitySection = () => {
-  const { posts, loading, error } = useRecentActivityPosts(3); // 3개 조회
+  const { posts, loading, error } = useRecentActivityPosts(3);
+  const router = useRouter(); // Next.js Router 사용
 
   if (loading) return <div className="py-10 text-center">Loading...</div>;
   if (error)
@@ -21,70 +16,72 @@ const RecentActivitySection = () => {
 
   return (
     <section className="py-20">
-      <div className="container mx-auto flex flex-col items-center gap-12 lg:px-16">
+      <div className="container mx-auto flex flex-col items-center gap-10 lg:px-16">
+        {/* Semtle News 제목 & 간격 조정 */}
         <FadeUp
           direction="up"
-          className="flex flex-col items-center space-y-0 pb-5 pt-0 text-center"
+          className="flex flex-col items-center space-y-0 pb-3 pt-0 text-center"
         >
-          <h2 className="mb-6 text-pretty text-3xl font-extrabold md:mb-6 md:text-4xl lg:mb-8 lg:max-w-3xl lg:text-5xl">
+          <h2 className="mb-4 text-pretty text-3xl font-extrabold md:mb-4 md:text-4xl lg:mb-6 lg:max-w-3xl lg:text-5xl">
             Semtle News.
           </h2>
         </FadeUp>
 
-        {/* 뉴스 카드 리스트 */}
+        {/* 뉴스 리스트 */}
         <FadeUp
           direction="up"
-          className="flex w-full max-w-[1200px] flex-col items-center justify-center gap-6"
-          staggerChildren={0.2} // 카드들이 순차적으로 나타나도록 설정
+          className="flex w-full max-w-[1200px] flex-col gap-2"
+          staggerChildren={0.2}
         >
           {posts.map((post) => (
-            <FadeUp key={post.id} direction="up">
-              <Card className="relative mx-auto flex min-h-[220px] w-full max-w-[1000px] overflow-hidden border-none bg-transparent shadow-none md:flex-row">
+            <FadeUp key={post.board_id} direction="up">
+              {/* 카드 전체를 클릭 가능하도록 설정 */}
+              <div
+                className="relative cursor-pointer overflow-hidden rounded-xl p-6 transition-shadow hover:shadow-md lg:grid lg:grid-cols-6 lg:items-center lg:gap-8"
+                onClick={() => router.push('#')} // 여기에 게시물 상세 페이지 URL 설정
+              >
                 {/* 이미지 컨테이너 */}
-                <div className="w-full flex-shrink-0 md:w-1/3">
-                  <a
-                    href="#"
-                    className="block transition-opacity duration-200 hover:opacity-70"
-                  >
+                <div className="hidden lg:col-span-2 lg:block">
+                  <div className="h-48 w-full overflow-hidden rounded-xl">
                     <Image
-                      src="/1.jpg"
+                      className="aspect-[16/9] h-full w-full object-cover"
+                      src={
+                        post.images.length > 0
+                          ? post.images[0]
+                          : '/default-image.jpg'
+                      }
                       alt={post.title}
                       width={500}
                       height={300}
-                      className="block aspect-[16/9] h-full w-full object-cover md:rounded-xl"
                     />
-                  </a>
-                </div>
-
-                {/* 카드 내용 컨테이너 */}
-                <div className="relative flex w-full flex-col justify-between px-4 py-3 md:w-2/3">
-                  <div className="flex flex-col">
-                    <CardHeader className="pb-2 md:pb-3">
-                      <h3 className="text-[1.4rem] font-semibold text-foreground md:text-[1.5rem]">
-                        <a href="#" className="hover:underline">
-                          {post.title}
-                        </a>
-                      </h3>
-                    </CardHeader>
-
-                    <CardContent className="flex-1">
-                      <p className="text-black dark:text-gray-200">
-                        {post.summary}
-                      </p>
-                    </CardContent>
                   </div>
-
-                  <CardFooter className="flex justify-end pb-1 md:pb-3">
-                    <a
-                      href="#"
-                      className="flex items-center text-primary hover:underline"
-                    >
-                      더보기
-                      <ArrowRight className="ml-2 size-4" />
-                    </a>
-                  </CardFooter>
                 </div>
-              </Card>
+
+                {/* 콘텐츠 컨테이너 */}
+                <div className="lg:col-span-4">
+                  <blockquote>
+                    <p className="text-base font-medium lg:text-lg lg:leading-normal">
+                      {post.content}
+                    </p>
+
+                    <footer className="mt-6 flex items-center">
+                      <Avatar className="size-12">
+                        <AvatarImage
+                          src={post.images[0] || '/default-avatar.png'}
+                          alt="Avatar"
+                        />
+                        <AvatarFallback>{post.writer[0]}</AvatarFallback>
+                      </Avatar>
+                      <div className="ms-4">
+                        <p className="font-medium">{post.writer}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {post.createdAt}
+                        </p>
+                      </div>
+                    </footer>
+                  </blockquote>
+                </div>
+              </div>
             </FadeUp>
           ))}
         </FadeUp>

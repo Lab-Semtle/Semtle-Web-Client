@@ -15,7 +15,7 @@ import {
 
 const IntroSection = () => {
   return (
-    <section className="py-20">
+    <section>
       <div className="container mx-auto flex flex-col items-center gap-5 lg:px-16">
         {/* 헤더 */}
         <FadeUp
@@ -25,7 +25,7 @@ const IntroSection = () => {
           <h2 className="mb-4 text-pretty font-pretendard text-3xl font-black md:mb-4 md:text-4xl lg:mb-6 lg:max-w-3xl lg:text-5xl">
             {INTRO_HEADING}
           </h2>
-          <p className="mb-6 text-black dark:text-white md:text-base lg:max-w-2xl lg:text-lg">
+          <p className="mb-6 text-base font-medium text-black dark:text-white lg:max-w-2xl lg:text-lg lg:leading-normal">
             {INTRO_DESCRIPTION.split('\n').map((line, index) => (
               <span key={index}>
                 {line}
@@ -67,7 +67,7 @@ const IntroSection = () => {
                 </h3>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">
+                <p className="text-base font-medium text-muted-foreground lg:text-lg lg:leading-normal">
                   {card.description.split('\n').map((line, index) => (
                     <span key={index}>
                       {line}

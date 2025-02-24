@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/carousel';
 import { TimelineData } from '@/constants/TimelineData';
 import type { TimelineElement } from '@/types/timeline';
+import PageHeading from '@/components/common/PageHeading';
 
 /** 연도별 그룹화 유틸함수 */
 function groupByYear(
@@ -29,7 +30,12 @@ export default function TimelinePage() {
   const router = useRouter();
 
   return (
-    <main className="flex flex-col items-center px-6 pt-32">
+    <main className="flex flex-col items-center px-6 pt-24">
+      <PageHeading
+        title="타임라인"
+        description="아치셈틀이 걸어온 여정, 우리의 활동과 역사를 연도별로 확인할 수 있습니다."
+      />
+
       {Object.keys(groupedData)
         .map(Number)
         .sort((a, b) => b - a)

@@ -10,6 +10,7 @@ const truncateNewsContent = (text: string, maxLength: number) => {
   }
   return text;
 };
+
 type NewsDirectorProps = {
   id?: number;
   imageSrc: string;
@@ -18,6 +19,7 @@ type NewsDirectorProps = {
   link_url?: string;
   index: number;
 };
+
 const NewsDirector: React.FC<NewsDirectorProps> = ({
   id,
   imageSrc,

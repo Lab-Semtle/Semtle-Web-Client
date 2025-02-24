@@ -28,21 +28,26 @@ export const CONTACTS: ContactInfo[] = [
   { label: 'Github', url: 'https://github.com/example', icon: SiGithub },
 ];
 
-/** 저작권 */
-export const COPYRIGHT = 'Copyright © ARCHI SEMTLE';
+/** 학회 정보 */
+export const FOOTER_INFO = {
+  address: '부산광역시 영도구 태종로 727, 국립한국해양대학교 공대 314호',
+  version: 'Ver 1.0 (2025)',
+  creators: [
+    '김민서',
+    '박준영',
+    '한태현',
+    '허태환',
+    '국태근',
+    '김아름',
+    '박상빈',
+    '신동혁',
+    '이서용',
+  ],
+};
 
-/** 이용약관 및 개인정보 정책 */
-export const POLICIES = [
-  {
-    triggerText: '이용약관',
-    title: '이용약관',
-    description: '여기 이용약관 내용을 삽입합니다.',
-    actionText: '닫기',
-  },
-  {
-    triggerText: '개인정보수집 및 처리',
-    title: '개인정보수집 및 처리',
-    description: '여기에 개인정보수집 및 처리 내용을 삽입합니다.',
-    actionText: '닫기',
-  },
+/** 학회 임원진 연락처 */
+export const EXECUTIVES = [
+  { role: '회장', name: '이상영', phone: '010-0000-0000' },
+  { role: '부회장', name: '홍길동', phone: '010-1111-1111' },
+  { role: '학습부장', name: '김민지', phone: '010-2222-2222' },
 ];

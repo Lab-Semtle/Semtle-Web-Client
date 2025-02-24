@@ -114,18 +114,18 @@ const RecruitmentPostViewPage = () => {
           </div>
         )}
 
-        <div className="mb-6 flex justify-center space-x-4">
+        <div className="mb-6 flex justify-center space-x-4 hidden">
           <Button variant="primary" onClick={() => router.push(`/projects/active/update/${id}`)}>업데이트</Button>
         </div>
 
         <div className="mb-6 flex justify-center space-x-4">
-          <Button variant="primary" onClick={() => router.push(`/projects/active/apply/${id}`)}>참여 신청하기</Button>
+          <Button variant="primary" onClick={() => router.push(`/projects/hire/apply/${id}`)}>참여 신청하기</Button>
         </div>
 
         <div className="flex justify-between space-x-4">
-          <Button variant="outline" className="flex-1">이전 게시물</Button>
+          <Button variant="outline" className="flex-1 hidden">이전 게시물</Button>
           <Button variant="outline" className="flex-1" onClick={() => router.push('/projects')}>목록 화면</Button>
-          <Button variant="outline" className="flex-1">다음 게시물</Button>
+          <Button variant="outline" className="flex-1 hidden">다음 게시물</Button>
         </div>
       </div>
     </>

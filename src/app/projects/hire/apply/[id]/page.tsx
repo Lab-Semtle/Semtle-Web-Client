@@ -20,6 +20,7 @@ const ProjectApplyPage: React.FC = () => {
   const router = useRouter();
   const { post_id, id: applicantId } = useParams();
   
+  const [projectTitle, setProjectTitle] = useState<string>('');
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<{ [key: number]: string }>({});
   const [urls, setUrls] = useState<string[]>(['']);
@@ -31,6 +32,7 @@ const ProjectApplyPage: React.FC = () => {
       try {
         const response = await fetch(`/api/questions?post_id=${post_id}`);
         const data = await response.json();
+        setProjectTitle(data.project_title);
         setQuestions(data.questions);
 
         const initialAnswers: { [key: number]: string } = {};
@@ -94,6 +96,7 @@ const ProjectApplyPage: React.FC = () => {
 
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold mb-4">{projectTitle}</h2>
       <h2 className="text-2xl font-bold mb-4">프로젝트 신청</h2>
       {questions.map((q) => (
         <div key={q.question_id} className="mb-4">

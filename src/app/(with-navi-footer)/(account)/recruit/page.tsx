@@ -10,6 +10,7 @@ import {
   recruitConditions,
   recruitSchedule,
   recruitApplyUrl,
+  recruitApplyDescription,
 } from '@/constants/RecruitData';
 
 export default function JoinPage() {
@@ -17,25 +18,25 @@ export default function JoinPage() {
     <div className="flex min-h-screen flex-col items-center justify-center px-6 pb-32 pt-24">
       {/* 페이지 헤딩 */}
       <PageHeading
-        title="아치셈틀 가입 안내"
+        title="아치셈틀 리크루팅"
         description="아치셈틀과 함께 배우고 성장하세요. 
-        프로그래밍에 관심 있는 누구나 지원할 수 있습니다."
+        프로그래밍에 관심 있는 누구나 지원할 수 있습니다! 😺"
       />
 
-      <div className="w-full max-w-3xl">
+      <div className="w-full max-w-4xl">
         {/* 포스터 이미지 */}
         <div className="mb-10 flex justify-center">
           <Image
             src={recruitImage}
             alt="Join Us Poster"
-            width={800}
-            height={500}
-            className="w-full rounded-lg shadow-lg"
+            width={400}
+            height={800}
+            className="h-auto w-full rounded-3xl shadow-lg"
           />
         </div>
 
         {/* 모집 정보 섹션 */}
-        <div className="container py-16">
+        <div className="container py-40">
           <div className="mx-auto max-w-3xl">
             <div className="grid gap-12">
               <div>
@@ -88,7 +89,12 @@ export default function JoinPage() {
                       신청 방법
                     </h3>
                     <p className="mt-1 text-lg font-medium text-muted-foreground lg:text-xl lg:leading-relaxed">
-                      아래 버튼을 클릭하여 신청하세요.
+                      {recruitApplyDescription.map((apply, index) => (
+                        <span key={index}>
+                          {apply}
+                          <br />
+                        </span>
+                      ))}
                     </p>
                     <Button
                       className="mt-2 bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
@@ -105,7 +111,7 @@ export default function JoinPage() {
 
         {/* FAQ 섹션 */}
         <div className="mx-auto mt-16 max-w-3xl">
-          <h2 className="text-center text-3xl font-black tracking-tight lg:text-4xl">
+          <h2 className="mb-20 mt-20 text-center text-3xl font-black tracking-tight lg:text-4xl">
             자주 묻는 질문
           </h2>
 

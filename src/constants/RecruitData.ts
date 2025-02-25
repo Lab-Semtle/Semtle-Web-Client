@@ -1,4 +1,4 @@
-export const recruitImage = '/images/example/sample-1.jpg';
+export const recruitImage = '/temp-server/recruit.png';
 
 export const recruitConditions = [
   '✔ 한국해양대학교 인공지능공학부 및 컴퓨터공학부 재학생',
@@ -9,6 +9,11 @@ export const recruitConditions = [
 export const recruitSchedule = [
   '📌 모집 시작: 2024년 8월 1일',
   '⏳ 모집 마감: 2024년 8월 31일',
+];
+
+export const recruitApplyDescription = [
+  '⭐️ 문의 하기: 010 - XXXX - XXXX',
+  '🔥 아래 버튼을 클릭하여 신청하세요!',
 ];
 
 export const recruitApplyUrl = 'https://join-us.example.com';

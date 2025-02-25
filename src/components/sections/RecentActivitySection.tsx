@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { FadeUp } from '@/components/animation/FadeUp';
-import { useRecentActivityPosts } from '@/hooks/api/useFetchRecentActivity';
+import { useRecentActivityPosts } from '@/hooks/api/useRecentActivity';
 import { useRouter } from 'next/navigation';
 
 const RecentActivitySection = () => {

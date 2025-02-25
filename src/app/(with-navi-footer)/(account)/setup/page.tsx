@@ -1,10 +1,9 @@
 /** 개인정보 관리 페이지 */
-
+/** 개인정보 관리 페이지 */
 'use client';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -17,17 +16,22 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-
 import { ImageCropper } from '@/components/common/ImageCropper';
 import { PasswordInput } from '@/components/common/PasswordInput';
 import { FileWithPath, useDropzone } from 'react-dropzone';
-
-import { useUserProfile } from '@/hooks/api/useFetchUserProfile';
+import { useUserProfile, UserSetup } from '@/hooks/api/useUserProfile';
 import { ProfileSchema } from '@/lib/validation/profile-schema';
 
+/** `FileWithPreview` 타입 정의 */
+interface FileWithPreview extends FileWithPath {
+  preview: string;
+}
+
 /** 프로필 이미지 섹션 */
-function ProfileImageSection({ user }: { user: UserProfile }) {
-  const [selectedFile, setSelectedFile] = useState<FileWithPath | null>(null);
+function ProfileImageSection({ user }: { user: UserSetup }) {
+  const [selectedFile, setSelectedFile] = useState<FileWithPreview | null>(
+    null,
+  );
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   const onDrop = (acceptedFiles: FileWithPath[]) => {
@@ -36,9 +40,12 @@ function ProfileImageSection({ user }: { user: UserProfile }) {
       alert('이미지가 너무 큽니다!');
       return;
     }
-    setSelectedFile(
-      Object.assign(file, { preview: URL.createObjectURL(file) }),
-    );
+
+    const fileWithPreview: FileWithPreview = Object.assign(file, {
+      preview: URL.createObjectURL(file),
+    });
+
+    setSelectedFile(fileWithPreview);
     setDialogOpen(true);
   };
 
@@ -56,12 +63,10 @@ function ProfileImageSection({ user }: { user: UserProfile }) {
         />
         <AvatarFallback>User Profile</AvatarFallback>
       </Avatar>
-
       <div {...getRootProps()} className="cursor-pointer">
         <input {...getInputProps()} />
         <Button variant="outline">프로필 사진 변경</Button>
       </div>
-
       {selectedFile && (
         <ImageCropper
           dialogOpen={isDialogOpen}
@@ -107,16 +112,16 @@ function ProfileForm({
   user,
   updateUserProfile,
 }: {
-  user: UserProfile;
-  updateUserProfile: (data: UserProfile) => Promise<void>;
+  user: UserSetup;
+  updateUserProfile: (data: Partial<UserSetup>) => Promise<void>;
 }) {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<UserProfile>({ resolver: zodResolver(ProfileSchema) });
+  } = useForm<UserSetup>({ resolver: zodResolver(ProfileSchema) });
 
-  const onSubmit = async (formData: UserProfile) => {
+  const onSubmit = async (formData: Partial<UserSetup>) => {
     try {
       await updateUserProfile(formData);
       alert('개인정보가 성공적으로 수정되었습니다.');
@@ -152,9 +157,9 @@ function ProfileForm({
 
 /** 개인정보 설정 페이지 */
 export default function ProfileSettingsPage() {
-  const { user, loading, updateUserProfile } = useUserProfile();
+  const { user, isLoading, updateUserProfile } = useUserProfile();
 
-  if (loading) return <p>로딩 중...</p>;
+  if (isLoading) return <p>로딩 중...</p>;
   if (!user) return <p>사용자 정보를 불러올 수 없습니다.</p>;
 
   return (

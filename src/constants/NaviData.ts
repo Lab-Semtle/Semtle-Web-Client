@@ -1,4 +1,4 @@
-import { ROUTES } from '@/constants/UrlRoutes';
+import { ROUTES } from '@/constants/Routes';
 
 export const ABOUT_MENU = [
   {

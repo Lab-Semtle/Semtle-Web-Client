@@ -15,7 +15,7 @@ import {
 
 export default function JoinPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-6 pb-32 pt-24">
+    <div className="flex min-h-screen flex-col items-center justify-center px-6 pb-60 pt-24">
       {/* 페이지 헤딩 */}
       <PageHeading
         title="아치셈틀 리크루팅"

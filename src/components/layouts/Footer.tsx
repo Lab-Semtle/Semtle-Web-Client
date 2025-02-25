@@ -1,3 +1,5 @@
+/** 푸터 */
+
 import Link from 'next/link';
 import React from 'react';
 import {
@@ -12,13 +14,12 @@ const Footer: React.FC = () => {
     <footer
       className="relative rounded-t-2xl bg-gray-800 py-10 text-white dark:bg-gray-900"
       style={{
-        borderTopLeftRadius: '30px', // 왼쪽 위 둥글게
-        borderTopRightRadius: '30px', // 오른쪽 위 둥글게
-        overflow: 'hidden', // 내부 요소 잘림 방지
+        borderTopLeftRadius: '30px',
+        borderTopRightRadius: '30px',
+        overflow: 'hidden',
       }}
     >
       <div className="container mx-auto flex flex-col justify-between px-5 md:flex-row">
-        {/* 왼쪽 영역 - SNS + ARCHI SEMTLE LAB 정보 */}
         <div className="text-left">
           {/* SNS + 연락처 아이콘 */}
           <div className="mb-4 flex flex-wrap gap-3">

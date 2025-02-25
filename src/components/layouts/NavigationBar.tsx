@@ -13,7 +13,7 @@ import NavMobileMenu from '@/components/layouts/NavMobileMenu';
 import NavUserMenu from '@/components/layouts/NavUserMenu';
 import DarkModeButton from '@/components/common/DarkModeButton';
 import { useDarkMode } from '@/hooks/useDarkMode';
-import { ROUTES } from '@/constants/UrlRoutes';
+import { ROUTES } from '@/constants/Routes';
 import LogoLight from 'public/logo/Logo-Blue-None-v2025.svg';
 import LogoDark from 'public/logo/Logo-Sky-None-v2025.svg';
 

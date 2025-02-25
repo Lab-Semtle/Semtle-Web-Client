@@ -1,4 +1,4 @@
-/** 메인페이지 Introduction 섹션 */
+/** Introduction 섹션 */
 
 export const INTRO_HEADING = 'About "아치셈틀"';
 export const INTRO_DESCRIPTION = `

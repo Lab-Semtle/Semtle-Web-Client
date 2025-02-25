@@ -1,3 +1,5 @@
+/** 활동 게시판, 최근 활동 게시물 조회 API 호출 */
+
 import useSWR from 'swr';
 import apiClient from '@/services/api-client';
 import { ApiResponseWithData } from '@/types/api';

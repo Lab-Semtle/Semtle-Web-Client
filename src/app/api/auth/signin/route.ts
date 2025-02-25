@@ -5,7 +5,8 @@ const MOCK_USER = {
   refreshToken: 'mock_refresh_token_456',
   email: 'test@semtle.com',
   password: 'password123!',
-  id: 'mock_user_id',
+  uuid: 'mock_user_id',
+  studentId: '20231234',
   username: '테스트 유저',
   role: 'USER',
   manageApprovalStatus: true,
@@ -25,7 +26,7 @@ export async function POST(req: Request) {
   return NextResponse.json({
     accessToken: MOCK_USER.accessToken,
     refreshToken: MOCK_USER.refreshToken,
-    id: MOCK_USER.id,
+    uuid: MOCK_USER.uuid,
     username: MOCK_USER.username,
     role: MOCK_USER.role,
     manageApprovalStatus: MOCK_USER.manageApprovalStatus,

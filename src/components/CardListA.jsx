@@ -13,7 +13,7 @@ const CardListA = ({ cards }) => {
 
   const handleCardClick = (id) => {
     // 동적 경로로 이동
-  router.push(`/projects/active/post/${id}`);
+  router.push(`/projects/hire/${id}`);
   };
 
   if (!isClient) {

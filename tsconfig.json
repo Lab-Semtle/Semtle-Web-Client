@@ -26,14 +26,6 @@
     "typeRoots": ["./src/types", "./node_modules/@types"],
     "moduleResolution": "node"
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "src/types/auth.d.ts",
-    "src/app/projects/active/post/[id]/page.jsx",
-    "src/app/projects/active/update/[id]/page.jsx"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/(with-navi-footer)/(activity)/projects/projects/hire/[id]/page.jsx", "src/app/(with-navi-footer)/(activity)/projects/projects/hire/update/[id]/page.jsx"],
   "exclude": ["node_modules"]
 }

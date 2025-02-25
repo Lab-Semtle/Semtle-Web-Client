@@ -11,100 +11,25 @@ import {
 } from '@/components/ui/carousel';
 import KakaoMap from '@/components/common/KakaoMap';
 import ButtonLink from '@/components/common/LinkButton';
+import {
+  eventData,
+  projectImages,
+  supportLogo,
+  contactData,
+} from '@/constants/AboutData';
+import PageHeading from '@/components/common/PageHeading';
 
 export default function AboutPage() {
-  const eventData = [
-    {
-      imageSrc: '/example4.jpg',
-      altText: 'Seminar Image',
-      newsTitle: '세미나',
-      newsContent:
-        '우리 동아리의 MT는 새로운 멤버와 친목을 다지고, 함께 즐기는 다양한 액티비티로 구성됩니다. 매년 참가자들은 서로를 더욱 잘 이해하며, 강한 팀워크를 만들어가요.',
-    },
-    {
-      imageSrc: '/example1.jpg',
-      altText: 'Conference Image',
-      newsTitle: '공모전-경진대회 출전',
-      newsContent:
-        '우리 동아리의 MT는 새로운 멤버와 친목을 다지고, 함께 즐기는 다양한 액티비티로 구성됩니다. 매년 참가자들은 서로를 더욱 잘 이해하며, 강한 팀워크를 만들어가요.',
-    },
-    {
-      imageSrc: '/example3.jpg',
-      altText: 'Teamplay Image',
-      newsTitle: 'Team Project',
-      newsContent:
-        '우리 동아리의 MT는 새로운 멤버와 친목을 다지고, 함께 즐기는 다양한 액티비티로 구성됩니다. 매년 참가자들은 서로를 더욱 잘 이해하며, 강한 팀워크를 만들어가요.',
-    },
-    {
-      imageSrc: '/example2.jpg',
-      altText: 'Home ComingDay Image',
-      newsTitle: '홈 커밍데이',
-      newsContent:
-        '우리 동아리의 MT는 새로운 멤버와 친목을 다지고, 함께 즐기는 다양한 액티비티로 구성됩니다. 매년 참가자들은 서로를 더욱 잘 이해하며, 강한 팀워크를 만들어가요.',
-    },
-    {
-      imageSrc: '/example1.jpg',
-      altText: 'MT Image',
-      newsTitle: 'MT',
-      newsContent:
-        '우리 동아리의 MT는 새로운 멤버와 친목을 다지고, 함께 즐기는 다양한 액티비티로 구성됩니다. 매년 참가자들은 서로를 더욱 잘 이해하며, 강한 팀워크를 만들어가요.',
-    },
-    {
-      imageSrc: '/example1.jpg',
-      altText: 'TeacherDay Image',
-      newsTitle: '스승의 날 행사',
-      newsContent:
-        '우리 동아리의 MT는 새로운 멤버와 친목을 다지고, 함께 즐기는 다양한 액티비티로 구성됩니다. 매년 참가자들은 서로를 더욱 잘 이해하며, 강한 팀워크를 만들어가요.',
-    },
-
-    {
-      imageSrc: '/example2.jpg',
-      altText: 'E-Sports Image',
-      newsTitle: 'E-Sports',
-      newsContent:
-        '기술과 협동을 중시하는 E-Sports 활동은 동아리의 중요한 부분입니다. 대회와 팀 경기를 통해 실력을 키우고, 서로 협력하는 법을 배우며, 경쟁의 재미를 느껴보세요.',
-    },
-    {
-      imageSrc: '/example3.jpg',
-      altText: 'Conference Image',
-      newsTitle: '개총 / 종총',
-      newsContent:
-        '새로운 학기의 시작과 마무리를 기념하는 개강총회와 종강총회는 우리 동아리의 중요한 행사입니다. 모두가 함께 모여 한 해를 되돌아보고, 다가오는 학기를 준비하는 시간입니다.',
-    },
-    {
-      imageSrc: '/example4.jpg',
-      altText: 'Etc Image',
-      newsTitle: '기타 활동',
-      newsContent:
-        '스터디, 워크숍, 세미나 등 다양한 활동을 통해 서로 배우고 성장하는 시간을 가집니다. 이러한 활동은 동아리 내에서뿐만 아니라, 기술 분야의 트렌드를 따라가는데도 중요한 기회를 제공합니다.',
-    },
-  ];
-  const projectImages = ['/project1.jpg', '/project1.jpg', '/project1.jpg'];
-  const supportLogo = [
-    { logo: '/naver_cloud.webp', type: 'Logo 1' },
-    { logo: '/maritime_ai.png', type: 'Logo 2' },
-  ];
-  const contactData = {
-    address: '부산광역시 영도구 태종로 727 공학1관(B1) 3층 308호실',
-    mapLocation: {
-      latitude: 37.5665,
-      longitude: 126.978,
-    },
-    generalContact: {
-      Email: 'example@example.com',
-      Kakao: 'https://example.com/kakao',
-      Instagram: 'https://example.com/instagram',
-    },
-    devContact: {
-      Github: 'https://github.com/example',
-      Discord: 'https://discord.com/invite/example',
-      Kakao: 'https://example.com/devkakao',
-    },
-  };
   return (
     <>
       <main>
         <div className="mx-auto mt-[150px] flex w-full flex-col items-center gap-5 text-center">
+          <PageHeading
+            title="About Us."
+            description="아치셈틀과 함께 배우고 성장하세요. 
+                  프로그래밍에 관심 있는 누구나 지원할 수 있습니다! 😺"
+          />
+
           <Label className="w-full max-w-[800px] text-[30px] font-bold">
             About Us.
           </Label>

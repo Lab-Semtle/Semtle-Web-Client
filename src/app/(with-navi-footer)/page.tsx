@@ -9,6 +9,7 @@ import RecentActivityPosts from '@/components/sections/RecentActivityPosts';
 import FaqAccordion from '@/components/sections/FaqAccordion';
 import RecruitCard from '@/components/sections/RecruitCard';
 import { useFetchBanners } from '@/hooks/api/useFetchBanners';
+import { AuroraText } from '@/components/magicui/aurora-text';
 
 export default function HomePage() {
   return (
@@ -63,32 +64,19 @@ export default function HomePage() {
 /** 메인페이지 최상단 Hero 섹션 컴포넌트 */
 function HeroSection() {
   const { banners, loading, error } = useFetchBanners();
-
-  console.log('📢 [HeroSection] 배너 상태 업데이트:', {
-    banners,
-    loading,
-    error,
-  });
-
   return (
     <div className="relative mt-10 overflow-hidden py-24 lg:mt-16 lg:py-32">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl text-center">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-wide lg:text-5xl">
-            <span className="text-semtle-lite dark:text-semtle-dark">Ar</span>
-            canum{'\u00A0 '}
-            <span className="text-semtle-lite dark:text-semtle-dark">Chi</span>
-            ron{'\u00A0 '}
-            <span className="text-semtle-lite dark:text-semtle-dark">Sem</span>
-            inalis{'\u00A0 '}
-            <span className="text-semtle-lite dark:text-semtle-dark">Tle</span>
-            os
+          <h1 className="scroll-m-20 text-4xl font-bold tracking-tighter md:text-5xl lg:text-7xl">
+            KMOU AI {'\u00A0'}
+            <AuroraText>ARCHI SEMTLE</AuroraText>
           </h1>
 
           <p className="mt-6 whitespace-pre-line text-base font-medium text-muted-foreground lg:text-lg lg:leading-normal">
-            환영합니다! 우리는{' '}
+            아치셈틀 홈페이지에 오신 것을 환영합니다! {'\n'}
             <span className="text-semtle-lite dark:text-semtle-dark">기술</span>
-            의 본질을 탐구하며,{'\n'}
+            의 본질을 탐구하며,{' '}
             <span className="text-semtle-lite dark:text-semtle-dark">협업</span>
             을 통해 실무 역량을 키우고,{'\n'}
             다양한{' '}

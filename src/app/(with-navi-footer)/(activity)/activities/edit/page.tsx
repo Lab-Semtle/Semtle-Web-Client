@@ -25,7 +25,7 @@ import {
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import PostContent from '@/components/PostContent';
+import PostContent from '@/components/sections/PostContent';
 
 interface PostFormData {
   title: string;

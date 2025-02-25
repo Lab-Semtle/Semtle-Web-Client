@@ -9,12 +9,12 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
-import DarkModeButton from '@/components/button/DarkModeButton';
+import DarkModeButton from '@/components/common/DarkModeButton';
 import { MenuIcon } from 'lucide-react';
-import { useSession } from '@/hooks/use-session';
+import { useSession } from '@/hooks/useSession';
 import { signOutWithForm } from '@/lib/auth/auth.server';
 import { ROUTES } from '@/constants/routes';
-import { NAVIGATION_MENU } from '@/constants/navItems';
+import { NAVIGATION_MENU } from '@/constants/nav-items';
 
 interface MobileMenuProps {
   setIsMenuOpen: (open: boolean) => void;
@@ -52,13 +52,15 @@ export default function NavMobileMenu({
         </SheetHeader>
 
         <nav className="mt-4">
-          {NAVIGATION_MENU.map((section, index) => (
+          {/* 🔹 일반 메뉴 (로그인 상태와 무관하게 표시) */}
+          {NAVIGATION_MENU.filter(
+            (section) => section.label !== '사용자 메뉴',
+          ).map((section, index) => (
             <div key={section.label} className={index !== 0 ? 'mt-6' : ''}>
               <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300">
                 {section.label}
               </h3>
               <Separator className="-mx-4 my-2 w-[calc(100%+32px)] bg-gray-400 dark:bg-gray-600" />
-
               <ul>
                 {section.items.map((item) => (
                   <li key={item.href}>
@@ -75,73 +77,79 @@ export default function NavMobileMenu({
             </div>
           ))}
 
-          {/* 가입 및 로그인 */}
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300">
-              사용자 메뉴
-            </h3>
-            <Separator className="-mx-4 my-2 w-[calc(100%+32px)] bg-gray-400 dark:bg-gray-600" />
-            <ul>
-              {!session?.user ? (
-                <>
-                  <li>
+          {/* 🔹 로그인 상태에 따라 '사용자 메뉴' OR '가입/로그인' 표시 */}
+          {session?.user ? (
+            // ✅ 로그인 상태일 때: 사용자 메뉴 표시
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300">
+                사용자 메뉴
+              </h3>
+              <Separator className="-mx-4 my-2 w-[calc(100%+32px)] bg-gray-400 dark:bg-gray-600" />
+              <ul>
+                {NAVIGATION_MENU.find(
+                  (section) => section.label === '사용자 메뉴',
+                )?.items.map((item) => (
+                  <li key={item.href}>
                     <Link
-                      href={ROUTES.RECRUIT}
+                      href={item.href}
                       onClick={handleLinkClick}
                       className="block w-full py-2 pl-2 text-left text-gray-800 hover:text-blue-500 dark:text-white"
                     >
-                      가입하기
+                      {item.label}
                     </Link>
                   </li>
-                  <li>
-                    <Link
-                      href={ROUTES.AUTH_SIGNIN}
+                ))}
+                <li>
+                  <form action={signOutWithForm}>
+                    <button
+                      type="submit"
                       onClick={handleLinkClick}
                       className="block w-full py-2 pl-2 text-left text-gray-800 hover:text-blue-500 dark:text-white"
                     >
-                      로그인
-                    </Link>
-                  </li>
-                </>
-              ) : (
-                <>
-                  {NAVIGATION_MENU.find(
-                    (section) => section.label === '사용자 메뉴',
-                  )?.items.map((item) => (
-                    <li key={item.href}>
-                      <Link
-                        href={item.href}
-                        onClick={handleLinkClick}
-                        className="block w-full py-2 pl-2 text-left text-gray-800 hover:text-blue-500 dark:text-white"
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
-                  <li>
-                    <form action={signOutWithForm}>
-                      <button
-                        type="submit"
-                        onClick={handleLinkClick}
-                        className="block w-full py-2 pl-2 text-left text-gray-800 hover:text-blue-500 dark:text-white"
-                      >
-                        로그아웃
-                      </button>
-                    </form>
-                  </li>
-                </>
-              )}
-            </ul>
-          </div>
-
-          <Separator className="-mx-4 my-4 w-[calc(100%+32px)] bg-gray-400 dark:bg-gray-600" />
-          <div className="flex items-center py-2 pl-2">
-            <DarkModeButton
-              isDarkMode={isDarkMode}
-              toggleDarkMode={toggleDarkMode}
-            />
-          </div>
+                      로그아웃
+                    </button>
+                  </form>
+                </li>
+              </ul>
+            </div>
+          ) : (
+            // ✅ 로그아웃 상태일 때: 가입하기 & 로그인 버튼만 표시
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300">
+                사용자 메뉴
+              </h3>
+              <Separator className="-mx-4 my-2 w-[calc(100%+32px)] bg-gray-400 dark:bg-gray-600" />
+              <ul>
+                <li>
+                  <Link
+                    href={ROUTES.RECRUIT}
+                    onClick={handleLinkClick}
+                    className="block w-full py-2 pl-2 text-left text-gray-800 hover:text-blue-500 dark:text-white"
+                  >
+                    가입하기
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href={ROUTES.AUTH_SIGNIN}
+                    onClick={handleLinkClick}
+                    className="block w-full py-2 pl-2 text-left text-gray-800 hover:text-blue-500 dark:text-white"
+                  >
+                    로그인
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          )}
         </nav>
+
+        <Separator className="-mx-4 my-4 w-[calc(100%+32px)] bg-gray-400 dark:bg-gray-600" />
+        <div className="flex items-center py-2 pl-2">
+          <DarkModeButton
+            isDarkMode={isDarkMode}
+            toggleDarkMode={toggleDarkMode}
+          />
+        </div>
       </SheetContent>
     </Sheet>
   );

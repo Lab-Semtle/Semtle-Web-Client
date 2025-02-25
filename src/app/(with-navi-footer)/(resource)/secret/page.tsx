@@ -10,7 +10,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import PostCard from '@/components/PostCard';
+import PostCard from '@/components/common/PostCard';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 

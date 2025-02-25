@@ -2,28 +2,8 @@
 
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import apiClient from '@/services/api-client';
-import { API_ROUTES } from '@/constants/api';
-import { isApiResponseError } from '@/types/api';
 import { loginSchema } from '../validation/login-schema';
-import { CredentialsSignin } from 'next-auth';
-
-// 로그인 API 요청 타입
-interface SigninRequest {
-  email: string;
-  password: string;
-}
-
-// 로그인 API 응답 타입
-interface SigninResponse {
-  accessToken: string;
-  refreshToken: string;
-  id: string; // uuid
-  username: string;
-  role: string;
-  manageApprovalStatus: boolean;
-  profileImageUrl?: string;
-}
+import { API_ROUTES } from '@/constants/api-endpoint';
 
 /**
  * handlers : 프로젝트 인증 관리를 위한 API 라우트(GET, POST 함수) 객체
@@ -33,12 +13,15 @@ interface SigninResponse {
  * unstable_update: update : 세션 정보 갱신 비동기 함수
  */
 export const {
-  handlers,
-  signIn,
-  signOut,
-  auth,
-  unstable_update: update,
+  auth, // 서버 컴포넌트 세션 확인
+  handlers, // api route 핸들러
+  signIn, // 로그인 실행
+  signOut, // 로그아웃 실행
+  unstable_update: update, // 세션 갱신
 } = NextAuth({
+  pages: {
+    signIn: '/signin', // 로그인 페이지 경로
+  },
   providers: [
     Credentials({
       authorize: async (credentials) => {
@@ -46,42 +29,47 @@ export const {
 
         // Zod 비동기 검증 (런타임 에러 방지)
         const validationFields = await loginSchema.safeParseAsync(credentials);
-        if (!validationFields.success) return null;
-
+        if (!validationFields.success) {
+          console.error(
+            '[authorize] 유효성 검사 실패:',
+            validationFields.error,
+          );
+          return null;
+        }
         const { email, password } = validationFields.data;
 
         try {
-          // 로그인 API 요청
-          const response = await apiClient.post<SigninResponse, SigninRequest>(
-            API_ROUTES.SIGN_IN,
-            { body: { email, password } },
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL_DEV}${API_ROUTES.AUTH_SIGNIN}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, password }),
+            },
           );
 
-          if (
-            !response.data ||
-            !response.data.accessToken ||
-            !response.data.id
-          ) {
-            throw new Error('로그인 실패: 유효한 응답이 아닙니다.');
+          if (!response.ok) {
+            console.error(`[authorize] 로그인 실패: ${response.status}`);
+            return null; // 로그인 실패
           }
 
+          const userData = await response.json();
+          console.log('[authorize] 로그인 성공:', userData);
+
+          // 3. NextAuth 세션으로 반환
           return {
-            accessToken: response.data?.accessToken,
-            refreshToken: response.data?.refreshToken,
-            id: response.data?.id,
-            username: response.data?.username,
-            role: response.data?.role,
-            manageApprovalStatus: response.data?.manageApprovalStatus,
+            accessToken: userData.accessToken,
+            refreshToken: userData.refreshToken,
+            id: userData.id,
+            username: userData.username,
+            role: userData.role,
+            manageApprovalStatus: userData.manageApprovalStatus,
             profileImageUrl:
-              response.data?.profileImageUrl ?? '/images/default-profile.png',
+              userData.profileImageUrl ?? '/images/default-profile.png',
           };
         } catch (error) {
-          if (isApiResponseError(error)) {
-            const statusCode = error.status || 500;
-            return Promise.reject(new Error(statusCode.toString()));
-          }
-
-          return Promise.reject(new Error('500')); // 기본적으로 500 처리
+          console.error('[authorize] 로그인 처리 중 예외 발생:', error);
+          return null;
         }
       },
     }),
@@ -89,9 +77,6 @@ export const {
   session: {
     strategy: 'jwt',
     maxAge: 60 * 60 * 24, // 세션 만료 시간 (24시간)
-  },
-  pages: {
-    signIn: '/signin', // 로그인 페이지 경로
   },
   callbacks: {
     signIn: async () => {
@@ -120,18 +105,19 @@ export const {
     },
     // 로그인 이후, 원래 위치한 페이지로 리다이렉트
     // redirect사용 시, signIn(공급자, 옵션) 함수를 호출할 때 redirectTo 옵션 사용 X
-    redirect: async ({ url, baseUrl }) => {
-      if (url.startsWith('/')) return `${baseUrl}${url}`;
-      if (url) {
-        const { search, origin } = new URL(url);
-        const callbackUrl = new URLSearchParams(search).get('callbackUrl');
-        if (callbackUrl)
-          return callbackUrl.startsWith('/')
-            ? `${baseUrl}${callbackUrl}`
-            : callbackUrl;
-        if (origin === baseUrl) return url;
-      }
-      return baseUrl;
-    },
   },
 });
+
+// redirect: async ({ url, baseUrl }) => {
+//   if (url.startsWith('/')) return `${baseUrl}${url}`;
+//   if (url) {
+//     const { search, origin } = new URL(url);
+//     const callbackUrl = new URLSearchParams(search).get('callbackUrl');
+//     if (callbackUrl)
+//       return callbackUrl.startsWith('/')
+//         ? `${baseUrl}${callbackUrl}`
+//         : callbackUrl;
+//     if (origin === baseUrl) return url;
+//   }
+//   return baseUrl;
+// },

@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import SecretNoteEditor from '@/components/SecretNoteEditor';
-import { FormValues } from '@/components/SecretNoteEditor'; // 타입 재사용
+import SecretNoteEditor from '@/components/form/SecretNoteEditor';
+import { FormValues } from '@/components/form/SecretNoteEditor';
 
 export default function EditPage() {
   const router = useRouter();

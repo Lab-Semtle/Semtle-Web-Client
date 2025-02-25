@@ -3,6 +3,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -10,14 +11,16 @@ import {
 import NavToogleMenu from '@/components/layouts/NavToggleMenu';
 import NavMobileMenu from '@/components/layouts/NavMobileMenu';
 import NavUserMenu from '@/components/layouts/NavUserMenu';
-import DarkModeButton from '@/components/button/DarkModeButton';
-import { useDarkMode } from '@/hooks/use-darkmode';
+import DarkModeButton from '@/components/common/DarkModeButton';
+import { useDarkMode } from '@/hooks/useDarkMode';
 import { ROUTES } from '@/constants/routes';
+import LogoLight from 'public/logo/Logo-Blue-None-v2025.svg';
+import LogoDark from 'public/logo/Logo-Sky-None-v2025.svg';
 
 export default function NavigationBar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // 메뉴 열림 구분
-  const { isDarkMode, toggleDarkMode } = useDarkMode(); // 다크모드/라이트모드
-  const [isDesktop, setIsDesktop] = useState(false); // 데스크톱/모바일
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const [isDesktop, setIsDesktop] = useState(false);
 
   // 화면 크기에 따라 상태 업데이트
   useEffect(() => {
@@ -36,16 +39,19 @@ export default function NavigationBar() {
     <header>
       <nav className="fixed top-0 z-50 flex h-[70px] w-full items-center justify-between bg-white/30 shadow-sm backdrop-blur-md transition-colors duration-300 dark:bg-gray-950/50">
         {/* 로고 */}
-        <Link
-          href={ROUTES.HOME}
-          className="font-yclover ml-5 whitespace-nowrap text-2xl font-bold text-gray-800 dark:text-white"
-        >
-          아치셈틀
+        <Link href={ROUTES.HOME} className="ml-5 flex items-center">
+          <Image
+            src={isDarkMode ? LogoDark : LogoLight}
+            alt="아치셈틀 로고"
+            width={120}
+            height={40}
+            priority
+          />
         </Link>
 
         {/* 중앙 메뉴 */}
         {isDesktop ? (
-          <div className="flex flex-1 justify-center">
+          <div className="flex flex-1 justify-start">
             <NavToogleMenu />
           </div>
         ) : (

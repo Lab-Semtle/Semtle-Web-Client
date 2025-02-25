@@ -11,6 +11,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        semtle: {
+          lite: '#00AFF0',
+          dark: '#A6DAF4',
+        },
         semtleColor: '#ace6ff',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',

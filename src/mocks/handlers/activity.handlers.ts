@@ -1,5 +1,5 @@
 import { HttpResponse, http } from 'msw';
-import { API_ROUTES } from '@/constants/api';
+import { API_ROUTES } from '@/constants/api-endpoint';
 
 interface ActivityPost {
   id: number;

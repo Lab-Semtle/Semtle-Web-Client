@@ -15,7 +15,7 @@ export const signInWithCredentials = async (
     const result = await signIn('credentials', {
       email: formData.email,
       password: formData.password,
-      redirect: false, // 🔥 리디렉트 방지 (서버에서 직접 핸들링)
+      redirect: false, // 리디렉트 방지 (서버에서 직접 핸들링)
     });
 
     if (result?.error) {

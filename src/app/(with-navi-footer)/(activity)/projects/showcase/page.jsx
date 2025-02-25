@@ -12,8 +12,8 @@ import {
 } from '@/components/ui/pagination';
 
 import Header from './components/Header';
-import FilterBar from './components/FilterBar';
-import CardList from './components/CardList';
+import FilterBar from '@/components/common/FilterBar';
+import CardList from '@/components/common/CardList';
 
 export default function Completed() {
   //  const [isLoggedIn, setIsLoggedIn] = useState(true);

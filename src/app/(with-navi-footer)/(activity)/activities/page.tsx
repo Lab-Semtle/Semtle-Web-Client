@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import GoUp from '@/components/GoUp';
+import GoUp from '@/components/common/GoUp';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -114,7 +114,7 @@ export default function ActivitiesPage() {
 
   return (
     <div className="container mx-auto mt-[60px] max-w-4xl p-4">
-      <div className="mb-6 flex items-center gap-4 mt-4">
+      <div className="mb-6 mt-4 flex items-center gap-4">
         <div className="flex-1">
           <div className="flex gap-2">
             <div className="rounded-lg shadow-lg">
@@ -158,7 +158,7 @@ export default function ActivitiesPage() {
                   />
                 </div> */}
                 {/* 이미지 섹션 */}
-                <div className="flex flex-[2] items-center justify-center overflow-hidden bg-white m-3">
+                <div className="m-3 flex flex-[2] items-center justify-center overflow-hidden bg-white">
                   <Image
                     src={activity.image || '/placeholder.svg'}
                     alt=""
@@ -196,14 +196,14 @@ export default function ActivitiesPage() {
         ))}
       </div>
 
-      <GoUp onClick={scrollToTop}
+      <GoUp
+        onClick={scrollToTop}
         className={`group fixed bottom-8 right-8 rounded-full bg-white p-3 text-primary-foreground shadow-lg transition-all duration-300 hover:bg-semtleColor ${
           showScrollTop
             ? 'translate-y-0 opacity-100'
             : 'pointer-events-none translate-y-10 opacity-0'
-        }`}>
-
-      </GoUp>
+        }`}
+      ></GoUp>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import * as React from 'react';
-import PostCarousel from '@/components/PostCarousel';
+import PostCarousel from '@/components/sections/PostCarousel';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { FolderArchive } from 'lucide-react';

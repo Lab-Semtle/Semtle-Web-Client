@@ -6,7 +6,7 @@ import 'react-day-picker/style.css';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import AlertSchedule from '@/components/AlertSchedule';
+import AlertSchedule from '@/components/common/AlertSchedule';
 
 interface CalendarEventType {
   date: string;

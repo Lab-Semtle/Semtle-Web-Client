@@ -16,8 +16,8 @@ import {
   NavigationMenuList,
 } from '@/components/ui/navigation-menu';
 import { NavLinkMenu } from '@/components/layouts/NavLinkMenu';
-import { VariantShineButton } from '@/components/button/VariantShineButton';
-import { useSession } from '@/hooks/use-session';
+import { VariantShineButton } from '@/components/common/VariantShineButton';
+import { useSession } from '@/hooks/useSession';
 import { signOutWithForm } from '@/lib/auth/auth.server';
 import { ROUTES } from '@/constants/routes';
 import { Session } from 'next-auth';
@@ -25,24 +25,15 @@ import { Session } from 'next-auth';
 export default function NavUserMenu() {
   const session = useSession(); // 서버에서 세션 가져오기
 
+  console.log('[NavUserMenu] 세션 상태:', status);
+  console.log('[NavUserMenu] 세션 데이터:', session);
+
   return (
     <NavigationMenuList className="flex items-center gap-3">
       {session?.user ? (
-        <>
-          <NavigationMenuItem>
-            <form action={signOutWithForm}>
-              <VariantShineButton
-                type="submit"
-                className="bg-blue-300 text-blue-950 hover:bg-blue-700 hover:text-gray-200 dark:bg-blue-700 dark:text-gray-200 dark:hover:bg-blue-300 dark:hover:text-blue-950"
-              >
-                로그아웃
-              </VariantShineButton>
-            </form>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <LoginMenu session={session} />
-          </NavigationMenuItem>
-        </>
+        <NavigationMenuItem>
+          <LoginMenu session={session} />
+        </NavigationMenuItem>
       ) : (
         <>
           <NavLinkMenu href={ROUTES.RECRUIT} label="가입하기" />
@@ -63,10 +54,8 @@ function LoginMenu({ session }: { session: Session | null }) {
       <DropdownMenuTrigger asChild>
         <Avatar className="cursor-pointer">
           <AvatarImage
-            src={
-              session?.user?.profileImageUrl || '/images/default-profile.png'
-            }
-            alt={session?.user?.username || 'User'}
+            src={session?.profileImageUrl || '/images/default-profile.png'}
+            alt={session?.username || 'User'}
             onError={(e) => {
               (e.target as HTMLImageElement).src =
                 '/images/default-profile.png';
@@ -74,12 +63,19 @@ function LoginMenu({ session }: { session: Session | null }) {
             className="h-10 w-10 rounded-full border-2 border-gray-900"
           />
           <AvatarFallback>
-            {session?.user?.username?.slice(0, 2) || '??'}
+            {session?.username?.slice(0, 2) || '셈틀'}
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-40">
-        <DropdownMenuLabel>내 계정</DropdownMenuLabel>
+        <DropdownMenuLabel>
+          <span className="block font-bold">
+            {session?.username || '사용자'}
+          </span>
+          <span className="block text-sm text-gray-500 dark:text-gray-400">
+            {session?.role || '알 수 없음'}
+          </span>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
@@ -92,6 +88,17 @@ function LoginMenu({ session }: { session: Session | null }) {
             <Link href={ROUTES.EXECUTIVE}>공홈관리시스템</Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <form action={signOutWithForm} className="w-full">
+            <button
+              type="submit"
+              className="w-full text-left text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-600"
+            >
+              로그아웃
+            </button>
+          </form>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

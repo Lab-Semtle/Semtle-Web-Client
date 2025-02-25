@@ -1,4 +1,4 @@
-/** 게시물과 연결된 캐러쉘 컴포넌트 */
+/** 게시물과 연결된 캐러쉘 섹션 */
 
 'use client';
 import Image from 'next/image';

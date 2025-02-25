@@ -6,6 +6,7 @@ import { ThemeProvider } from 'next-themes';
 import { Providers } from '@/components/msw/MSWProvider';
 import Script from 'next/script';
 import { SessionProvider } from 'next-auth/react';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const suit = localFont({
   src: './fonts/SUIT-Variable.woff2',

@@ -3,10 +3,11 @@
 'use client';
 import Image from 'next/image';
 import BannerCarousel from '@/components/sections/BannerCarousel';
-import IntroSection from '@/components/sections/IntroSection';
-import RecentActivitySection from '@/components/sections/RecentActivitySection';
-import FaqSection from '@/components/sections/FaqSection';
-import RecruitSection from '@/components/sections/RecruitSection';
+import BannerCarouselSkeleton from '@/components/skeleton/BannerCarouselSkeleton';
+import Introduction from '@/components/sections/Introduction';
+import RecentActivityPosts from '@/components/sections/RecentActivityPosts';
+import FaqAccordion from '@/components/sections/FaqAccordion';
+import RecruitCard from '@/components/sections/RecruitCard';
 import { useFetchBanners } from '@/hooks/api/useFetchBanners';
 
 export default function HomePage() {
@@ -17,11 +18,10 @@ export default function HomePage() {
         <main className="space-y-24">
           <HeroSection />
           <section className="mx-auto max-w-5xl">
-            <IntroSection />
+            <Introduction />
           </section>
-
           <section className="mx-auto max-w-5xl">
-            <RecentActivitySection />
+            <RecentActivityPosts />
           </section>
         </main>
       </div>
@@ -48,11 +48,11 @@ export default function HomePage() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <main className="space-y-24">
           <section className="mx-auto max-w-5xl">
-            <FaqSection />
+            <FaqAccordion />
           </section>
 
           <section className="mx-auto max-w-5xl">
-            <RecruitSection />
+            <RecruitCard />
           </section>
         </main>
       </div>
@@ -117,11 +117,22 @@ function HeroSection() {
         {/* 캐러셀 */}
         <div className="relative mx-auto mt-4 max-w-5xl">
           {loading ? (
-            <p className="text-center text-muted-foreground">배너 로딩 중...</p>
+            <BannerCarouselSkeleton />
           ) : error ? (
-            <p className="text-center text-red-500">
-              배너를 불러오지 못했습니다.
-            </p>
+            <div className="mt-4 flex flex-col items-center">
+              <BannerCarouselSkeleton />
+              <div className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl bg-black/50 text-white">
+                <p className="text-lg font-semibold">
+                  ❌ 배너를 불러오지 못했습니다.
+                </p>
+                <button
+                  className="mt-3 rounded-lg bg-blue-500 px-4 py-2 text-white transition-all hover:bg-blue-600"
+                  onClick={() => window.location.reload()} // 페이지 새로고침
+                >
+                  다시 시도
+                </button>
+              </div>
+            </div>
           ) : (
             <BannerCarousel items={banners} maxItems={5} />
           )}

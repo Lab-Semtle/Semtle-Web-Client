@@ -1,4 +1,4 @@
-/** 메인페이지 Introduction 섹션 */
+/** Introduction 섹션 */
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -13,7 +13,7 @@ import {
   INTRO_CARDS,
 } from '@/constants/home/intro-items';
 
-const IntroSection = () => {
+const Introduction = () => {
   return (
     <section>
       <div className="container mx-auto flex flex-col items-center gap-5 lg:px-16">
@@ -84,4 +84,4 @@ const IntroSection = () => {
   );
 };
 
-export default IntroSection;
+export default Introduction;

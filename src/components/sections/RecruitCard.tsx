@@ -1,4 +1,4 @@
-/** 메인페이지 Recruit 섹션 */
+/** Recruit 카드 섹션 */
 
 import React from 'react';
 import {
@@ -23,14 +23,12 @@ const ICONS: Record<string, JSX.Element> = {
   community: <UsersRoundIcon className="size-14 text-purple-700" />,
 };
 
-const RecruitSection = () => (
+const RecruitCard = () => (
   <section className="mx-auto mt-20 max-w-[800px] px-4 py-14 text-center">
-    {/* 섹션 제목 */}
     <h2 className="mb-24 text-pretty text-center text-3xl font-extrabold md:mb-20 md:text-4xl lg:mb-16 lg:max-w-3xl lg:text-5xl">
       {RECRUIT_TITLE}
     </h2>
 
-    {/* 모집 상세 */}
     <div className="mb-20 grid gap-10 text-center md:grid-cols-2 md:gap-14 lg:gap-16">
       {RECRUIT_DETAILS.map(({ id, title, description }) => (
         <div
@@ -60,4 +58,4 @@ const RecruitSection = () => (
   </section>
 );
 
-export default RecruitSection;
+export default RecruitCard;

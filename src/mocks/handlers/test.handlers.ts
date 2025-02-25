@@ -1,7 +1,7 @@
 /** 테스트용 엔드포인트 헨들러 */
 
 import { HttpResponse, http } from 'msw';
-import { API_ROUTES } from '@/constants/api-endpoint';
+import { API_ROUTES } from '@/constants/ApiRoutes';
 
 // 테스트용 데이터 (임시 저장소)
 let testData = [

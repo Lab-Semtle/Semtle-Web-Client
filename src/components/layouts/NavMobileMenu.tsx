@@ -13,8 +13,8 @@ import DarkModeButton from '@/components/common/DarkModeButton';
 import { MenuIcon } from 'lucide-react';
 import { useSession } from '@/hooks/useSession';
 import { signOutWithForm } from '@/lib/auth/auth.server';
-import { ROUTES } from '@/constants/routes';
-import { NAVIGATION_MENU } from '@/constants/nav-items';
+import { ROUTES } from '@/constants/UrlRoutes';
+import { NAVIGATION_MENU } from '@/constants/NaviData';
 
 interface MobileMenuProps {
   setIsMenuOpen: (open: boolean) => void;

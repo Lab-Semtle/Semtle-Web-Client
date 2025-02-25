@@ -1,10 +1,13 @@
+/** Home(Index) 페이지 */
+
 'use client';
 import Image from 'next/image';
-import CarouselSection from '@/components/sections/CarouselSection';
+import BannerCarousel from '@/components/sections/BannerCarousel';
 import IntroSection from '@/components/sections/IntroSection';
 import RecentActivitySection from '@/components/sections/RecentActivitySection';
 import FaqSection from '@/components/sections/FaqSection';
 import RecruitSection from '@/components/sections/RecruitSection';
+import { useFetchBanners } from '@/hooks/api/useFetchBanners';
 
 export default function HomePage() {
   return (
@@ -12,7 +15,6 @@ export default function HomePage() {
       {/* Hero + Intro + 최근 활동 게시물 */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <main className="space-y-24">
-          {/* Hero */}
           <HeroSection />
           <section className="mx-auto max-w-5xl">
             <IntroSection />
@@ -58,7 +60,16 @@ export default function HomePage() {
   );
 }
 
+/** 메인페이지 최상단 Hero 섹션 컴포넌트 */
 function HeroSection() {
+  const { banners, loading, error } = useFetchBanners();
+
+  console.log('📢 [HeroSection] 배너 상태 업데이트:', {
+    banners,
+    loading,
+    error,
+  });
+
   return (
     <div className="relative mt-10 overflow-hidden py-24 lg:mt-16 lg:py-32">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -96,7 +107,7 @@ function HeroSection() {
               지식의 파도
             </span>
             를 만들어가는 곳, 여기는
-            <span className="text-semtle-lite dark:text-semtle-dark font-bold">
+            <span className="font-bold text-semtle-lite dark:text-semtle-dark">
               {` "`}아치셈틀{`" `}
             </span>
             입니다.
@@ -105,7 +116,15 @@ function HeroSection() {
 
         {/* 캐러셀 */}
         <div className="relative mx-auto mt-4 max-w-5xl">
-          <CarouselSection />
+          {loading ? (
+            <p className="text-center text-muted-foreground">배너 로딩 중...</p>
+          ) : error ? (
+            <p className="text-center text-red-500">
+              배너를 불러오지 못했습니다.
+            </p>
+          ) : (
+            <BannerCarousel items={banners} maxItems={5} />
+          )}
         </div>
       </div>
     </div>

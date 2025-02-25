@@ -12,36 +12,6 @@ import {
 import KakaoMap from '@/components/common/KakaoMap';
 import ButtonLink from '@/components/common/LinkButton';
 
-//NOTE - 행사탭 Data Fetching
-// async function fetchEventTab() {
-//   const res = await fetch('example/api/event', { cache: 'force-cache' });
-//   if (!res.ok) {
-//     throw new Error('Failed to load data...');
-//   }
-//   const eventData: EventData[] = await res.json();
-//   return eventData;
-// }
-// //NOTE - 프로젝트탭 Data Fetching
-// async function fetchProjectTab() {
-//   const res = await fetch('example/api/project', { cache: 'force-cache' });
-//   if (!res.ok) {
-//     throw new Error('Failed to load data...');
-//   }
-//   const projectTab: ProjectTabData = await res.json();
-//   return projectTab;
-// }
-// //NOTE - 교류&후원탭 Data Fetching
-// async function fetchSupportTab() {
-//   const res = await fetch('example/api/support');
-//   if (!res.ok) {
-//     throw new Error('Failed to load data...');
-//   }
-//   const supportTab: SupportTab[] = await res.json();
-//   return supportTab;
-// }
-//NOTE - Contact탭 Data Fetching
-//NOTE - 푸터에서 사용되는 fetchContactData() 함수를 끌어다 쓰거나,
-//NOTE - 여기서 함수를쓰고, 푸터에서 데이터페칭 로직을 끌어다 쓸것
 export default function AboutPage() {
   const eventData = [
     {

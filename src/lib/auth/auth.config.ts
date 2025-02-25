@@ -3,7 +3,7 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { loginSchema } from '../validation/login-schema';
-import { API_ROUTES } from '@/constants/api-endpoint';
+import { API_ROUTES } from '@/constants/ApiRoutes';
 
 /**
  * handlers : 프로젝트 인증 관리를 위한 API 라우트(GET, POST 함수) 객체

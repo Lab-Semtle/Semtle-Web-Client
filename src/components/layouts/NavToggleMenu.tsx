@@ -9,7 +9,7 @@ import {
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils/tailwind-cn';
-import { NAVIGATION_MENU } from '@/constants/nav-items';
+import { NAVIGATION_MENU } from '@/constants/NaviData';
 
 export default function NavToogleMenu() {
   return (

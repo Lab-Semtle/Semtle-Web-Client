@@ -1,7 +1,4 @@
-/** 메인페이지 캐러쉘 이미지 섹션 */
-
-export const CAROUSEL_BUTTON_TEXT = '자세히 보기';
-export const CAROUSEL_BUTTON_URL = '/activity';
+/** 메인페이지 캐러쉘 이미지 (임시) */
 export const CAROUSEL_ITEM = [
   {
     id: 1,

@@ -3,7 +3,7 @@
 import useSWR from 'swr';
 import apiClient from '@/services/api-client';
 import { ApiResponseWithData } from '@/types/api';
-import { GET_RECENT_ACTIVITY } from '@/constants/api-endpoint';
+import { GET_RECENT_ACTIVITY } from '@/constants/ApiRoutes';
 
 interface ActivityPost {
   board_id: number;

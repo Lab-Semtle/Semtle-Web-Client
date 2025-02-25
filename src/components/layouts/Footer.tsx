@@ -5,7 +5,7 @@ import {
   CONTACTS,
   FOOTER_INFO,
   EXECUTIVES,
-} from '@/constants/footer-items';
+} from '@/constants/FooterData';
 
 const Footer: React.FC = () => {
   return (

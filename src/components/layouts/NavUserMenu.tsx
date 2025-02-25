@@ -19,7 +19,7 @@ import { NavLinkMenu } from '@/components/layouts/NavLinkMenu';
 import { VariantShineButton } from '@/components/common/VariantShineButton';
 import { useSession } from '@/hooks/useSession';
 import { signOutWithForm } from '@/lib/auth/auth.server';
-import { ROUTES } from '@/constants/routes';
+import { ROUTES } from '@/constants/UrlRoutes';
 import { Session } from 'next-auth';
 
 export default function NavUserMenu() {

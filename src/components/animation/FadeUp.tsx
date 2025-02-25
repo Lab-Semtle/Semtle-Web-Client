@@ -58,7 +58,7 @@ export function FadeUp({
 }
 
 /** 사용 예제 
-<TextFadeUp
+<FadeUp
   direction="up"
   className="pt-0 pb-5 flex-col flex justify-center items-center space-y-0"
 >
@@ -68,5 +68,5 @@ export function FadeUp({
   <div className="prose-p:my-1 text-center md:text-lg max-w-lg mx-auto text-balance dark:text-zinc-300">
     Lorem ipsum dolor sit amet, consectetur adipisicing elit amet.
   </div>
-</TextFadeUp>
+</FadeUp>
 */

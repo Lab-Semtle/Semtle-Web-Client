@@ -11,7 +11,7 @@ export default function PageHeading({
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
           {title}
         </h1>
-        <p className="mt-4 whitespace-pre-line text-base font-medium text-muted-foreground lg:text-lg lg:leading-normal">
+        <p className="mt-4 whitespace-pre-line text-base font-medium text-gray-900 dark:text-gray-100 lg:text-lg lg:leading-normal">
           {description}
         </p>
       </div>

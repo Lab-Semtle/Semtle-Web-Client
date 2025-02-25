@@ -1,14 +1,10 @@
 import React from 'react';
 import Image from 'next/image';
-import { Label } from '@/components/ui/label';
-import { Card, CardHeader } from '@/components/ui/card';
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
 const truncateNewsContent = (text: string, maxLength: number) => {
-  if (text.length > maxLength) {
-    return text.substring(0, maxLength) + '...';
-  }
-  return text;
+  return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 };
 
 type NewsDirectorProps = {
@@ -28,48 +24,47 @@ const NewsDirector: React.FC<NewsDirectorProps> = ({
   link_url,
   index = 0,
 }) => {
-  newsContent = truncateNewsContent(newsContent, 140);
+  const isReversed = index % 2 !== 0; // 짝수/홀수에 따라 정렬 변경
+  const truncatedContent = truncateNewsContent(newsContent, 140);
+
   return (
     <div
-      className={`mb-10 flex ${
-        index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'
-      } items-start gap-6`}
+      className={`grid gap-6 overflow-hidden rounded-xl border border-border md:grid-cols-2 lg:gap-8`}
     >
-      <Card className="w-[250px] flex-shrink-0">
-        <CardHeader className="p-2">
-          <Image
-            src={imageSrc}
-            alt={'News' + id}
-            width={350}
-            height={200}
-            className="h-full w-full object-cover"
-          />
-        </CardHeader>
-      </Card>
+      {/* 이미지 영역 (짝수: 왼쪽, 홀수: 오른쪽) */}
+      <div
+        className={`md:min-h-[24rem] lg:min-h-[28rem] xl:min-h-[32rem] ${
+          isReversed ? 'md:order-last' : ''
+        }`}
+      >
+        <Image
+          src={imageSrc}
+          alt={newsTitle}
+          width={500}
+          height={300}
+          className="aspect-[16/9] h-full w-full object-cover object-center"
+        />
+      </div>
 
-      <div className="mt-8 flex flex-grow flex-col gap-2">
-        {link_url ? (
-          <Link href={link_url}>
-            <Label
-              className={`cursor-pointer text-left text-lg font-semibold hover:underline ${
-                index % 2 === 0 ? '' : 'ml-[31.5rem]'
-              } whitespace-nowrap`}
-            >
-              {newsTitle}
-            </Label>
-          </Link>
-        ) : (
-          <Label
-            className={`text-left text-lg font-semibold ${
-              index % 2 === 0 ? '' : 'ml-[34rem]'
-            } whitespace-nowrap`}
+      {/* 텍스트 영역 */}
+      <div className="flex flex-col justify-center px-6 py-8 md:px-8 md:py-10 lg:px-10 lg:py-12">
+        <h3 className="mb-3 text-xl font-medium md:mb-4 md:text-3xl lg:mb-6">
+          {newsTitle}
+        </h3>
+        <p className="text-gray-800 text-muted-foreground dark:text-gray-200 lg:text-xl">
+          {truncatedContent}
+        </p>
+
+        {/* 더 보기 버튼 (링크가 존재하는 경우) */}
+        {link_url && (
+          <Link
+            href={link_url}
+            className="mt-4 flex items-center text-sm font-medium text-semtle-lite transition-colors hover:text-semtle-dark md:text-base lg:text-lg"
           >
-            {newsTitle}
-          </Label>
+            더 보기
+            <ArrowRight className="ml-2 size-4 transition-transform hover:translate-x-1" />
+          </Link>
         )}
-        <Label className="text-left text-[15px] text-muted-foreground">
-          {newsContent}
-        </Label>
       </div>
     </div>
   );

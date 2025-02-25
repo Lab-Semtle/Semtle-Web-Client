@@ -3,11 +3,13 @@ import { Label } from '@/components/ui/label';
 import NewsDirector from '@/components/sections/NewsDirector';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import * as React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
 } from '@/components/ui/carousel';
 import KakaoMap from '@/components/common/KakaoMap';
 import ButtonLink from '@/components/common/LinkButton';
@@ -18,97 +20,103 @@ import {
   contactData,
 } from '@/constants/AboutData';
 import PageHeading from '@/components/common/PageHeading';
+import TextGradientScroll from '@/components/animation/TextGradientScroll';
+import { FadeUp } from '@/components/animation/FadeUp';
+
+const tabTriggerClasses = `text-[19px] transition-colors duration-300 ease-in-out 
+   text-gray-500 dark:text-gray-300 
+   hover:text-semtle-lite dark:hover:text-semtle-dark 
+   data-[state=active]:border-b-2 data-[state=active]:border-semtle-lite 
+   data-[state=active]:bg-semtle-lite data-[state=active]:font-bold 
+   data-[state=active]:text-white 
+   dark:data-[state=active]:border-semtle-dark 
+   dark:data-[state=active]:bg-semtle-dark dark:data-[state=active]:text-black`;
 
 export default function AboutPage() {
   return (
     <>
-      <main>
-        <div className="mx-auto mt-[150px] flex w-full flex-col items-center gap-5 text-center">
-          <PageHeading
-            title="About Us."
-            description="아치셈틀과 함께 배우고 성장하세요. 
+      <main className="flex flex-col items-center px-6 pb-32 pt-24">
+        <PageHeading
+          title="About Us."
+          description="아치셈틀과 함께 배우고 성장하세요. 
                   프로그래밍에 관심 있는 누구나 지원할 수 있습니다! 😺"
-          />
+        />
+        <TextGradientScroll
+          className="max-w-[800px] whitespace-pre-wrap text-center text-xl leading-8"
+          text={`아치셈틀은 인공지능과 컴퓨터 프로그래밍에 관심을 가진 학생들이 함께 모여 
+ 서로 소통하고, 지식을 나누며, 새로운 것에 도전하기 위해 만들어진 국립한국해양대학교 인공지능공학부 소속 학술연구회입니다.
+ 단순히 기술을 활용하는 것 이상의 가치를 탐구하며, 이론적 지식을 쌓는 것에 그치지 않고 함께 문제를 해결하는 과정에서 배움의 의미를 찾고자 노력하고 있습니다.
+          
+  2025년, 새롭게 리뉴얼된 아치셈틀은 세미나, 스터디, 프로젝트 등의 기회를 자유롭게 탐색하고 참여할 수 있는 플랫폼을 제공합니다. 
+ 또한, 기존에도 이어온 MT, 체육대회, 홈커밍데이와 같은 다양한 교류 활동을 통해 선후배간의 활발한 소통을 경험할 수 있습니다.
+ 
+ 초심자에게는 첫 걸음을 내딛을 수 있도록 길잡이가 되어주고, 경험자에게는 협업을 통한 실전 경험과 프로젝트 기회를 제공하여
+ 지속적으로 성장할 수 있는 환경을 제공합니다.`}
+        />
 
-          <Label className="w-full max-w-[800px] text-[30px] font-bold">
-            About Us.
-          </Label>
-          <Label className="mt-4 w-full max-w-[800px] text-lg leading-8">
-            우리는 컴퓨터공학과 동아리로, 프로그래밍과 기술 개발에 열정을 가진
-            학생들이 모인 공간입니다. 최신 기술 트렌드를 탐구하며 프로젝트와
-            스터디를 통해 함께 성장하고 있습니다. 협업과 창의성을 바탕으로
-            학문적 발전과 실무 경험을 동시에 추구합니다!
-          </Label>
-
-          <Tabs defaultValue="event" className="w-full">
-            <TabsList className="mx-auto mb-10 mt-10 flex w-[85%] max-w-[326px] justify-center gap-1">
-              <TabsTrigger value="event" className="text-[17px]">
-                행사
-              </TabsTrigger>
-              <TabsTrigger value="project" className="text-[17px]">
-                프로젝트
-              </TabsTrigger>
-              <TabsTrigger value="support" className="text-[17px]">
-                교류/후원
-              </TabsTrigger>
-              <TabsTrigger value="contact" className="text-[17px]">
-                Contact
-              </TabsTrigger>
-            </TabsList>
-            {/* 행사 탭 */}
-            <TabsContent
-              value="event"
-              className="mx-auto mb-28 w-full max-w-[950px]"
-            >
-              <div className="mb-12">
-                <Label className="text-[26px] font-bold">행사</Label>
-              </div>
+        <Tabs defaultValue="event" className="mt-24 w-full">
+          <TabsList className="mx-auto mb-10 mt-10 flex w-[85%] max-w-[370px] justify-center gap-1">
+            <TabsTrigger value="event" className={tabTriggerClasses}>
+              행사
+            </TabsTrigger>
+            <TabsTrigger value="project" className={tabTriggerClasses}>
+              프로젝트
+            </TabsTrigger>
+            <TabsTrigger value="support" className={tabTriggerClasses}>
+              교류|후원
+            </TabsTrigger>
+            <TabsTrigger value="contact" className={tabTriggerClasses}>
+              문의|연락
+            </TabsTrigger>
+          </TabsList>
+          {/* 행사 탭 */}
+          <TabsContent
+            value="event"
+            className="mx-auto mb-28 w-full max-w-[950px]"
+          >
+            <div className="flex flex-col gap-12">
               {eventData.map((data, index) => (
-                <NewsDirector
-                  key={index}
-                  imageSrc={data.imageSrc}
-                  newsTitle={data.newsTitle}
-                  newsContent={data.newsContent}
-                  index={index}
-                />
+                <FadeUp key={index} direction="up" className="w-full">
+                  <NewsDirector
+                    key={index}
+                    imageSrc={data.imageSrc}
+                    newsTitle={data.newsTitle}
+                    newsContent={data.newsContent}
+                    index={index}
+                  />
+                </FadeUp>
               ))}
-            </TabsContent>
+            </div>
+          </TabsContent>
 
-            {/* 프로젝트 탭 */}
-            <TabsContent
-              value="project"
-              className="mx-auto mt-6 w-full max-w-[900px]"
-            >
-              <ProjectTab projectImages={projectImages} />
-            </TabsContent>
-            {/* 교류 & 후원 탭 */}
-            <TabsContent
-              value="support"
-              className="mx-auto w-full max-w-[850px]"
-            >
-              <SupportTab supportLogo={supportLogo} />
-            </TabsContent>
-            {/* Contact 탭 */}
-            <TabsContent
-              value="contact"
-              className="mx-auto w-full max-w-[850px]"
-            >
-              <ContactTab contact={contactData} />
-            </TabsContent>
-          </Tabs>
-        </div>
+          {/* 프로젝트 탭 */}
+          <TabsContent
+            value="project"
+            className="mx-auto mt-6 w-full max-w-[900px]"
+          >
+            <ProjectTab projectImages={projectImages} />
+          </TabsContent>
+          {/* 교류 & 후원 탭 */}
+          <TabsContent value="support" className="mx-auto w-full max-w-[850px]">
+            <SupportTab supportLogo={supportLogo} />
+          </TabsContent>
+          {/* Contact 탭 */}
+          <TabsContent value="contact" className="mx-auto w-full max-w-[850px]">
+            <ContactTab contact={contactData} />
+          </TabsContent>
+        </Tabs>
       </main>
     </>
   );
 }
-//NOTE - 프로젝트탭 컴포넌트
+
+/** 프로젝트탭 컴포넌트 */
 interface ProjectTabProps {
   projectImages: string[];
 }
 const ProjectTab: React.FC<ProjectTabProps> = ({ projectImages }) => {
   return (
     <div>
-      <Label className="text-[26px] font-bold">프로젝트</Label>
       <Carousel className="mb-12 mt-6 w-full">
         <CarouselContent className="-ml-1">
           {projectImages.map((imageSrc, index) => (
@@ -116,108 +124,101 @@ const ProjectTab: React.FC<ProjectTabProps> = ({ projectImages }) => {
               key={index}
               className="pl-4 md:basis-1/2 lg:basis-1/3"
             >
-              <div className="p-2">
-                <Card>
-                  <CardContent className="flex aspect-[2/3] items-center justify-center p-3">
-                    <Image
-                      src={imageSrc}
-                      alt={`Project image ${index + 1}`}
-                      width={500}
-                      height={300}
-                      objectFit="cover"
-                      objectPosition="center"
-                    />
-                  </CardContent>
-                </Card>
+              <div className="relative aspect-[2/3] overflow-hidden rounded-lg shadow-md">
+                <Image
+                  src={imageSrc}
+                  alt={`Project image ${index + 1}`}
+                  layout="fill"
+                  objectFit="cover"
+                  objectPosition="center"
+                  className="rounded-lg"
+                />
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
+
+        <CarouselPrevious className="absolute left-[-3rem] top-1/2 -translate-y-1/2 transform bg-blue-300 hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-400" />
+        <CarouselNext className="absolute right-[-3rem] top-1/2 -translate-y-1/2 transform bg-blue-300 hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-400" />
       </Carousel>
-      <div className="mb-20">
-        <p className="text-[17px] leading-8">
-          우리는 다양한 기술 프로젝트를 통해 실제 문제를 해결하고, 협업 능력을
-          키우며 창의적인 아이디어를 실현하고 있습니다. 최신 기술을 적용한 웹
-          개발, 앱 개발, 그리고 머신 러닝 프로젝트 등 다양한 분야에서 활동하고
-          있습니다. 각 프로젝트는 팀워크와 문제 해결 능력을 향상시킬 수 있는
-          기회를 제공합니다. 함께 성장하며, 더 나은 세상을 위한 기술을 만들어
-          가고 있습니다.
-        </p>
+      <div className="mb-20 text-lg leading-8 text-gray-900 dark:text-gray-100 md:text-xl">
+        아치셈틀에서는 해커톤, 경진대회, 사이드 프로젝트 등 다양한 활동을
+        학회원들이 자율적으로 팀을 꾸려 참여할 수 있도록 지원합니다. 아치셈틀은
+        AI와 컴퓨터 프로그래밍 관련 행사를 주기적으로 찾아 소개하며, 해당
+        사이트를 통해 학회원들이 보다 쉽게 팀을 구할 수 있도록 돕고 있습니다.
+        또한, 아치셈틀의 이름으로 프로젝트를 진행하면 학과 사무실을 통해 지원금
+        혜택도 제공받을 수 있습니다.
       </div>
     </div>
   );
 };
-//NOTE - 교류&후원탭 컴포넌트
-interface supportLogo {
+
+/** 교류 & 후원탭 */
+interface SupportLogo {
   logo: string;
   type: string;
 }
-interface SupportTab {
-  supportLogo: supportLogo[];
+
+interface SupportTabProps {
+  supportLogo: SupportLogo[];
 }
-const SupportTab: React.FC<SupportTab> = ({ supportLogo }) => {
+
+const SupportTab: React.FC<SupportTabProps> = ({ supportLogo }) => {
   return (
-    <div>
-      <Label className="text-[26px] font-bold">교류</Label>
-      <br />
-      <p className="mt-10 text-[17px] leading-8">
-        우리 동아리는 다양한 집단과의 협력과 네트워킹을 통해 서로의 강점을
-        극대화하며 새로운 기회를 만들어가고 있습니다. 이러한 소통은 우리의
-        시야를 넓히고, 동아리 활동에 새로운 동력을 제공합니다. 함께하는 모든
-        순간이 우리를 더 단단하고 창의적으로 만들며, 서로의 가치를 존중하는
-        가운데 지속 가능한 성장을 추구합니다.
+    <div className="text-center">
+      {/* 교류 섹션 */}
+      <div className="mt-12 flex justify-center">
+        <Label className="text-2xl font-bold md:text-3xl">교류</Label>
+      </div>
+      <p className="mt-10 text-left text-xl leading-8">
+        현재 같은 인공지능공학부 소속 <b>코인즈</b>와 네트워킹을 진행 중이며,
+        추후 해양대학교 내 <b>다른 학부 학회 및 동아리</b>와의 교류를 계획하고
+        있습니다. 나아가 타 대학 동아리와의 협업도 준비 중입니다.
       </p>
-      <div className="mb-20 mt-14 flex flex-wrap justify-center gap-6">
+
+      {/* 교류 로고 섹션 */}
+      <div className="mb-20 mt-14 flex flex-wrap items-center justify-center gap-8">
         {supportLogo.map((partner, index) => (
-          <Card
+          <img
             key={index}
-            className="flex h-[150px] w-[300px] items-center justify-center overflow-hidden shadow-md" // flex 설정 추가
-          >
-            <CardContent className="flex h-full w-full items-center justify-center p-0">
-              <Image
-                src={partner.logo}
-                alt={partner.type}
-                width={130}
-                height={100}
-                objectFit="cover"
-                objectPosition="center"
-              />
-            </CardContent>
-          </Card>
+            src={partner.logo}
+            alt={partner.type}
+            width={150}
+            height={80}
+            className="h-[80px] w-auto opacity-80 transition-opacity duration-300 hover:opacity-100"
+          />
         ))}
       </div>
-      <Label className="text-[26px] font-bold">후원</Label>
-      <p className="mt-10 text-[17px] leading-8">
-        우리를 후원해주는 집단들은 우리의 성장과 발전을 위해 지속적인 지원을
-        아끼지 않고 있습니다. 이들 후원은 동아리 활동을 더욱 풍성하게
-        만들어주며, 다양한 프로젝트와 행사에서 중요한 역할을 합니다. 또한,
-        후원자들과의 협력을 통해 실무 경험을 쌓고, 실질적인 기술력 향상에 도움을
-        받고 있습니다. 우리 동아리는 이들 후원자들과의 파트너십을 소중히 여기며,
-        상호 발전을 위한 지속적인 교류를 이어가고 있습니다.
+
+      {/* 후원 섹션 */}
+      <div className="flex justify-center">
+        <Label className="text-2xl font-bold md:text-3xl">후원</Label>
+      </div>
+      <p className="mt-10 text-left text-xl leading-8">
+        현재 아치셈틀은 <b>인공지능공학부</b>의 공식 지원을 받고 있으며,
+        <b>Naver Cloud</b> 후원도 준비 중에 있습니다. 앞으로 더 다양한 기업 및
+        단체의 후원을 통해 학회원들에게 더욱 많은 기회와 지원을 제공할 수 있도록
+        노력하겠습니다.
       </p>
-      <div className="mb-28 mt-14 flex flex-wrap justify-center gap-6">
+
+      {/* 후원 로고 섹션 */}
+      <div className="mb-28 mt-14 flex flex-wrap items-center justify-center gap-8">
         {supportLogo.map((partner, index) => (
-          <Card
+          <img
             key={index}
-            className="flex h-[150px] w-[300px] items-center justify-center overflow-hidden shadow-md" // flex 설정 추가
-          >
-            <CardContent className="flex h-full w-full items-center justify-center p-0">
-              <Image
-                src={partner.logo}
-                alt={partner.type}
-                width={130}
-                height={100}
-                objectFit="cover"
-                objectPosition="center"
-              />
-            </CardContent>
-          </Card>
+            src={partner.logo}
+            alt={partner.type}
+            width={150}
+            height={80}
+            className="h-[80px] w-auto opacity-80 transition-opacity duration-300 hover:opacity-100"
+          />
         ))}
       </div>
     </div>
   );
 };
-//NOTE - Contact탭 컴포넌트
+
+/** Contact탭 */
 interface ContactInfo {
   address: string;
   mapLocation: { latitude: number; longitude: number };
@@ -241,17 +242,21 @@ const ContactTab: React.FC<ContactTabProps> = ({ contact }) => {
     }),
   );
   return (
-    <div>
-      <Label className="text-[26px] font-bold">오시는 길</Label>
-      <p className="mt-10 text-[17px] leading-8">{contact.address}</p>
-      <div className="mb-20 mt-8 flex flex-wrap justify-center gap-6">
+    <div className="text-center">
+      <Badge className="bg-semtle-lite text-lg text-white hover:bg-semtle-dark dark:bg-semtle-dark dark:text-black dark:hover:bg-semtle-lite">
+        {contact.address}
+      </Badge>
+
+      <div className="mb-20 mt-4 flex flex-wrap justify-center gap-2 rounded-lg shadow-lg">
         <KakaoMap />
       </div>
-      <Label className="text-[26px] font-bold">문의하기</Label>
-      <p className="mb-3 mt-2 text-[17px]">
+      <div className="mb-2 flex justify-center">
+        <Label className="text-3xl font-bold">문의하기</Label>
+      </div>
+      <p className="mb-10 mt-2 text-[17px]">
         더 궁금한 사항이 있거나 후원을 원하신다면 언제든 연락해 주세요!
       </p>
-      <div className="mb-16 flex flex-wrap justify-center gap-4">
+      <div className="mb-24 flex flex-wrap justify-center gap-4">
         {generalContacts.map((button, index) => (
           <ButtonLink
             key={index}
@@ -260,8 +265,10 @@ const ContactTab: React.FC<ContactTabProps> = ({ contact }) => {
           />
         ))}
       </div>
-      <Label className="text-[26px] font-bold">개발팀 문의하기</Label>
-      <p className="mb-3 mt-2 text-[17px]">
+      <div className="mb-2 flex justify-center">
+        <Label className="text-3xl font-bold">개발팀 문의하기</Label>
+      </div>
+      <p className="mb-10 mt-2 text-[17px]">
         개발팀 관련 문의는 아래 링크를 통해 연락해 주세요.
       </p>
       <div className="mb-20 flex flex-wrap justify-center gap-4">

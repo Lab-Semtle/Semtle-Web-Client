@@ -9,7 +9,7 @@ import RecentActivityPosts from '@/components/sections/RecentActivityPosts';
 import FaqAccordion from '@/components/sections/FaqAccordion';
 import RecruitCard from '@/components/sections/RecruitCard';
 import { useFetchBanners } from '@/hooks/api/useFetchBanners';
-import { AuroraText } from '@/components/magicui/aurora-text';
+import { AuroraText } from '@/components/animation/AuroraText';
 
 export default function HomePage() {
   return (

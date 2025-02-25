@@ -10,11 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
 import GoUp from '@/components/GoUp';
-import { Search, Plus, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -105,30 +101,11 @@ export default function ActivitiesPage() {
     (activity) => category === 'all' || activity.category === category,
   );
 
-  const handleSelect = (id: number) => {
-    setSelectedIds((prev) =>
-      prev.includes(id)
-        ? prev.filter((selectedId) => selectedId !== id)
-        : [...prev, id],
-    );
-  };
-
-  const handleDelete = () => {
-    setActivities((prev) =>
-      prev.filter((activity) => !selectedIds.includes(activity.id)),
-    );
-    setSelectedIds([]);
-  };
-
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
     });
-  };
-
-  const handleCreatePost = () => {
-    router.push(`/activities/edit/`);
   };
 
   const handlePostClick = (id: number) => {
@@ -137,31 +114,7 @@ export default function ActivitiesPage() {
 
   return (
     <div className="container mx-auto mt-[60px] max-w-4xl p-4">
-      {/* hidden 붙이면 사라짐 */}
-      <div className="mb-6 flex items-center justify-between">
-        <Button onClick={() => handleCreatePost()} className="gap-2">
-          <Plus className="h-4 w-4" />새 게시물 작성하기
-        </Button>
-
-        <div
-          className={`fixed left-1/2 top-4 z-50 flex -translate-x-1/2 transform items-center gap-4 rounded-lg bg-white px-4 py-2 shadow-lg transition-all duration-200 dark:bg-gray-800 ${selectedIds.length > 0 ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-full opacity-0'}`}
-        >
-          <span className="text-sm font-medium">
-            {selectedIds.length}개 선택됨
-          </span>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={handleDelete}
-            className="gap-2"
-          >
-            <Trash2 className="h-4 w-4" />
-            삭제
-          </Button>
-        </div>
-      </div>
-
-      <div className="mb-6 mt-4 flex items-center gap-4">
+      <div className="mb-6 flex items-center gap-4 mt-4">
         <div className="flex-1">
           <div className="flex gap-2">
             <div className="rounded-lg shadow-lg">
@@ -177,13 +130,13 @@ export default function ActivitiesPage() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="relative flex-1 rounded-lg shadow-lg">
+            {/* <div className="relative flex-1 rounded-lg shadow-lg">
               <Input placeholder="검색어를 입력하세요" className="pl-10" />
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-500" />
             </div>
             <Button variant="secondary" className="shadow-lg">
               검색
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>
@@ -197,16 +150,15 @@ export default function ActivitiesPage() {
           >
             <CardContent className="p-0">
               <div className="flex items-center">
-                {/* 체크박스 */}
-                <div className="ml-2 flex items-center justify-center">
+                {/* <div className="flex items-center justify-center ml-2">
                   <Checkbox
                     checked={selectedIds.includes(activity.id)}
                     onCheckedChange={() => handleSelect(activity.id)}
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()} 
                   />
-                </div>
+                </div> */}
                 {/* 이미지 섹션 */}
-                <div className="m-3 flex flex-[2] items-center justify-center overflow-hidden bg-white">
+                <div className="flex flex-[2] items-center justify-center overflow-hidden bg-white m-3">
                   <Image
                     src={activity.image || '/placeholder.svg'}
                     alt=""
@@ -244,14 +196,14 @@ export default function ActivitiesPage() {
         ))}
       </div>
 
-      <GoUp
-        onClick={scrollToTop}
+      <GoUp onClick={scrollToTop}
         className={`group fixed bottom-8 right-8 rounded-full bg-white p-3 text-primary-foreground shadow-lg transition-all duration-300 hover:bg-semtleColor ${
           showScrollTop
             ? 'translate-y-0 opacity-100'
             : 'pointer-events-none translate-y-10 opacity-0'
-        }`}
-      ></GoUp>
+        }`}>
+
+      </GoUp>
     </div>
   );
 }

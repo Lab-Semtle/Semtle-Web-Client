@@ -1,49 +1,24 @@
+/** 학회 일정 페이지 */
+
 'use client';
 import * as React from 'react';
 import { useState } from 'react';
-import { Label } from '@/components/ui/label';
 import 'react-day-picker/style.css';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import AlertSchedule from '@/components/common/AlertSchedule';
-
-interface CalendarEventType {
-  date: string;
-  title: string;
-  start: string;
-  end: string; // end는 선택적 속성
-  location: string;
-  description: string;
-}
-
-const CalendarEvent: CalendarEventType[] = [
-  {
-    date: '2025-02-10',
-    title: '정기회의',
-    start: '2025-02-10T12:30:00',
-    end: '2025-02-12T13:30:00',
-    location: '강의실 101호',
-    description: '1월 정기회의 진행',
-  },
-  {
-    date: '2025-02-15',
-    title: '학회 프로젝트 발표',
-    start: '2025-02-15T14:00:00',
-    end: '2025-02-15T16:00:00',
-    location: '컨퍼런스룸 A',
-    description: '학회에서 진행한 프로젝트 결과 발표',
-  },
-];
+import PageHeading from '@/components/common/PageHeading';
+import { ScheduleEvent, ScheduleEventType } from '@/constants/Schedule';
 
 export default function CalendarPage() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEventType | null>(
+  const [selectedEvent, setSelectedEvent] = useState<ScheduleEventType | null>(
     null,
   );
 
   const handleEventClick = (info: { event: { title: string } }) => {
-    const clickedEvent = CalendarEvent.find(
+    const clickedEvent = ScheduleEvent.find(
       (event) => event.title === info.event.title,
     );
     if (clickedEvent) {
@@ -53,19 +28,26 @@ export default function CalendarPage() {
   };
 
   return (
-    <main>
-      <div className="mb-[70px] mt-[150px]">
-        <Label className="flex justify-center text-[27px]">학회 일정</Label>
+    <main className="px-6 pb-32 pt-24">
+      <div className="flex justify-center">
+        <PageHeading
+          title="학회 일정"
+          description="📅 아치셈틀의 주요 일정을 확인할 수 있습니다."
+        />
       </div>
-      <div className="mb-[30px]">
+      <div className="lg:px-6d mx-auto mb-[30px] max-w-7xl px-2 sm:px-4">
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
           selectable={true}
           initialView="dayGridMonth"
           height="1100px"
-          events={CalendarEvent}
+          events={ScheduleEvent}
           eventClick={handleEventClick} // 일정 클릭 시 팝업 열기
-          eventClassNames="cursor-pointer"
+          eventClassNames="cursor-pointer text-base rounded-lg px-2 py-1"
+          dayCellClassNames="text-xl font-bold"
+          dayHeaderContent={(arg) => (
+            <div className="text-xl font-semibold">{arg.text}</div>
+          )}
         />
       </div>
 

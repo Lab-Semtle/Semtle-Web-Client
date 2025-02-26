@@ -1,0 +1,22 @@
+/* 학회 일정 페이지용 FullCalendar 버튼 커스텀 */
+.fc .fc-todayButton-button {
+  background-color: #00aff0 !important; /* 셈틀 라이트 모드 */
+  color: white !important;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 1rem;
+}
+
+/* 다크 모드 대응 */
+.dark .fc .fc-todayButton-button {
+  background-color: #a6daf4 !important; /* 셈틀 다크 모드 */
+  color: black !important;
+}
+
+/* 호버 효과 */
+.fc .fc-todayButton-button:hover {
+  background-color: #a6daf4 !important; /* 라이트 모드 호버 */
+}
+.dark .fc .fc-todayButton-button:hover {
+  background-color: #00aff0 !important; /* 다크 모드 호버 */
+}

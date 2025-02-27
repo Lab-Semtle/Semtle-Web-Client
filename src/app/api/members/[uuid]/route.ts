@@ -4,8 +4,6 @@
  */
 /** 목업 API - 개인정보 조회 및 수정 */
 import { NextResponse } from 'next/server';
-import { User } from '@/types/data';
-import { MOCK_USERS } from '@/constants/MocksData';
 
 // ✅ 사용자 정보 조회 (GET)
 export async function GET(req: Request, context: { params: { uuid: string } }) {

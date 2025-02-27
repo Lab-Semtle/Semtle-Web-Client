@@ -1,7 +1,7 @@
-"use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation"; // useRouter 사용
-import Image from "next/image";
+'use client';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation'; // useRouter 사용
+import Image from 'next/image';
 
 const CardListC = ({ cards, onDelete }) => {
   const [selectedCards, setSelectedCards] = useState([]);
@@ -32,12 +32,14 @@ const CardListC = ({ cards, onDelete }) => {
       {selectedCards.length > 0 && (
         <div className="mb-4 flex items-center">
           <button
-            className="mr-4 rounded-md bg-red-500 px-4 py-2 text-white"
+            className="mr-4 rounded-md bg-red-500 px-4 py-2 text-white dark:bg-red-700"
             onClick={handleDeleteSelected}
           >
             선택된 카드 삭제
           </button>
-          <span className="text-lg font-semibold">{selectedCards.length}개 선택됨</span>
+          <span className="text-lg font-semibold">
+            {selectedCards.length}개 선택됨
+          </span>
         </div>
       )}
 
@@ -45,9 +47,7 @@ const CardListC = ({ cards, onDelete }) => {
         {cards.map((card) => (
           <div
             key={card.id}
-            className={`flex h-full cursor-pointer flex-col border p-4 transition-all duration-200 ${
-              selectedCards.includes(card.id) ? "bg-blue-100" : ""
-            }`}
+            className={`flex h-full cursor-pointer flex-col border p-4 shadow-md transition-all duration-200 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:shadow-gray-700/50 ${selectedCards.includes(card.id) ? 'bg-blue-100 dark:bg-blue-900' : ''}`}
             onDoubleClick={() => handleCardDoubleClick(card.id)}
             onClick={() => handleCardClick(card.id)} // 클릭 시 상세 페이지 이동
           >
@@ -76,7 +76,9 @@ const CardListC = ({ cards, onDelete }) => {
                 ))}
               </div>
               <h3 className="mt-2 truncate text-lg font-bold">{card.title}</h3>
-              <p className="mt-2 line-clamp-3 text-gray-600">{card.description}</p>
+              <p className="mt-2 line-clamp-3 text-gray-800 dark:text-gray-300">
+                {card.description}
+              </p>
             </div>
           </div>
         ))}

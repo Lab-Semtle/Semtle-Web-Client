@@ -48,7 +48,7 @@ const PostCard: React.FC<PostCardProps> = ({
         </div>
 
         <CardContent className="p-3">
-          <div className="mb-2 line-clamp-3 break-words text-base font-medium md:mb-3 md:text-lg lg:text-xl">
+          <div className="mb-2 line-clamp-1 break-words text-sm font-medium md:mb-3 md:text-base lg:text-lg">
             {title}
           </div>
 

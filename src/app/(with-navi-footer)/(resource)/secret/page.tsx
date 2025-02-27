@@ -38,7 +38,7 @@ export default function SecretPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
-  // 🔥 캐싱을 위한 useRef 추가 (각 페이지 & 검색어별 데이터를 저장)
+  // 캐싱을 위한 useRef 추가 (각 페이지 & 검색어별 데이터를 저장)
   const cacheRef = useRef<{ [key: string]: SecretPost }>({});
 
   // 데이터 Fetch 함수
@@ -46,7 +46,7 @@ export default function SecretPage() {
     try {
       setLoading(true);
 
-      // ✅ 캐시 확인: 동일한 검색어 & 페이지가 있다면 API 호출 없이 사용
+      // 캐시 확인: 동일한 검색어 & 페이지가 있다면 API 호출 없이 사용
       const cacheKey = `${searchKeyword}_${page}`;
       if (cacheRef.current[cacheKey]) {
         setSecretPost(cacheRef.current[cacheKey]);
@@ -62,7 +62,7 @@ export default function SecretPage() {
       if (json.success) {
         setSecretPost(json.data);
 
-        // ✅ 가져온 데이터를 캐시에 저장
+        // 가져온 데이터를 캐시에 저장
         cacheRef.current[cacheKey] = json.data;
       } else {
         console.error('데이터 로드 실패:', json.message);
@@ -82,12 +82,12 @@ export default function SecretPage() {
   if (loading)
     return <p className="text-center text-lg font-semibold">Loading...</p>;
 
-  const totalPages = secretPost.total_pages; // ✅ 실제 API에서 반환하는 전체 페이지 수 사용
+  const totalPages = secretPost.total_pages; // 실제 API에서 반환하는 전체 페이지 수 사용
 
   // 검색 기능
   const handleSearch = () => {
-    setCurrentPage(1); // ✅ 검색 시 1페이지부터 다시 불러오기
-    cacheRef.current = {}; // ✅ 기존 캐시 초기화 (새로운 검색어 입력 시)
+    setCurrentPage(1); // 검색 시 1페이지부터 다시 불러오기
+    cacheRef.current = {}; // 기존 캐시 초기화 (새로운 검색어 입력 시)
     fetchPosts(1, searchTerm);
   };
 

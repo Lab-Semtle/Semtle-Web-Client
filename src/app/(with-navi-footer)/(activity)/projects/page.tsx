@@ -14,6 +14,7 @@ import {
 import FilterBar from '@/components/common/FilterBar';
 import CardListA from '@/components/common/CardListA';
 import CardListC from '@/components/common/CardListC';
+import PageHeading from '@/components/common/PageHeading';
 
 type Card = {
   id: number;
@@ -53,7 +54,7 @@ export default function ProjectPage() {
   useEffect(() => {
     const fetchCompletedProjects = async () => {
       try {
-        const response = await fetch('/api/result');
+        const response = await fetch('/api/promotion');
         const data: Card[] = await response.json();
         setCompletedCards(data);
         if (activeTab === 'completed') setFilteredCards(data);
@@ -83,8 +84,8 @@ export default function ProjectPage() {
   const handleCreateProject = () => {
     const path =
       activeTab === 'active'
-        ? '/projects/active/create'
-        : '/projects/completed/new';
+        ? '/projects/hire/create'
+        : '/projects/showcase/create';
     router.push(path);
   };
 
@@ -107,58 +108,67 @@ export default function ProjectPage() {
   const totalPages = Math.ceil(filteredCards.length / itemsPerPage);
 
   return (
-    <>
-      <h2 className="mb-8 mt-20 text-center text-4xl font-bold">프로젝트</h2>
+    <main className="flex flex-col items-center px-6 pb-32 pt-24">
+      <PageHeading
+        title="학회 프로젝트"
+        description="아치셈틀 학회원들과 함께 관심 있는 프로젝트에 참여하거나, 직접 프로젝트를 시작해보세요! 🚀"
+      />
 
       {/* 탭 UI */}
-      <div className="flex justify-center space-x-4 border-b pb-2">
-        <button
-          className={`px-4 py-2 font-semibold ${
-            activeTab === 'active'
-              ? 'border-b-4 border-blue-500'
-              : 'text-gray-500'
-          }`}
-          onClick={() => {
-            setActiveTab('active');
-            setFilteredCards(activeCards);
-            setCurrentPage(1);
-          }}
-        >
-          진행 중
-        </button>
-        <button
-          className={`px-4 py-2 font-semibold ${
-            activeTab === 'completed'
-              ? 'border-b-4 border-blue-500'
-              : 'text-gray-500'
-          }`}
-          onClick={() => {
-            setActiveTab('completed');
-            setFilteredCards(completedCards);
-            setCurrentPage(1);
-          }}
-        >
-          완료됨
-        </button>
+      <div className="mx-auto w-full max-w-[1000px] px-6">
+        <div className="flex w-full justify-center space-x-6 border-b pb-2 dark:border-gray-700">
+          <button
+            className={`px-6 py-3 text-lg font-semibold transition-colors ${
+              activeTab === 'active'
+                ? 'border-b-4 border-blue-500 text-black dark:text-white'
+                : 'text-gray-500 hover:text-black dark:hover:text-white'
+            }`}
+            onClick={() => {
+              setActiveTab('active');
+              setFilteredCards(activeCards);
+              setCurrentPage(1);
+            }}
+          >
+            진행 중
+          </button>
+          <button
+            className={`px-6 py-3 text-lg font-semibold transition-colors ${
+              activeTab === 'completed'
+                ? 'border-b-4 border-blue-500 text-black dark:text-white'
+                : 'text-gray-500 hover:text-black dark:hover:text-white'
+            }`}
+            onClick={() => {
+              setActiveTab('completed');
+              setFilteredCards(completedCards);
+              setCurrentPage(1);
+            }}
+          >
+            완료됨
+          </button>
+        </div>
       </div>
 
       {/* 필터 + 버튼 */}
-      <div className="flex items-center justify-start gap-4 p-4">
-        <Button onClick={handleCreateProject}>
-          {activeTab === 'active' ? '프로젝트 등록' : '완료된 프로젝트 등록'}
+      <div className="mx-auto flex w-full max-w-[1000px] items-center justify-between gap-4 p-4 pb-0 pt-0">
+        <Button
+          className="text-base hover:bg-semtle-lite hover:text-blue-950 hover:dark:bg-semtle-dark hover:dark:text-black"
+          onClick={handleCreateProject}
+        >
+          {activeTab === 'active'
+            ? '프로젝트 공고 등록하기'
+            : '내 프로젝트 홍보하기'}
         </Button>
         <FilterBar onFilter={handleFilter} />
       </div>
 
       {/* 카드 리스트 */}
-      {activeTab === 'active' ? (
-        <CardListA
-          cards={paginatedCards}
-          //onDelete={undefined}
-        />
-      ) : (
-        <CardListC cards={paginatedCards} onDelete={handleDelete} />
-      )}
+      <div className="mx-auto w-full max-w-[1000px]">
+        {activeTab === 'active' ? (
+          <CardListA cards={paginatedCards} />
+        ) : (
+          <CardListC cards={paginatedCards} onDelete={handleDelete} />
+        )}
+      </div>
 
       {/* 페이지네이션 */}
       {totalPages > 1 && (
@@ -204,6 +214,6 @@ export default function ProjectPage() {
           </PaginationContent>
         </Pagination>
       )}
-    </>
+    </main>
   );
 }

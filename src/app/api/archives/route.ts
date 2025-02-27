@@ -5,7 +5,7 @@ const mockPosts = [
     board_id: 10,
     writer: '작성자 10',
     content: '이것은 10번째 게시물입니다.',
-    title: '족보 테스트 내용 10',
+    title: '족보 테스트 내용 10후후후후후후후후',
     createdAt: '2025-02-24T16:10:34.047+00:00',
     imageUrl: ['/temp-server/sample-3.jpg'],
     fileUrl: ['https://example.com/sample-file-10.pdf'],

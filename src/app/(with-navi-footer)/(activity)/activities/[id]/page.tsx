@@ -100,7 +100,7 @@ export default function PostDetail() {
   return (
     <div className="min-h-screen dark:bg-gray-900">
       <div className="container mx-auto mt-40 max-w-4xl p-4">
-        <Card className="border-none bg-gray-100 shadow-none dark:bg-gray-900">
+        <Card className="mb-36 border-none bg-gray-100 shadow-none dark:bg-gray-900">
           <CardContent className="p-0">
             <div className="space-y-6">
               <h1 className="text-left text-4xl font-bold">{post.title}</h1>
@@ -126,6 +126,7 @@ export default function PostDetail() {
                 />
               </div>
 
+              {/* 게시물 내용 */}
               <div className="min-h-[150px] whitespace-pre-line text-lg font-medium">
                 {post.content}
               </div>

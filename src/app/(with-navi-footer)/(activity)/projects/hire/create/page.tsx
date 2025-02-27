@@ -15,13 +15,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import { Calendar } from '@/components/ui/calendar';
 
-
-
 // 상태 데이터 타입 정의
 interface PostData {
   projectTitle: string;
-  startDate: Date | undefined;  // 수정: Date | undefined
-  endDate: Date | undefined;    // 수정: Date | undefined
+  startDate: Date | undefined; // 수정: Date | undefined
+  endDate: Date | undefined; // 수정: Date | undefined
   contact: string;
   projectType: string;
   categories: string[];
@@ -29,20 +27,17 @@ interface PostData {
   images: string[];
 }
 
-
 const RecruitmentPostPage = () => {
   const [postData, setPostData] = useState<PostData>({
-  projectTitle: '제18회 공개SW 개발자대회',
-  startDate: new Date(), // 초기값을 Date로 설정
-  endDate: new Date(), // 초기값을 Date로 설정
-  contact: '',
-  projectType: '해커톤',
-  categories: ['Android', 'Web'],
-  content: '게시물 내용을 입력하세요.',
-  images: [],
-});
-
-
+    projectTitle: '제18회 공개SW 개발자대회',
+    startDate: new Date(), // 초기값을 Date로 설정
+    endDate: new Date(), // 초기값을 Date로 설정
+    contact: '',
+    projectType: '해커톤',
+    categories: ['Android', 'Web'],
+    content: '게시물 내용을 입력하세요.',
+    images: [],
+  });
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPostData({
@@ -51,11 +46,10 @@ const RecruitmentPostPage = () => {
     });
   };
 
-
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const newFiles = Array.from(event.target.files).map((file) =>
-        URL.createObjectURL(file)
+        URL.createObjectURL(file),
       );
       setPostData((prevData) => ({
         ...prevData,
@@ -63,17 +57,19 @@ const RecruitmentPostPage = () => {
       }));
     }
   };
-  
+
   const handleImageRemove = (index: number) => {
     setPostData((prevData) => ({
       ...prevData,
       images: prevData.images.filter((_, i) => i !== index),
     }));
   };
-  
-  
+
   return (
-    <div className="mx-auto max-w-4xl bg-white p-6 shadow-md" style={{ paddingTop: '80px' }}>
+    <div
+      className="mx-auto max-w-4xl bg-white p-6 shadow-md"
+      style={{ paddingTop: '80px' }}
+    >
       {/* 프로젝트 제목 입력란 */}
       <div className="mb-6">
         <label className="font-semibold text-gray-700">프로젝트 제목</label>
@@ -88,10 +84,12 @@ const RecruitmentPostPage = () => {
       <hr className="my-6 border-t-2 border-gray-300" />
 
       <div className="mb-6 grid grid-cols-2 gap-6">
-      <p>
-  <strong>게시 일자:</strong> {postData.startDate ? postData.startDate.toLocaleDateString() : '미정'}
-</p>
-
+        <p>
+          <strong>게시 일자:</strong>{' '}
+          {postData.startDate
+            ? postData.startDate.toLocaleDateString()
+            : '미정'}
+        </p>
       </div>
       {/* 진행 기간 설정 */}
       <div className="mb-6 grid grid-cols-2 gap-6">
@@ -133,12 +131,11 @@ const RecruitmentPostPage = () => {
       <div className="mb-6">
         <label className="font-semibold text-gray-700">프로젝트 타입</label>
         <Select
-  value={postData.projectType}
-  onValueChange={(value: string) =>
-    setPostData({ ...postData, projectType: value })
-  }
->
-
+          value={postData.projectType}
+          onValueChange={(value: string) =>
+            setPostData({ ...postData, projectType: value })
+          }
+        >
           <SelectTrigger className="w-full rounded-md border border-gray-300 bg-gray-50 p-3">
             {postData.projectType}
           </SelectTrigger>
@@ -189,38 +186,41 @@ const RecruitmentPostPage = () => {
         />
       </div>
 
-{/* 이미지 업로드 */}
-<div className="mb-6">
-  <label className="font-semibold text-gray-700">게시물 이미지</label>
-  <Input
-    id="fileInput"
-    type="file"
-    multiple
-    onChange={handleImageChange}
-    className="mt-2 rounded-md border border-gray-300 bg-gray-50 p-3"
-  />
+      {/* 이미지 업로드 */}
+      <div className="mb-6">
+        <label className="font-semibold text-gray-700">게시물 이미지</label>
+        <Input
+          id="fileInput"
+          type="file"
+          multiple
+          onChange={handleImageChange}
+          className="mt-2 rounded-md border border-gray-300 bg-gray-50 p-3"
+        />
 
-  <div className="mt-4 flex space-x-4 overflow-x-auto">
-    {postData.images.map((image, index) => (
-      <Card key={index} className="relative flex h-32 w-32 items-center justify-center rounded-md shadow-md">
-        <CardContent>
-          <img
-            src={image}
-            alt={`uploaded-${index}`}
-            className="h-full w-full rounded-md object-cover"
-          />
-        </CardContent>
-        {/* 삭제 버튼 */}
-        <button
-          onClick={() => handleImageRemove(index)}
-          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xs"
-        >
-          ✕
-        </button>
-      </Card>
-    ))}
-  </div>
-</div>
+        <div className="mt-4 flex space-x-4 overflow-x-auto">
+          {postData.images.map((image, index) => (
+            <Card
+              key={index}
+              className="relative flex h-32 w-32 items-center justify-center rounded-md shadow-md"
+            >
+              <CardContent>
+                <Image
+                  src={image}
+                  alt={`uploaded-${index}`}
+                  className="h-full w-full rounded-md object-cover"
+                />
+              </CardContent>
+              {/* 삭제 버튼 */}
+              <button
+                onClick={() => handleImageRemove(index)}
+                className="absolute right-1 top-1 rounded-full bg-red-500 p-1 text-xs text-white"
+              >
+                ✕
+              </button>
+            </Card>
+          ))}
+        </div>
+      </div>
 
       {/* 버튼 영역 */}
       <div className="mb-6 flex justify-center space-x-4">

@@ -179,7 +179,7 @@ const SupportTab: React.FC<SupportTabProps> = ({ supportLogo }) => {
       {/* 교류 로고 섹션 */}
       <div className="mb-20 mt-14 flex flex-wrap items-center justify-center gap-8">
         {supportLogo.map((partner, index) => (
-          <img
+          <Image
             key={index}
             src={partner.logo}
             alt={partner.type}
@@ -204,7 +204,7 @@ const SupportTab: React.FC<SupportTabProps> = ({ supportLogo }) => {
       {/* 후원 로고 섹션 */}
       <div className="mb-28 mt-14 flex flex-wrap items-center justify-center gap-8">
         {supportLogo.map((partner, index) => (
-          <img
+          <Image
             key={index}
             src={partner.logo}
             alt={partner.type}

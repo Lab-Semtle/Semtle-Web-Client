@@ -1,0 +1,38 @@
+import { useState, useEffect } from 'react';
+
+export function useHealthCheck() {
+  const [status, setStatus] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchHealthStatus = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('http://223.130.140.10:8080/health', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setStatus(data.message || '서버 응답을 확인할 수 없습니다.');
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchHealthStatus();
+  }, []);
+
+  return { status, loading, error, refetch: fetchHealthStatus };
+}

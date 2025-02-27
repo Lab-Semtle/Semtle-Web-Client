@@ -65,7 +65,7 @@ export default function ActivitiesPage() {
   return (
     <main className="flex flex-col items-center px-6 pb-32 pt-24">
       <PageHeading
-        title="활동 게시판"
+        title="학회 활동"
         description="📅 우리 학회의 다양한 활동과 이벤트를 확인하세요!"
       />
 

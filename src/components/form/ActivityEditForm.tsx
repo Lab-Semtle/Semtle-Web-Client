@@ -87,7 +87,7 @@ export default function ActivityEditForm({
           {/* 게시물 제목 */}
           <div className="space-y-2">
             <Label htmlFor="title" className="text-lg font-bold">
-              게시물 제목
+              제목
             </Label>
             <Input
               id="title"
@@ -102,7 +102,7 @@ export default function ActivityEditForm({
 
           {/* 이미지 */}
           <div className="space-y-2">
-            <Label className="text-lg font-bold">게시물 이미지</Label>
+            <Label className="text-lg font-bold">대표 이미지</Label>
             <div className="flex items-start gap-4">
               <div className="relative aspect-video flex-1 overflow-hidden rounded-lg bg-gray-100">
                 {imagePreview ? (
@@ -122,7 +122,7 @@ export default function ActivityEditForm({
               <div className="flex flex-col gap-2">
                 <Button
                   variant="outline"
-                  className="relative rounded-lg shadow-lg hover:bg-semtleColor"
+                  className="relative text-base font-semibold hover:bg-semtleColor"
                 >
                   <input
                     type="file"
@@ -137,7 +137,7 @@ export default function ActivityEditForm({
                   <Button
                     variant="outline"
                     onClick={handleImageRemove}
-                    className="rounded-lg shadow-lg hover:bg-red-500"
+                    className="text-base font-semibold hover:bg-red-500"
                   >
                     <X className="mr-2 h-4 w-4" />
                     삭제
@@ -157,7 +157,7 @@ export default function ActivityEditForm({
               }
             >
               <SelectTrigger className="rounded-lg shadow-lg">
-                <SelectValue placeholder="유형 선택" />
+                <SelectValue placeholder="게시물 유형 선택하기" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="공지">공지</SelectItem>
@@ -180,7 +180,7 @@ export default function ActivityEditForm({
           <Button
             variant="outline"
             onClick={() => window.history.back()} // 이전 페이지로 이동
-            className="rounded-lg shadow-lg hover:bg-red-500"
+            className="text-base font-semibold hover:bg-red-500"
           >
             <X className="mr-2 h-4 w-4" />
             취소

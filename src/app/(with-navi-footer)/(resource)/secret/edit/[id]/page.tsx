@@ -2,9 +2,7 @@
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import SecretNoteEditor, {
-  FormValues,
-} from '@/components/form/SecretNoteEditor';
+import SecretNoteEditor, { FormValues } from '@/components/form/SecretEditForm';
 
 export default function ModifyPostEditor({
   params,

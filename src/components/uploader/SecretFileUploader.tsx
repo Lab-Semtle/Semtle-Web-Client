@@ -121,8 +121,6 @@ export default function SecretFileUploader({
 
       <hr className="border-t-1 mb-2 border-gray-300" />
       <div className="mt-2">
-        <Label className="ml-2 text-lg font-semibold">첨부된 파일</Label>
-
         {/* 기존 파일 목록 */}
         <ul className="mt-2 space-y-2">
           {files

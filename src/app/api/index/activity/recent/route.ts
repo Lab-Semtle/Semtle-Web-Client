@@ -8,7 +8,7 @@ const recentPosts = [
       '이번 세미나에서는 최근 AI 연구에서 주목받고 있는 멀티모달 학습을 주제로 진행되었습니다. 자연어, 영상, 오디오 데이터를 통합적으로 활용하는 최신 논문을 분석하고 실습을 통해 적용 가능성을 탐색하는 시간을 가졌습니다.',
     writer: 'AI 연구팀',
     createdAt: '2025-02-15',
-    images: ['/images/example/seminar-1.png'],
+    images: ['/temp-server/seminar-1.png'],
     type: '세미나',
   },
   {

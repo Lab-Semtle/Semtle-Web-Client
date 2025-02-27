@@ -1,8 +1,9 @@
 import React from 'react';
+import { ChevronUp } from 'lucide-react';
 
 interface GoUpProps {
-  onClick: () => void;  // onClick은 함수 타입이어야 합니다
-  className: string;    // className은 문자열 타입이어야 합니다
+  onClick: () => void;
+  className: string;
 }
 
 const GoUp: React.FC<GoUpProps> = ({ onClick, className }) => {
@@ -10,22 +11,12 @@ const GoUp: React.FC<GoUpProps> = ({ onClick, className }) => {
     <button
       aria-label="페이지 상단으로 이동"
       onClick={onClick}
-      className={className}
+      className={`flex items-center justify-center ${className}`}
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="white"
-        stroke="black"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="transition-all duration-300 group-hover:fill-semtleColor group-hover:stroke-white"
-      >
-        <path d="m18 15-6-6-6 6" />
-      </svg>
+      <ChevronUp
+        size={24} // 아이콘 크기 지정
+        className="transition-all duration-300 group-hover:text-semtleColor"
+      />
     </button>
   );
 };

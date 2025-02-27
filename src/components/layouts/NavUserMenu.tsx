@@ -54,11 +54,11 @@ function LoginMenu({ session }: { session: Session | null }) {
       <DropdownMenuTrigger asChild>
         <Avatar className="cursor-pointer">
           <AvatarImage
-            src={session?.profileImageUrl || '/images/default-profile.png'}
+            src={session?.profileImageUrl || '/images/default-profile.jpg'}
             alt={session?.username || 'User'}
             onError={(e) => {
               (e.target as HTMLImageElement).src =
-                '/images/default-profile.png';
+                '/images/default-profile.jpg';
             }}
             className="h-10 w-10 rounded-full border-2 border-gray-900"
           />

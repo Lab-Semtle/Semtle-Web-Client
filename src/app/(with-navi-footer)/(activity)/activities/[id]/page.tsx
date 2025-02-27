@@ -1,209 +1,155 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { format } from 'date-fns';
-import {
-  ArrowLeft,
-  ArrowRight,
-  ListFilter,
-} from 'lucide-react';
+import { ArrowLeft, ArrowRight, ListFilter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
 
-interface PostDetailProps {
-  post?: {
-    id: number;
-    title: string;
-    content: string;
-    image: string;
-    date: string;
-    category: string;
-  };
+interface PostData {
+  board_id: number;
+  title: string;
+  content: string;
+  writer: string;
+  createdAt: string;
+  images?: string[];
+  type: string;
 }
 
-const postData = [
-  {
-    id: 1,
-    title: '세미나: React로 멋진 UI 만들기',
-    content:
-      'React를 활용하여 인터랙티브한 UI를 만드는 방법에 대해 배워봅시다.',
-    image: '/1.jpg',
-    date: '2024-01-05T10:00:00.000Z',
-    category: '세미나',
-  },
-  {
-    id: 2,
-    title: '행사: 해커톤 대회 개최',
-    content: '팀을 구성하여 24시간 동안 창의적인 프로젝트를 만들어보세요!',
-    image: '/2.jpg',
-    date: '2024-01-10T14:00:00.000Z',
-    category: '행사',
-  },
-  {
-    id: 3,
-    title: '기타: 커뮤니티 모임',
-    content: '개발자들과 만나 네트워킹을 하고 다양한 주제에 대해 이야기해봐요.',
-    image: '/3.jpg',
-    date: '2024-01-15T18:00:00.000Z',
-    category: '기타',
-  },
-  {
-    id: 4,
-    title: '세미나: TypeScript 마스터하기',
-    content:
-      'TypeScript를 활용한 타입 안전성과 코드 품질 향상에 대해 알아봅시다.',
-    image: '/4.jpg',
-    date: '2024-01-20T09:00:00.000Z',
-    category: '세미나',
-  },
-];
-
 export default function PostDetail() {
-  const [post, setPost] = useState<PostDetailProps['post'] | undefined>(
-    undefined,
-  );
+  const [post, setPost] = useState<PostData | null>(null);
   const [loading, setLoading] = useState(true);
   const params = useParams();
   const router = useRouter();
 
-  useEffect(() => {
-    if (params.id) {
-      const selectedPost = postData.find(
-        (post) => post.id === parseInt(params.id as string),
-      );
-      setPost(selectedPost);
+  // 게시물 데이터 가져오기 (id가 변경될 때마다 실행)
+  const fetchPost = async (id: number) => {
+    try {
+      const response = await fetch(`/api/activities/${id}`);
+      if (!response.ok) {
+        if (response.status === 404) {
+          alert('해당 게시물이 존재하지 않습니다.');
+        } else {
+          alert('게시물을 불러오는 중 오류가 발생했습니다.');
+        }
+        router.push('/activities');
+        return;
+      }
+
+      const { success, data } = await response.json();
+      if (success) {
+        setPost(data);
+      } else {
+        alert('게시물을 불러오는 데 실패했습니다.');
+        router.push('/activities');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('서버 오류가 발생했습니다.');
+      router.push('/activities');
+    } finally {
       setLoading(false);
     }
-  }, [params.id]);
+  };
 
+  // 페이지 처음 로딩될 때 게시물 가져오기
   useEffect(() => {
-    if (!loading && !post) {
-      alert('게시물을 찾을 수 없습니다.');
-      router.push('/activities');
+    if (params.id) {
+      setLoading(true);
+      fetchPost(Number(params.id));
     }
-  }, [loading, post, router]);
+  }, [params.id, router]);
 
   if (loading) {
-    return <div>로딩 중...</div>;
+    return <div className="text-center text-lg">로딩 중...</div>;
   }
 
   if (!post) {
-    return null;
+    return (
+      <div className="text-center text-lg">게시물을 찾을 수 없습니다.</div>
+    );
   }
 
   const handleModify = () => {
-    router.push(`/activities/edit/${post.id}`);
-  };
-
-
-  const handleNext = () => {
-    const currentIndex = postData.findIndex((p) => p.id === post.id);
-    const nextPost = postData[currentIndex + 1] || postData[0]; // 다음 게시물이 없으면 첫 번째 게시물로
-    router.push(`/activities/${nextPost.id}`);
-  };
-
-  const handlePrevious = () => {
-    const currentIndex = postData.findIndex((p) => p.id === post.id);
-    const prevPost =
-      postData[currentIndex - 1] || postData[postData.length - 1]; // 이전 게시물이 없으면 마지막 게시물로
-    router.push(`/activities/${prevPost.id}`);
+    router.push(`/activities/edit/${post.board_id}`);
   };
 
   const handleList = () => {
-    router.push(`/activities`);
+    router.push('/activities');
+  };
+
+  // 이전 게시물 가져오기 (id - 1)
+  const handlePrevious = () => {
+    const prevId = post.board_id - 1;
+    if (prevId < 1) {
+      alert('이전 게시물이 없습니다.');
+      return;
+    }
+    router.push(`/activities/${prevId}`);
+  };
+
+  // 다음 게시물 가져오기 (id + 1)
+  const handleNext = () => {
+    const nextId = post.board_id + 1;
+    router.push(`/activities/${nextId}`);
   };
 
   return (
-    <div className="container mx-auto mt-[70px] max-w-4xl p-4">
-      <Card className="border-none shadow-none">
-        <CardContent className="p-0">
-          <div className="space-y-6">
-            <h1 className="text-center text-3xl font-bold">{post.title}</h1>
-            <div className="flex items-center justify-between border-b pb-4 text-sm text-gray-500">
-              <div className="flex items-center gap-4">
-                <span>작성일: {format(new Date(post.date), 'yyyy.MM.dd')}</span>
-                <span>분류: {post.category}</span>
-              </div>
-              {/* <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1 text-gray-600">
-                  <Eye className="h-4 w-4" />
-                  <span>{post.views}</span>
-                </div>
-                <button
-                  onClick={handleLike}
-                  className={`flex items-center gap-1 ${liked ? 'text-red-500' : 'text-gray-600'}`}
+    <div className="min-h-screen dark:bg-gray-900">
+      <div className="container mx-auto mt-40 max-w-4xl p-4">
+        <Card className="border-none bg-gray-100 shadow-none dark:bg-gray-900">
+          <CardContent className="p-0">
+            <div className="space-y-6">
+              <h1 className="text-left text-4xl font-bold">{post.title}</h1>
+              <div className="flex w-full items-center justify-between border-b pb-4 text-sm text-gray-500">
+                <Badge
+                  variant="outline"
+                  className="bg-semtle-lite px-2 py-1 text-sm font-semibold text-white dark:bg-semtle-dark dark:text-black"
                 >
-                  <Heart className={`h-4 w-4 ${liked ? 'fill-red-500' : ''}`} />
-                  <span>{likes}</span>
-                </button>
-              </div> */}
-            </div>
-
-            <div className="aspect-video w-full overflow-hidden rounded-lg bg-gray-100">
-              <Image
-                src={post.image || '/placeholder.svg'}
-                alt=""
-                width={500}
-                height={500}
-                className="h-full w-full rounded-lg object-contain"
-                priority
-              />
-            </div>
-
-            <div className="min-h-[150px] whitespace-pre-line">
-              {post.content}
-            </div>
-
-            {/* <div className="border-t pt-6">
-              <h2 className="text-xl font-semibold">댓글</h2>
-              <div className="mt-4 space-y-4">
-                {comments.map((comment) => (
-                  <div key={comment.id} className="border-b pb-4">
-                    <div className="flex justify-between text-sm text-gray-500">
-                      <span>{comment.author}</span>
-                      <span>
-                        {format(new Date(comment.date), 'yyyy.MM.dd HH:mm')}
-                      </span>
-                    </div>
-                    <p className="mt-2">{comment.content}</p>
-                  </div>
-                ))}
+                  {post.type}
+                </Badge>
+                <span className="text-balck text-right text-lg font-medium dark:text-white">
+                  {format(new Date(post.createdAt), 'yyyy년 MM월 dd일')}
+                </span>
               </div>
-              <div className="mt-6">
-                <h3 className="text-lg font-medium">댓글 작성</h3>
-                <Textarea
-                  placeholder="댓글을 입력하세요."
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  className="mt-2"
+
+              <div className="relative aspect-video w-full overflow-hidden rounded-xl">
+                <Image
+                  src={post.images?.[0] || '/placeholder.svg'}
+                  alt="게시물 이미지"
+                  fill
+                  className="rounded-xl object-cover"
+                  priority
                 />
-                <Button className="mt-4" onClick={handleAddComment}>
-                  댓글 등록
-                </Button>
               </div>
-            </div> */}
 
-            <div className="flex items-center justify-center">
-              <div className="flex gap-5">
-                <Button variant="outline" onClick={handlePrevious}>
-                  <ArrowLeft className="mr-1 h-4 w-4" />
-                  이전
-                </Button>
-                <Button variant="outline" onClick={handleList}>
-                  <ListFilter className="mr-1 h-4 w-4" />
-                  목록
-                </Button>
-                <Button variant="outline" onClick={handleNext}>
-                  다음
-                  <ArrowRight className="ml-1 h-4 w-4" />
-                </Button>
+              <div className="min-h-[150px] whitespace-pre-line text-lg font-medium">
+                {post.content}
+              </div>
+
+              <div className="flex items-center justify-center">
+                <div className="flex gap-5">
+                  <Button onClick={handlePrevious}>
+                    <ArrowLeft className="mr-1 h-4 w-4" />
+                    이전
+                  </Button>
+                  <Button onClick={handleList}>
+                    <ListFilter className="mr-1 h-4 w-4" />
+                    목록
+                  </Button>
+                  <Button onClick={handleNext}>
+                    다음
+                    <ArrowRight className="ml-1 h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

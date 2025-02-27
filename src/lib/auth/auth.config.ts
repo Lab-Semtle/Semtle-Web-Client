@@ -39,14 +39,11 @@ export const {
         const { email, password } = validationFields.data;
 
         try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL_DEV}${API_ROUTES.AUTH_SIGNIN}`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email, password }),
-            },
-          );
+          const response = await fetch(API_ROUTES.AUTH_SIGNIN, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+          });
 
           if (!response.ok) {
             console.error(`[authorize] 로그인 실패: ${response.status}`);
@@ -65,7 +62,7 @@ export const {
             role: userData.role,
             manageApprovalStatus: userData.manageApprovalStatus,
             profileImageUrl:
-              userData.profileImageUrl ?? '/images/default-profile.png',
+              userData.profileImageUrl ?? '/images/default-profile.jpg',
           };
         } catch (error) {
           console.error('[authorize] 로그인 처리 중 예외 발생:', error);

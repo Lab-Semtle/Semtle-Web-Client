@@ -8,7 +8,6 @@ const nextConfig: NextConfig = {
         hostname: 'shadcnblocks.com',
       },
     ],
-    domains: ['images.unsplash.com'],
   },
 };
 

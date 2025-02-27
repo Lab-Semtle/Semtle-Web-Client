@@ -10,7 +10,7 @@ const MOCK_USER = {
   username: '테스트 유저',
   role: 'USER',
   manageApprovalStatus: true,
-  profileImageUrl: '/images/default-profile.png',
+  profileImageUrl: '/images/default-profile.jpg',
 };
 
 export async function POST(req: Request) {

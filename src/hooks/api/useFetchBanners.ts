@@ -1,4 +1,7 @@
-/** Home(Index) 페이지 배너 관련 API Fetch hooks */
+/** Home(Index) 페이지 배너 관련 API Fetch
+ * - 배너 목록 조회
+ *
+ */
 
 import { useEffect, useState } from 'react';
 import { API_ROUTES } from '@/constants/ApiRoutes';

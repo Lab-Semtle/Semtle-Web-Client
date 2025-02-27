@@ -1,8 +1,8 @@
-'use client';
+/** 활동 게시판 페이지 */
 
-import { useEffect, useState } from 'react';
-import { format } from 'date-fns';
-import { Card, CardContent } from '@/components/ui/card';
+'use client';
+import { useState, useEffect, useCallback } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import {
   Select,
   SelectContent,
@@ -11,199 +11,103 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import GoUp from '@/components/common/GoUp';
-import Image from 'next/image';
+import PageHeading from '@/components/common/PageHeading';
+import ActivityCard2List from '@/components/card/ActivityCard2List';
 import { useRouter } from 'next/navigation';
-
-interface Activity {
-  id: number;
-  title: string;
-  content: string;
-  image: string;
-  date: string;
-  category: string;
-}
-
-// 고정된 더미 데이터
-const dummyActivities = [
-  {
-    id: 1,
-    title: '세미나: React로 멋진 UI 만들기',
-    content:
-      'React를 활용하여 인터랙티브한 UI를 만드는 방법에 대해 배워봅시다.',
-    image: '/1.jpg',
-    date: '2024-01-05T10:00:00.000Z',
-    category: '세미나',
-  },
-  {
-    id: 2,
-    title: '행사: 해커톤 대회 개최',
-    content:
-      '팀을 구성하여 24시간 동안 창의적인 프로젝트를 만들어보세요! 팀을 구성하여 24시간 동안 창의적인 프로젝트를 만들어보세요! 팀을 구성하여 24시간 동안 창의적인 프로젝트를 만들어보세요! 팀을 구성하여 24시간 동안 창의적인 프로젝트를 만들어보세요! 팀을 구성하여 24시간 동안 창의적인 프로젝트를 만들어보세요! 팀을 구성하여 24시간 동안 창의적인 프로젝트를 만들어보세요! 팀을 구성하여 24시간 동안 창의적인 프로젝트를 만들어보세요! 팀을 구성하여 24시간 동안 창의적인 프로젝트를 만들어보세요! 팀을 구성하여 24시간 동안 창의적인 프로젝트를 만들어보세요! 팀을 구성하여 24시간 동안 창의적인 프로젝트를 만들어보세요! 팀을 구성하여 24시간 동안 창의적인 프로젝트를 만들어보세요! 팀을 구성하여 24시간 동안 창의적인 프로젝트를 만들어보세요! 팀을 구성하여 24시간 동안 창의적인 프로젝트를 만들어보세요! 팀을 구성하여 24시간 동안 창의적인 프로젝트를 만들어보세요! ',
-    image: '/2.jpg',
-    date: '2024-01-10T14:00:00.000Z',
-    category: '행사',
-  },
-  {
-    id: 3,
-    title: '기타: 커뮤니티 모임',
-    content: '개발자들과 만나 네트워킹을 하고 다양한 주제에 대해 이야기해봐요.',
-    image: '/3.jpg',
-    date: '2024-01-15T18:00:00.000Z',
-    category: '기타',
-  },
-  {
-    id: 4,
-    title: '세미나: TypeScript 마스터하기',
-    content:
-      'TypeScript를 활용한 타입 안전성과 코드 품질 향상에 대해 알아봅시다.',
-    image: '/4.jpg',
-    date: '2024-01-20T09:00:00.000Z',
-    category: '세미나',
-  },
-];
+import { usefetchActivities } from '@/hooks/api/useFetchActivity';
 
 export default function ActivitiesPage() {
   const router = useRouter();
-  const [activities, setActivities] = useState<Activity[]>([]);
-  const [page] = useState(1);
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  const [category, setCategory] = useState('all');
+  const [category, setCategory] = useState('전체');
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  const fetchActivities = async (pageNum: number) => {
-    const pagedActivities = dummyActivities.map((activity) => ({
-      ...activity,
-      id: activity.id,
-    }));
+  const { data, fetchNextPage, hasNextPage, isFetching, isLoading, error } =
+    useInfiniteQuery({
+      queryKey: ['activities', category],
+      queryFn: usefetchActivities,
+      getNextPageParam: (lastPage) => lastPage.nextPage ?? undefined,
+      initialPageParam: 1,
+    });
 
-    setActivities((prev) =>
-      [...prev, ...pagedActivities].sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-      ),
-    );
-  };
+  // 무한 스크롤 감지
+  const lastElementRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (!node || !hasNextPage) return;
 
-  useEffect(() => {
-    setActivities([]);
-    fetchActivities(page);
-  }, [page]);
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) fetchNextPage();
+        },
+        { threshold: 1.0 },
+      );
 
+      observer.observe(node);
+      return () => observer.disconnect();
+    },
+    [hasNextPage, fetchNextPage],
+  );
+
+  // 스크롤 위치 감지하여 '맨 위로 가기' 버튼 표시
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 400);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const filteredActivities = activities.filter(
-    (activity) => category === 'all' || activity.category === category,
-  );
-
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handlePostClick = (id: number) => {
-    router.push(`/activities/${id}`);
-  };
+  const activities = data?.pages.flatMap((page) => page.posts) ?? [];
 
   return (
-    <div className="container mx-auto mt-[60px] max-w-4xl p-4">
-      <div className="mb-6 mt-4 flex items-center gap-4">
-        <div className="flex-1">
-          <div className="flex gap-2">
-            <div className="rounded-lg shadow-lg">
-              <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="카테고리 선택" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">전체</SelectItem>
-                  <SelectItem value="세미나">세미나</SelectItem>
-                  <SelectItem value="행사">행사</SelectItem>
-                  <SelectItem value="기타">기타</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            {/* <div className="relative flex-1 rounded-lg shadow-lg">
-              <Input placeholder="검색어를 입력하세요" className="pl-10" />
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-500" />
-            </div>
-            <Button variant="secondary" className="shadow-lg">
-              검색
-            </Button> */}
+    <main className="flex flex-col items-center px-6 pb-32 pt-24">
+      <PageHeading
+        title="활동 게시판"
+        description="📅 우리 학회의 다양한 활동과 이벤트를 확인하세요!"
+      />
+
+      <div className="container mx-auto max-w-6xl px-2 pb-20">
+        {/* 카테고리 선택 필터 */}
+        <div className="mb-6 mt-4 flex justify-start px-24">
+          <div className="rounded-lg shadow-lg">
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="카테고리 선택" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="전체">전체</SelectItem>
+                <SelectItem value="공지">공지</SelectItem>
+                <SelectItem value="세미나">세미나</SelectItem>
+                <SelectItem value="행사">행사</SelectItem>
+                <SelectItem value="기타">기타</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
+
+        {/* 활동 리스트 렌더링 */}
+        <ActivityCard2List
+          posts={activities}
+          loading={isLoading}
+          error={!!error}
+        />
+
+        {/* 무한 스크롤 트리거 요소 */}
+        <div ref={lastElementRef} className="h-10"></div>
+
+        {/* 맨 위로 가기 버튼 */}
+        <GoUp
+          onClick={scrollToTop}
+          className={`group fixed bottom-8 right-8 rounded-full bg-semtle-lite p-3 text-primary-foreground shadow-lg transition-all duration-300 hover:bg-semtle-dark dark:bg-semtle-dark dark:hover:bg-semtle-lite ${
+            showScrollTop
+              ? 'translate-y-0 opacity-100'
+              : 'pointer-events-none translate-y-10 opacity-0'
+          }`}
+        />
       </div>
-
-      <div className="space-y-6">
-        {filteredActivities.map((activity) => (
-          <Card
-            key={activity.id}
-            className="cursor-pointer overflow-hidden rounded-lg shadow-lg"
-            onClick={() => handlePostClick(activity.id)}
-          >
-            <CardContent className="p-0">
-              <div className="flex items-center">
-                {/* <div className="flex items-center justify-center ml-2">
-                  <Checkbox
-                    checked={selectedIds.includes(activity.id)}
-                    onCheckedChange={() => handleSelect(activity.id)}
-                    onClick={(e) => e.stopPropagation()} 
-                  />
-                </div> */}
-                {/* 이미지 섹션 */}
-                <div className="m-3 flex flex-[2] items-center justify-center overflow-hidden bg-white">
-                  <Image
-                    src={activity.image || '/placeholder.svg'}
-                    alt=""
-                    width={500}
-                    height={500}
-                    style={{
-                      objectFit: 'cover',
-                      width: '100%',
-                      height: 'auto',
-                    }}
-                    className="rounded"
-                    priority
-                  />
-                </div>
-
-                {/* 텍스트 콘텐츠 섹션 */}
-                <div className="mr-3 flex hidden flex-[1] flex-col justify-between sm:flex">
-                  {/* 제목 */}
-                  <h3 className="mb-3 line-clamp-1 h-12 text-lg font-semibold">
-                    {activity.title}
-                  </h3>
-                  {/* 내용 */}
-                  <p className="mb-4 line-clamp-3 min-h-[60px] text-gray-600">
-                    {activity.content}
-                  </p>
-                  {/* 날짜 및 카테고리 */}
-                  <div className="mt-auto flex items-center justify-between text-sm text-gray-500">
-                    <span>{format(new Date(activity.date), 'yyyy.MM.dd')}</span>
-                    <span>{activity.category}</span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <GoUp
-        onClick={scrollToTop}
-        className={`group fixed bottom-8 right-8 rounded-full bg-white p-3 text-primary-foreground shadow-lg transition-all duration-300 hover:bg-semtleColor ${
-          showScrollTop
-            ? 'translate-y-0 opacity-100'
-            : 'pointer-events-none translate-y-10 opacity-0'
-        }`}
-      ></GoUp>
-    </div>
+    </main>
   );
 }

@@ -2,6 +2,6 @@
 
 import { MSWComponent } from '@/components/msw/MSWComponent';
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function MSWProviders({ children }: { children: React.ReactNode }) {
   return <MSWComponent>{children}</MSWComponent>;
 }

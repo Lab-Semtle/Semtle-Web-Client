@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_ROUTES } from '@/constants/ApiRoutes';
 
 export function useHealthCheck() {
   const [status, setStatus] = useState<string | null>(null);
@@ -10,12 +11,15 @@ export function useHealthCheck() {
     setError(null);
 
     try {
-      const response = await fetch('http://223.130.140.10:8080/health', {
+      console.log('api 요청 : ', API_ROUTES.HEALTH);
+      const response = await fetch(API_ROUTES.HEALTH, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       });
+
+      console.log('api 응답 : ', response);
 
       if (!response.ok) {
         throw new Error(`HTTP Error: ${response.status}`);

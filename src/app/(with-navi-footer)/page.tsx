@@ -64,6 +64,7 @@ export default function HomePage() {
 /** 메인페이지 최상단 Hero 섹션 컴포넌트 */
 function HeroSection() {
   const { banners, loading, error } = useFetchBanners();
+
   return (
     <div className="relative mt-10 overflow-hidden py-24 lg:mt-16 lg:py-32">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">

@@ -15,11 +15,20 @@ const baseUrl = (() => {
 })();
 
 export const API_ROUTES = {
+  HEALTH: `${baseUrl}/health`, // 서버 상태 테스트
+  GET_BANNERS: `${baseUrl}/api/v1/index/banners`, // 메인 배너 조회
+
   AUTH_SIGNIN: `${baseUrl}/auth/signin`, // 로그인
-  GET_BANNERS: `${baseUrl}/index/banners`, // 메인 배너 조회
-  GET_RECENT_ACTIVITY_BASE: `${baseUrl}/index/activity/recent`, // 최근 활동 게시물 조회
+  GET_RECENT_ACTIVITY_BASE: `${baseUrl}/api/v1/activity/recent`, // 최근 활동 게시물 조회
   GET_ACTIVITIES_POSTS: `${baseUrl}/activities`, // 활동 게시판 목록 조회
   POST_ACTIVITIES_POSTS: `${baseUrl}/activities`,
+
+  // Cloudflare R2 파일 다운로드
+  GET_CLOUDFLARE_FILE: (fileName: string) =>
+    `/api/file/download?fileName=${encodeURIComponent(fileName)}`,
+
+  // Cloudflare R2 파일 업로드
+  UPLOAD_CLOUDFLARE_FILE: `/api/file/upload`,
 } as const;
 
 // 동적 경로 처리

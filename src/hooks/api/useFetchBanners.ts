@@ -8,7 +8,7 @@ import { API_ROUTES } from '@/constants/ApiRoutes';
 
 interface Banner {
   bannerId: number;
-  imagePath: string;
+  imagePath: string; // DB에 저장된 Cloudflare R2 파일 경로 (예: "uploads/banner1.jpg")
   targetPath: string;
   altText?: string;
   postTitle: string;
@@ -23,12 +23,16 @@ export function useFetchBanners() {
   useEffect(() => {
     async function fetchBanners() {
       setLoading(true);
-
+      console.log('api 요청 : ', API_ROUTES.GET_BANNERS);
       try {
         const response = await fetch(API_ROUTES.GET_BANNERS, {
-          headers: { Accept: 'application/json' },
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         });
 
+        console.log('배너데이터 api response : ', response);
         if (!response.ok) {
           throw new Error(`Error ${response.status}: ${response.statusText}`);
         }

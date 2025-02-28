@@ -91,7 +91,7 @@ export default function SecretImageUploader({
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
-        <div className="relative w-[400px]">
+        <div className="relative w-[400px] rounded-lg dark:bg-gray-900">
           <Input
             multiple
             type="file"
@@ -105,7 +105,7 @@ export default function SecretImageUploader({
           />
         </div>
         <p className="text-sm text-gray-500">
-          현재 이미지 총 용량: {(totalImageSize / 1024 / 1024).toFixed(2)} MB
+          {(totalImageSize / 1024 / 1024).toFixed(2)} MB
         </p>
       </div>
       <ul className="flex w-full flex-wrap gap-2">

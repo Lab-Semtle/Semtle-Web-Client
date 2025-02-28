@@ -1,5 +1,5 @@
 /** 개인정보 관리 페이지 */
-/** 개인정보 관리 페이지 */
+
 'use client';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';

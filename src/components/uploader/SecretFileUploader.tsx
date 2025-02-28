@@ -98,9 +98,8 @@ export default function SecretFileUploader({
   return (
     <div>
       <div className="mb-2 flex items-center gap-4">
-        <Label className="ml-2 text-lg">파일 첨부</Label>
         <div className="flex w-auto items-center gap-2">
-          <div className="relative w-[400px]">
+          <div className="relative w-[400px] rounded-lg dark:bg-gray-900">
             <Input
               type="file"
               multiple
@@ -114,7 +113,7 @@ export default function SecretFileUploader({
             />
           </div>
           <p className="whitespace-nowrap text-sm text-gray-500">
-            현재 총 용량: {(totalFileSize / 1024 / 1024).toFixed(2)} MB
+            {(totalFileSize / 1024 / 1024).toFixed(2)} MB
           </p>
         </div>
       </div>

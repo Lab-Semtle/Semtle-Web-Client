@@ -25,7 +25,7 @@ const CardListA = ({ cards }) => {
       {cards.map((card) => (
         <div
           key={card.id}
-          className="flex cursor-pointer flex-col rounded-lg border p-4 shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+          className="flex cursor-pointer flex-col rounded-lg border p-4 shadow-lg dark:border-gray-800 dark:bg-gray-800 dark:text-white"
           onClick={() => handleCardClick(card.id)} // 카드 클릭 이벤트 추가
         >
           {/* 이미지 영역 */}
@@ -62,10 +62,7 @@ const CardListA = ({ cards }) => {
             {/* 제목 및 날짜 정보 */}
             <h3 className="mt-2 text-xl font-bold">{card.title}</h3>
             <p className="text-gray-600 dark:text-gray-300">
-              게시 일자: {card.postDate}
-            </p>
-            <p className="text-gray-600 dark:text-gray-300">
-              마감 일자: {card.deadline}
+              {card.postDate} ~ {card.deadline}
             </p>
           </div>
         </div>

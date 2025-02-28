@@ -90,8 +90,8 @@ export default function SecretNoteEditor({
   };
 
   return (
-    <div className="container mx-auto mt-4 max-w-4xl pb-32">
-      <Card className="rounded-lg shadow-md">
+    <div className="container mx-auto mt-4 max-w-4xl bg-transparent pb-32">
+      <Card className="rounded-lg shadow-md dark:border-zinc-800 dark:bg-zinc-800">
         <CardContent className="space-y-6 p-6">
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(handleFormSubmit)}>
@@ -99,14 +99,14 @@ export default function SecretNoteEditor({
               <div className="space-y-2">
                 <Label
                   htmlFor="title"
-                  className="text-lg font-semibold text-black"
+                  className="text-lg font-semibold text-zinc-900 dark:text-white"
                 >
                   제목
                 </Label>
                 <Input
                   id="title"
                   {...register('title', { required: '제목을 입력해주세요.' })}
-                  className="h-12 w-full border-gray-300 text-lg font-medium text-black"
+                  className="h-12 w-full border-gray-300 text-lg font-medium text-zinc-900 dark:border-zinc-600 dark:bg-gray-900 dark:text-white"
                   placeholder="제목을 입력하세요."
                 />
                 {errors.title && (
@@ -116,19 +116,19 @@ export default function SecretNoteEditor({
 
               {/* 작성일 */}
               <div className="mt-4 space-y-2">
-                <Label className="text-lg font-semibold text-black">
+                <Label className="text-lg font-semibold text-zinc-900 dark:text-white">
                   작성일
                 </Label>
                 <Input
                   {...register('created_at')}
-                  className="h-12 w-full border-gray-300 text-lg font-medium text-black"
+                  className="h-12 w-full border-zinc-300 text-lg font-medium text-gray-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-white"
                   disabled
                 />
               </div>
 
               {/* 대표 이미지 업로드 */}
               <div className="mt-4 space-y-2">
-                <Label className="text-lg font-semibold text-black">
+                <Label className="text-lg font-semibold text-gray-900 dark:text-white">
                   대표 이미지
                 </Label>
                 <SecretImageUploader
@@ -139,17 +139,19 @@ export default function SecretNoteEditor({
 
               {/* 내용 입력 */}
               <div className="mt-4 space-y-2">
-                <Label className="text-lg font-semibold text-black">내용</Label>
+                <Label className="text-lg font-semibold text-gray-900 dark:text-white">
+                  내용
+                </Label>
                 <Textarea
                   {...register('content')}
-                  className="h-48 w-full rounded-lg border-gray-300 p-4 text-lg font-medium text-black"
+                  className="h-48 w-full rounded-lg border-zinc-300 p-4 text-lg font-medium text-gray-900 dark:border-gray-600 dark:bg-gray-900 dark:text-white"
                   placeholder="글을 작성하세요."
                 />
               </div>
 
               {/* 첨부 파일 업로드 */}
               <div className="mt-4 space-y-2">
-                <Label className="text-lg font-semibold text-black">
+                <Label className="text-lg font-semibold text-gray-900 dark:text-white">
                   첨부 파일
                 </Label>
                 <SecretFileUploader
@@ -163,7 +165,7 @@ export default function SecretNoteEditor({
                 <Button
                   type="submit"
                   disabled={submitLoading}
-                  className="text-base font-semibold"
+                  className="text-base font-semibold dark:bg-semtle-dark dark:text-gray-800 dark:hover:bg-semtle-lite"
                 >
                   {submitLoading
                     ? '업로드 중...'
@@ -173,8 +175,8 @@ export default function SecretNoteEditor({
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={() => window.history.back()} // 이전 페이지로 이동
-                  className="text-base font-semibold hover:bg-red-500"
+                  onClick={() => window.history.back()}
+                  className="text-base font-semibold hover:bg-red-500 dark:border-gray-500 dark:text-white dark:hover:bg-red-700"
                 >
                   <X className="mr-2 h-4 w-4" />
                   취소

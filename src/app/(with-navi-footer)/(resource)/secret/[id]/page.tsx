@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
 import * as React from 'react';
-import PostCarousel from '@/components/sections/PostCarousel';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { FolderArchive, Download } from 'lucide-react';
@@ -32,7 +31,7 @@ type PostDetail = {
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [post, setPost] = useState<PostDetail | null>(null);
   const [loading, setLoading] = useState(true);
-  const { id } = React.use(params); // 🔥 Promise 해제하여 id 가져오기
+  const { id } = React.use(params);
 
   // 게시글 데이터 가져오기
   useEffect(() => {
@@ -71,18 +70,18 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
   console.log(post);
   return (
-    <div className="min-h-screen dark:bg-gray-900">
+    <div className="min-h-screen">
       <div className="container mx-auto mb-36 mt-40 max-w-4xl p-4">
-        <Card className="border-none bg-gray-100 shadow-none dark:bg-gray-900">
+        <Card className="border-none bg-transparent shadow-none">
           <CardContent className="p-0">
             <div className="space-y-6">
               {/* 제목 */}
               <h1 className="text-left text-4xl font-bold">{post.title}</h1>
 
               {/* 작성자 & 작성일 */}
-              <div className="flex w-full items-center justify-between border-b pb-4 text-sm text-gray-500">
+              <div className="flex w-full items-center justify-between border-b pb-4 text-sm text-gray-200">
                 <p className="text-lg font-medium">{post.writer}</p>
-                <span className="text-lg font-medium dark:text-white">
+                <span className="text-lg font-medium dark:text-gray-200">
                   {formatDate(post.created_at)}
                 </span>
               </div>
@@ -112,7 +111,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                     {post.attachments.map((file, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between rounded-lg border border-gray-300 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+                        className="flex items-center justify-between rounded-lg border border-gray-300 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-800"
                       >
                         <div className="flex items-center gap-3">
                           <FolderArchive className="text-gray-500 dark:text-gray-300" />
@@ -140,7 +139,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-400">첨부된 파일이 없습니다.</p>
+                  <p className="text-gray-200">첨부된 파일이 없습니다.</p>
                 )}
               </div>
 
@@ -148,9 +147,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
               <div className="mt-10 flex justify-center gap-5">
                 <Link href="/secret">
                   <Button>목록으로</Button>
-                </Link>
-                <Link href={`/secret/edit/${id}`}>
-                  <Button className="bg-gray-500">수정하기</Button>
                 </Link>
               </div>
             </div>

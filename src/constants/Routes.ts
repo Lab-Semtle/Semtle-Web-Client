@@ -11,7 +11,7 @@ export const ROUTES = {
   PROFILE_SETUP: '/setup',
   PROFILE_MYPAGE: '/mypage/projects',
   RECRUIT: '/recruit',
-  EXECUTIVE: '/executive',
+  EXECUTIVE: '/manager',
 
   AUTH_SIGNIN: '/signin',
   AUTH_SIGNUP: '',

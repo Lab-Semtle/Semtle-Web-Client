@@ -2,8 +2,7 @@
  * - 개인정보 조회
  * - 개인정보 수정
  */
-/** 사용자 개인정보 관련 API 호출 */
-/** 사용자 개인정보 관련 API 호출 */
+
 import useSWR from 'swr';
 import { useSession } from 'next-auth/react';
 import {

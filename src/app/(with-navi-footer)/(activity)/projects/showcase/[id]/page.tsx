@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 const PostDetail = () => {
   const { id } = useParams(); // URL에서 id 가져오기
@@ -15,7 +15,7 @@ const PostDetail = () => {
       try {
         const res = await fetch(`/api/completed?id=${id}`);
         if (!res.ok) {
-          throw new Error("게시물을 찾을 수 없습니다.");
+          throw new Error('게시물을 찾을 수 없습니다.');
         }
         const data = await res.json();
         setPost(data);
@@ -33,9 +33,9 @@ const PostDetail = () => {
   if (!post) return <p>로딩 중...</p>;
 
   return (
-    <div className="mt-16 p-6 max-w-2xl mx-auto bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl font-bold">{post.title}</h1>
-      <p className="text-gray-600">{post.subtitle}</p>
+    <div className="mx-auto mb-32 mt-32 max-w-5xl rounded-lg bg-white p-6 shadow-md dark:bg-zinc-800">
+      <h1 className="text-3xl font-bold">{post.title}</h1>
+      <p className="text-gray-600 dark:text-gray-200">{post.subtitle}</p>
 
       {/* 이미지 */}
       <div className="mt-4">
@@ -56,7 +56,7 @@ const PostDetail = () => {
         <p>👥 팀원: {post.member}</p>
         <p>📂 프로젝트 유형: {post.project_type}</p>
         <p>
-          🔗 결과물:{" "}
+          🔗 결과물:{' '}
           <Link href={post.result_link} className="text-blue-500 underline">
             {post.result_link}
           </Link>
@@ -66,7 +66,7 @@ const PostDetail = () => {
       {/* 관련 분야 */}
       <div className="mt-4">
         <h3 className="text-lg font-semibold">관련 분야</h3>
-        <div className="flex gap-2 mt-2">
+        <div className="mt-2 flex gap-2">
           {post.relate_field.map((field, index) => (
             <span
               key={index}
@@ -81,7 +81,7 @@ const PostDetail = () => {
       {/* 프로젝트 설명 */}
       <div className="mt-4">
         <h3 className="text-lg font-semibold">프로젝트 설명</h3>
-        <p className="text-gray-600 mt-2">{post.contents}</p>
+        <p className="mt-2 text-gray-700 dark:text-gray-200">{post.contents}</p>
       </div>
     </div>
   );

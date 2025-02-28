@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -28,12 +28,18 @@ type Filter = {
 
 export default function ProjectPage() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'active' | 'completed'>('active'); // 현재 선택된 탭
+  const searchParams = useSearchParams();
+  const defaultTab =
+    searchParams.get('tab') === 'showcase' ? 'completed' : 'active';
+
+  const [activeTab, setActiveTab] = useState<'active' | 'completed'>(
+    defaultTab,
+  ); // 현재 선택된 탭
   const [activeCards, setActiveCards] = useState<Card[]>([]);
   const [completedCards, setCompletedCards] = useState<Card[]>([]);
   const [filteredCards, setFilteredCards] = useState<Card[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 9;
 
   // 진행 중 프로젝트 데이터 가져오기
   useEffect(() => {
@@ -84,8 +90,8 @@ export default function ProjectPage() {
   const handleCreateProject = () => {
     const path =
       activeTab === 'active'
-        ? '/projects/hire/create'
-        : '/projects/showcase/create';
+        ? '/projects/hire/edit'
+        : '/projects/showcase/edit';
     router.push(path);
   };
 
@@ -129,7 +135,7 @@ export default function ProjectPage() {
               setCurrentPage(1);
             }}
           >
-            진행 중
+            모집 중인 프로젝트 공고
           </button>
           <button
             className={`px-6 py-3 text-lg font-semibold transition-colors ${
@@ -143,7 +149,7 @@ export default function ProjectPage() {
               setCurrentPage(1);
             }}
           >
-            완료됨
+            종료된 프로젝트
           </button>
         </div>
       </div>
@@ -155,8 +161,8 @@ export default function ProjectPage() {
           onClick={handleCreateProject}
         >
           {activeTab === 'active'
-            ? '프로젝트 공고 등록하기'
-            : '내 프로젝트 홍보하기'}
+            ? '새로운 프로젝트 시작하기'
+            : '프로젝트 성과 등록하기'}
         </Button>
         <FilterBar onFilter={handleFilter} />
       </div>

@@ -31,22 +31,23 @@ const FilterBar = ({ onFilter }) => {
           <SelectItem value="해커톤">해커톤</SelectItem>
           <SelectItem value="경진대회">경진대회</SelectItem>
           <SelectItem value="공모전">공모전</SelectItem>
-          <SelectItem value="SideProject">사이드 프로젝트</SelectItem>
+          <SelectItem value="사이드프로젝트">사이드 프로젝트</SelectItem>
           <SelectItem value="기타">기타</SelectItem>
         </SelectContent>
       </Select>
 
       <Select value={category} onValueChange={setCategory}>
         <SelectTrigger className="border p-2">
-          <SelectValue placeholder="카테고리" />
+          <SelectValue placeholder="연관분야" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="전체">전체</SelectItem>
           <SelectItem value="Web">Web</SelectItem>
+          <SelectItem value="Mobile">Mobile</SelectItem>
+          <SelectItem value="IOS">IOS</SelectItem>
+          <SelectItem value="DATA">DATA</SelectItem>
           <SelectItem value="Game">Game</SelectItem>
-          <SelectItem value="Window">Window</SelectItem>
-          <SelectItem value="Android">Android</SelectItem>
-          <SelectItem value="iOS">iOS</SelectItem>
+          <SelectItem value="기타">기타</SelectItem>
         </SelectContent>
       </Select>
 

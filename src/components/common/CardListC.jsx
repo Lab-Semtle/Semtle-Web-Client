@@ -47,7 +47,7 @@ const CardListC = ({ cards, onDelete }) => {
         {cards.map((card) => (
           <div
             key={card.id}
-            className={`flex h-full cursor-pointer flex-col border p-4 shadow-md transition-all duration-200 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:shadow-gray-700/50 ${selectedCards.includes(card.id) ? 'bg-blue-100 dark:bg-blue-900' : ''}`}
+            className={`flex h-full cursor-pointer flex-col border p-4 shadow-md transition-all duration-200 hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-800 dark:text-white dark:shadow-gray-700/50 ${selectedCards.includes(card.id) ? 'bg-blue-100 dark:bg-slate-800' : ''}`}
             onDoubleClick={() => handleCardDoubleClick(card.id)}
             onClick={() => handleCardClick(card.id)} // 클릭 시 상세 페이지 이동
           >

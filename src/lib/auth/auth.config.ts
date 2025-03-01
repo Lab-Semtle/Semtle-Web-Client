@@ -1,9 +1,10 @@
 /** Next-Auth(Auth.js) 인증 설정 */
 
-import NextAuth from 'next-auth';
+import NextAuth, { type Session, type User } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { loginSchema } from '../validation/login-schema';
 import { API_ROUTES } from '@/constants/ApiRoutes';
+import type { JWT } from 'next-auth/jwt';
 
 /**
  * handlers : 프로젝트 인증 관리를 위한 API 라우트(GET, POST 함수) 객체
@@ -39,30 +40,40 @@ export const {
         const { email, password } = validationFields.data;
 
         try {
-          const response = await fetch(API_ROUTES.AUTH_SIGNIN, {
+          const response = await fetch(API_ROUTES.AUTH_USER_SIGNIN, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
             body: JSON.stringify({ email, password }),
           });
 
+          console.log('[authorize] API 응답 : ', response);
           if (!response.ok) {
             console.error(`[authorize] 로그인 실패: ${response.status}`);
             return null; // 로그인 실패
           }
 
-          const userData = await response.json();
-          console.log('[authorize] 로그인 성공:', userData);
+          const json = await response.json();
+          console.log('[authorize] 로그인 성공:', json);
+
+          if (!json.success || !json.data || !json.data.accessToken) {
+            console.error(
+              '[authorize] 로그인 응답이 유효하지 않습니다. : ',
+              json,
+            );
+            return null;
+          }
+
+          const userData = json.data;
 
           // 3. NextAuth 세션으로 반환
           return {
             accessToken: userData.accessToken,
             refreshToken: userData.refreshToken,
-            id: userData.id,
-            username: userData.username,
-            role: userData.role,
-            manageApprovalStatus: userData.manageApprovalStatus,
-            profileImageUrl:
-              userData.profileImageUrl ?? '/images/default-profile.jpg',
+            id: userData.uuid,
+            username: userData.username ?? 'unknown',
           };
         } catch (error) {
           console.error('[authorize] 로그인 처리 중 예외 발생:', error);
@@ -82,22 +93,32 @@ export const {
     // JWT 생성 및 업데이트 시 호출
     // updateSession 서버액션 호출 시, trigger, session 속성 정보 전달
     // trigger : 갱신 이벤트, session : 갱신된 세션 정보
-    jwt: async ({ token, user, trigger, session }) => {
+    jwt: async ({ token, user }: { token: JWT; user?: User }) => {
       // 로그인 시
+      console.log('[jwt] 기존 토큰:', token);
       if (user) {
-        console.log('[jwt] 토큰 정보 저장 :');
-        Object.assign(token, user);
+        console.log(
+          '[jwt] 새 사용자 로그인 감지 - 토큰 저장:',
+          user.accessToken,
+        );
+        token.accessToken = user.accessToken ?? '';
+        token.refreshToken = user.refreshToken ?? '';
+        token.id = user.id ?? '';
+        token.username = user.username ?? 'Unknown';
       }
-      // 세션 업데이트 시
-      if (trigger === 'update' && session) {
-        console.log('[jwt] 세션 업데이트 :', session);
-        Object.assign(token, session.user);
-      }
+      console.log('[jwt] 최종 토큰 값:', token);
       return token;
     },
     // jwt 콜백이 반환하는 token 받아서 세션이 확인될 때마다 호출
-    session: async ({ session, token }) => {
-      Object.assign(session, token); // 세션 정보와 토큰 병합
+    session: async ({ session, token }: { session: Session; token: JWT }) => {
+      console.log('[session] 기존 세션:', session);
+
+      session.accessToken = token.accessToken;
+      session.refreshToken = token.refreshToken;
+      session.id = token.id;
+      session.username = token.username;
+
+      console.log('[session] 업데이트된 세션:', session);
       return session;
     },
     // 로그인 이후, 원래 위치한 페이지로 리다이렉트

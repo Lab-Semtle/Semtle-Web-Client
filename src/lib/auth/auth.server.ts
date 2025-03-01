@@ -1,9 +1,9 @@
-/** 서버사이드에서 인증 처리 */
-
 'use server';
+
 import { auth, signIn, signOut, update } from '@/lib/auth/auth.config';
-import type { z } from 'zod';
 import { loginSchema } from '@/lib/validation/login-schema';
+import { revalidatePath } from 'next/cache';
+import type { z } from 'zod';
 
 // 이메일, 비밀번호 사용 로그인
 export const signInWithCredentials = async (
@@ -37,6 +37,8 @@ export const signInWithCredentials = async (
 export const signOutWithForm = async () => {
   console.log('🚀 [signOutWithForm] 로그아웃 요청');
   await signOut();
+
+  revalidatePath('/');
 };
 
 export { auth as getSession, update as updateSession };

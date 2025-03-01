@@ -59,6 +59,16 @@ export default function SecretPage() {
     try {
       setLoading(true);
 
+      if (!session) {
+        console.error('🚨 세션 정보가 없습니다. 로그인 후 다시 시도해주세요.');
+        return;
+      }
+
+      if (!session?.accessToken) {
+        console.error('🚨 인증 토큰이 없습니다. 로그인 후 다시 시도해주세요.');
+        return;
+      }
+
       // 캐시 확인: 동일한 검색어 & 페이지가 있다면 API 호출 없이 사용
       const cacheKey = `${searchKeyword}_${page}`;
       if (cacheRef.current[cacheKey]) {
@@ -67,11 +77,34 @@ export default function SecretPage() {
         return;
       }
 
-      const response = await fetch(
+      console.log(
+        '[족보 게시판 조회] 요청:',
         API_ROUTES.GET_ARCHIVE_LIST(page, 8, searchKeyword),
       );
 
+      const response = await fetch(
+        API_ROUTES.GET_ARCHIVE_LIST(page, 8, searchKeyword),
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.accessToken}`,
+          },
+        },
+      );
+
+      console.log('[족보 게시판 조회] 응답 : ', response);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ 서버 오류 응답:', errorText);
+        throw new Error(
+          `게시물 조회 실패: ${errorText || response.statusText}`,
+        );
+      }
+
       const json = await response.json();
+
       if (json.success && json.data) {
         const postsData = json.data.posts;
 

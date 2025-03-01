@@ -94,13 +94,16 @@ export default function ProjectPage() {
   const [activeProjects, setActiveProjects] = useState<ProjectCard[]>([]);
   const [completedProjects, setCompletedProjects] = useState<ProjectCard[]>([]);
   const [filteredProjects, setFilteredProjects] = useState<ProjectCard[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 9;
 
-  // ✅ 모집 중인 프로젝트 API 호출
+  // 모집 중인 프로젝트 API 호출
   useEffect(() => {
     const fetchActiveProjects = async () => {
       try {
+        setLoading(true);
         const response = await fetch(API_ROUTES.GET_PROJECT_LIST(1, 50)); // 페이지 1, 50개 요청
         const json = await response.json();
 
@@ -116,16 +119,20 @@ export default function ProjectPage() {
           setActiveProjects(projects);
           if (activeTab === 'active') setFilteredProjects(projects);
         } else {
+          setError(true);
           console.error('Error loading active projects:', json.message);
         }
       } catch (error) {
+        setError(true);
         console.error('Failed to fetch active projects:', error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchActiveProjects();
   }, []);
 
-  // ✅ 완료된 프로젝트 API 호출
+  // 완료된 프로젝트 API 호출
   useEffect(() => {
     const fetchCompletedProjects = async () => {
       try {
@@ -144,16 +151,20 @@ export default function ProjectPage() {
           setCompletedProjects(projects);
           if (activeTab === 'completed') setFilteredProjects(projects);
         } else {
+          setError(true);
           console.error('Error loading completed projects:', json.message);
         }
       } catch (error) {
+        setError(true);
         console.error('Failed to fetch completed projects:', error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchCompletedProjects();
   }, []);
 
-  // ✅ 필터 적용
+  // 필터 적용
   const handleFilter = (filter: Filter) => {
     const sourceProjects =
       activeTab === 'active' ? activeProjects : completedProjects;
@@ -164,12 +175,12 @@ export default function ProjectPage() {
     setCurrentPage(1);
   };
 
-  // ✅ 페이지 변경
+  // 페이지 변경
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  // ✅ 프로젝트 등록 버튼 클릭 시 로그인 확인
+  // 프로젝트 등록 버튼 클릭 시 로그인 확인
   const handleCreateProject = () => {
     if (status !== 'authenticated' || !session?.id) {
       alert('로그인이 필요합니다.');
@@ -184,7 +195,7 @@ export default function ProjectPage() {
     router.push(path);
   };
 
-  // ✅ 프로젝트 삭제 (완료된 프로젝트에서만 가능)
+  // 프로젝트 삭제 (완료된 프로젝트에서만 가능)
   const handleDelete = (selectedCardIds: number[]) => {
     setCompletedProjects((prev) =>
       prev.filter((project) => !selectedCardIds.includes(project.id)),
@@ -194,7 +205,7 @@ export default function ProjectPage() {
     );
   };
 
-  // ✅ 현재 페이지에 보여줄 데이터
+  // 현재 페이지에 보여줄 데이터
   const paginatedProjects = filteredProjects.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
@@ -253,38 +264,53 @@ export default function ProjectPage() {
         <FilterBar onFilter={handleFilter} />
       </div>
 
-      {/* 카드 리스트 */}
-      <div className="mx-auto w-full max-w-[1000px]">
-        {activeTab === 'active' ? (
-          <CardListA cards={paginatedProjects} />
-        ) : (
-          <CardListC cards={paginatedProjects} onDelete={handleDelete} />
-        )}
-      </div>
+      {/* 데이터 상태에 따른 UI */}
+      {loading ? (
+        <p className="text-center text-lg font-semibold">로딩 중...</p>
+      ) : error ? (
+        <p className="text-center text-lg text-red-500">
+          데이터를 불러오지 못했습니다.
+        </p>
+      ) : filteredProjects.length === 0 ? (
+        <p className="text-center text-lg font-semibold text-gray-500">
+          게시물이 존재하지 않습니다.
+        </p>
+      ) : (
+        <>
+          {/* 카드 리스트 */}
+          <div className="mx-auto w-full max-w-[1000px]">
+            {activeTab === 'active' ? (
+              <CardListA cards={paginatedProjects} />
+            ) : (
+              <CardListC cards={paginatedProjects} onDelete={handleDelete} />
+            )}
+          </div>
 
-      {/* 페이지네이션 */}
-      {totalPages > 1 && (
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() => handlePageChange(currentPage - 1)}
-              />
-            </PaginationItem>
-            {[...Array(totalPages)].map((_, index) => (
-              <PaginationItem key={index}>
-                <PaginationLink onClick={() => handlePageChange(index + 1)}>
-                  {index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext
-                onClick={() => handlePageChange(currentPage + 1)}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+          {/* 페이지네이션 */}
+          {totalPages > 1 && (
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => handlePageChange(currentPage - 1)}
+                  />
+                </PaginationItem>
+                {[...Array(totalPages)].map((_, index) => (
+                  <PaginationItem key={index}>
+                    <PaginationLink onClick={() => handlePageChange(index + 1)}>
+                      {index + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => handlePageChange(currentPage + 1)}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+        </>
       )}
     </main>
   );

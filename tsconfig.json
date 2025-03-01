@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "types": ["next-auth", "react", "react-dom"],
+    "types": ["next-auth", "react", "react-dom", "./src/types/auth.d.ts"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -26,6 +26,14 @@
     "typeRoots": ["./src/types", "./node_modules/@types"],
     "moduleResolution": "node"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/(with-navi-footer)/(activity)/projects/projects/hire/[id]/page.jsx", "src/app/(with-navi-footer)/(activity)/projects/projects/hire/update/[id]/page.jsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "./src/types/**/*.d.ts",
+    "src/app/(with-navi-footer)/(activity)/projects/projects/hire/[id]/page.jsx",
+    "src/app/(with-navi-footer)/(activity)/projects/projects/hire/update/[id]/page.jsx"
+  ],
   "exclude": ["node_modules"]
 }

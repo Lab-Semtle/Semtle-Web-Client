@@ -40,7 +40,7 @@ export default function SignInPage() {
   const { errors } = formState;
   const router = useRouter();
   const { toast } = useToast();
-  const { theme } = useTheme(); // 테마 감지
+  const { resolvedTheme } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -98,8 +98,8 @@ export default function SignInPage() {
         <Image
           src="/images/kmou_2022.jpg" // 배경 이미지 경로
           alt="background"
-          layout="fill"
-          objectFit="cover"
+          fill
+          style={{ objectFit: 'cover' }}
           className="contrast-95 brightness-90 dark:brightness-50 dark:grayscale"
           priority
         />
@@ -126,7 +126,7 @@ export default function SignInPage() {
             <div className="flex flex-col items-center">
               <Image
                 src={
-                  theme === 'dark'
+                  resolvedTheme === 'dark'
                     ? '/logo/Logo-Blue-None-v2025.svg'
                     : '/logo/Logo-Sky-None-v2025.svg'
                 }

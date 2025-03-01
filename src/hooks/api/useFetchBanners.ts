@@ -50,7 +50,7 @@ export function useFetchBanners() {
           console.warn('bannersData가 빈 배열입니다.');
         }
 
-        // ✅ Cloudflare R2에서 Presigned URL 가져오기 (공통 함수 활용)
+        // Cloudflare R2에서 Presigned URL 가져오기 (공통 함수 활용)
         const updatedBanners = await Promise.all(
           bannersData.map(async (banner: Banner) => ({
             ...banner,

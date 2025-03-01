@@ -6,11 +6,8 @@ export declare module 'next-auth' {
   interface User {
     accessToken: string;
     refreshToken: string;
-    id: string; // uuid
+    id: string;
     username: string;
-    role: string;
-    manageApprovalStatus: boolean;
-    profileImageUrl?: string;
   }
 
   // 클라이언트에서 현재 로그인된 사용자 정보 확인 시 사용
@@ -19,11 +16,8 @@ export declare module 'next-auth' {
   interface Session {
     accessToken: string;
     refreshToken: string;
-    id: string; // uuid
+    id: string;
     username: string;
-    role: string;
-    manageApprovalStatus: boolean;
-    profileImageUrl?: string;
   }
 }
 
@@ -34,10 +28,7 @@ export declare module 'next-auth/jwt' {
   interface JWT {
     accessToken: string;
     refreshToken: string;
-    id: string; // uuid
+    id: string;
     username: string;
-    role: string;
-    manageApprovalStatus: boolean;
-    profileImageUrl?: string;
   }
 }

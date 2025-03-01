@@ -36,7 +36,7 @@ const ActivityCard2List = ({ posts, loading, error }: ActivityListProps) => {
             <RecentActivitySkeleton />
             <div className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl bg-black/50 text-white">
               <p className="text-lg font-semibold">
-                ❌ 최근 활동 게시물을 불러올 수 없습니다.
+                데이터를 불러오지 못했습니다.
               </p>
               <button
                 className="mt-3 rounded-lg bg-blue-500 px-4 py-2 text-white transition-all hover:bg-blue-600"
@@ -46,6 +46,10 @@ const ActivityCard2List = ({ posts, loading, error }: ActivityListProps) => {
               </button>
             </div>
           </div>
+        ) : posts.length === 0 ? (
+          <p className="text-center text-lg font-semibold text-gray-500">
+            게시물이 존재하지 않습니다.
+          </p>
         ) : (
           <FadeUp
             direction="up"

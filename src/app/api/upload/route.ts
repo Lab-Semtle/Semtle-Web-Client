@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSignedUrlForUpload } from '@/lib/utils/r2';
+import { getSignedUrlForUpload } from '@/lib/utils/ncp-storage';
 
 export async function POST(request: NextRequest) {
   const { fileName, fileType } = await request.json();

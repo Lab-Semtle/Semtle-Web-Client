@@ -1,42 +1,27 @@
 'use client';
 
-import React, {
-  useState,
-  useEffect,
-  ChangeEvent,
-  FormEvent,
-  useRef,
-} from 'react';
-import { FileObject } from '@/lib/utils/r2';
+import React, { useState, ChangeEvent, FormEvent, useRef } from 'react';
 
-export default function FileManager() {
-  const [files, setFiles] = useState<FileObject[]>([]);
+interface UploadedFile {
+  name: string;
+  key: string;
+}
+
+export default function NCPFileUploader() {
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [file, setFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  useEffect(() => {
-    fetchFiles();
-  }, []);
-
-  const fetchFiles = async () => {
-    try {
-      const response = await fetch('/api/files');
-      const data = await response.json();
-      setFiles(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error('Error fetching files:', error);
-      setFiles([]);
-    }
-  };
-
+  // 파일 선택 핸들러
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setFile(e.target.files[0]);
     }
   };
 
+  // 파일 업로드 핸들러
   const handleUpload = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!file) return;
@@ -46,13 +31,16 @@ export default function FileManager() {
     abortControllerRef.current = new AbortController();
 
     try {
+      // 서명된 URL 요청
       const response = await fetch('/api/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ fileName: file.name, fileType: file.type }),
       });
+
       const { signedUrl } = await response.json();
 
+      // 파일 업로드 요청
       await uploadFileWithProgress(
         file,
         signedUrl,
@@ -60,8 +48,11 @@ export default function FileManager() {
       );
 
       alert('File uploaded successfully!');
-      setFile(null); // Clear the file input
-      fetchFiles();
+      setUploadedFiles((prev) => [
+        ...prev,
+        { name: file.name, key: file.name },
+      ]);
+      setFile(null); // 파일 선택 초기화
     } catch (error) {
       if (error instanceof Error && error.name === 'AbortError') {
         console.log('Upload cancelled');
@@ -76,6 +67,7 @@ export default function FileManager() {
     }
   };
 
+  // 업로드 진행률을 추적하는 함수
   const uploadFileWithProgress = (
     file: File,
     signedUrl: string,
@@ -115,27 +107,14 @@ export default function FileManager() {
     });
   };
 
+  // 업로드 취소 핸들러
   const handleCancelUpload = () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
   };
 
-  const handleDownload = async (key: string) => {
-    try {
-      const response = await fetch('/api/files', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key }),
-      });
-      const { signedUrl } = await response.json();
-      window.open(signedUrl, '_blank');
-    } catch (error) {
-      console.error('Error downloading file:', error);
-      alert('Error downloading file');
-    }
-  };
-
+  // 파일 삭제 핸들러
   const handleDelete = async (key: string) => {
     try {
       await fetch('/api/files', {
@@ -144,7 +123,7 @@ export default function FileManager() {
         body: JSON.stringify({ key }),
       });
       alert('File deleted successfully!');
-      fetchFiles();
+      setUploadedFiles((prev) => prev.filter((file) => file.key !== key));
     } catch (error) {
       console.error('Error deleting file:', error);
       alert('Error deleting file');
@@ -152,13 +131,10 @@ export default function FileManager() {
   };
 
   return (
-    <div className="mx-auto mt-24 max-w-2xl rounded-lg bg-white p-6 shadow-lg">
-      <h1 className="mb-6 text-center text-3xl font-semibold text-gray-600">
-        Cloudflare R2 with Next.js: Upload, Download, Delete
-      </h1>
-      <h2 className="mb-6 text-2xl font-semibold text-gray-800">Upload File</h2>
-      <form onSubmit={handleUpload} className="mb-8">
-        <div className="flex items-center space-x-4">
+    <div className="mx-auto mt-6 max-w-lg rounded-lg bg-white p-4 shadow-md">
+      <h2 className="mb-4 text-xl font-semibold text-gray-800">Upload Files</h2>
+      <form onSubmit={handleUpload} className="mb-4">
+        <div className="flex items-center space-x-3">
           <label className="flex-1">
             <input
               type="file"
@@ -182,10 +158,10 @@ export default function FileManager() {
       </form>
 
       {isUploading && (
-        <div className="mb-8">
-          <div className="mb-4 h-2.5 w-full rounded-full bg-gray-200">
+        <div className="mb-4">
+          <div className="h-2 w-full rounded-full bg-gray-200">
             <div
-              className="h-2.5 rounded-full bg-blue-600"
+              className="h-2 rounded-full bg-blue-600"
               style={{ width: `${uploadProgress}%` }}
             ></div>
           </div>
@@ -203,31 +179,25 @@ export default function FileManager() {
         </div>
       )}
 
-      <h2 className="mb-4 text-2xl font-semibold text-gray-800">Files</h2>
-      {files.length === 0 ? (
-        <p className="italic text-gray-500">No files found.</p>
+      <h2 className="mb-2 text-lg font-semibold text-gray-800">
+        Uploaded Files
+      </h2>
+      {uploadedFiles.length === 0 ? (
+        <p className="italic text-gray-500">No files uploaded yet.</p>
       ) : (
-        <ul className="space-y-4">
-          {files.map((file) => (
+        <ul className="space-y-2">
+          {uploadedFiles.map((file) => (
             <li
-              key={file.Key}
-              className="flex items-center justify-between rounded-lg bg-gray-50 p-4"
+              key={file.key}
+              className="flex items-center justify-between rounded-lg bg-gray-100 p-3"
             >
-              <span className="flex-1 truncate text-gray-700">{file.Key}</span>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => file.Key && handleDownload(file.Key)}
-                  className="text-blue-500 transition duration-300 hover:text-blue-600"
-                >
-                  Download
-                </button>
-                <button
-                  onClick={() => file.Key && handleDelete(file.Key)}
-                  className="text-red-500 transition duration-300 hover:text-red-600"
-                >
-                  Delete
-                </button>
-              </div>
+              <span className="truncate text-gray-700">{file.name}</span>
+              <button
+                onClick={() => handleDelete(file.key)}
+                className="text-red-500 transition duration-300 hover:text-red-600"
+              >
+                Delete
+              </button>
             </li>
           ))}
         </ul>

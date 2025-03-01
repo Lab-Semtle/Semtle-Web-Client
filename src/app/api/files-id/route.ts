@@ -1,13 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-import {
-  listFiles,
-  getSignedUrlForDownload,
-  deleteFile,
-} from '@/lib/utils/ncp-storage';
+import { listFiles, getSignedUrlForDownload } from '@/lib/utils/ncp-storage';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const postId = searchParams.get('postId');
+
   try {
-    const files = await listFiles();
+    if (!postId) {
+      return NextResponse.json(
+        { error: 'postId is required' },
+        { status: 400 },
+      );
+    }
+
+    const files = await listFiles(postId);
     return NextResponse.json(files);
   } catch (error) {
     return NextResponse.json({ error: 'Error listing files' }, { status: 500 });
@@ -25,16 +31,5 @@ export async function POST(request: NextRequest) {
       { error: 'Error generating download URL' },
       { status: 500 },
     );
-  }
-}
-
-export async function DELETE(request: NextRequest) {
-  const { key } = await request.json();
-
-  try {
-    await deleteFile(key);
-    return NextResponse.json({ message: 'File deleted successfully' });
-  } catch (error) {
-    return NextResponse.json({ error: 'Error deleting file' }, { status: 500 });
   }
 }

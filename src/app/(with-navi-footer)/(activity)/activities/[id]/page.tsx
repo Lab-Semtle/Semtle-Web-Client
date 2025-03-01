@@ -98,9 +98,9 @@ export default function PostDetail() {
   };
 
   return (
-    <div className="min-h-screen dark:bg-gray-900">
+    <div className="min-h-screen">
       <div className="container mx-auto mt-40 max-w-4xl p-4">
-        <Card className="mb-36 border-none bg-gray-100 shadow-none dark:bg-gray-900">
+        <Card className="mb-36 border-none bg-background shadow-none dark:bg-background">
           <CardContent className="p-0">
             <div className="space-y-6">
               <h1 className="text-left text-4xl font-bold">{post.title}</h1>

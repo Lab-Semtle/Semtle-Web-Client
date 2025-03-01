@@ -116,14 +116,22 @@ function HeroSection() {
                 </p>
                 <button
                   className="mt-3 rounded-lg bg-blue-500 px-4 py-2 text-white transition-all hover:bg-blue-600"
-                  onClick={() => window.location.reload()} // 페이지 새로고침
+                  onClick={() => window.location.reload()}
                 >
                   다시 시도
                 </button>
               </div>
             </div>
           ) : (
-            <BannerCarousel items={banners} maxItems={5} />
+            <BannerCarousel
+              items={banners.map((b) => ({
+                bannerId: b.bannerId,
+                imageUrl: b.imageUrl ?? '/images/kmou_2022.jpg',
+                targetPath: b.targetPath,
+                altText: b.altText || '배너 이미지',
+              }))}
+              maxItems={5}
+            />
           )}
         </div>
       </div>

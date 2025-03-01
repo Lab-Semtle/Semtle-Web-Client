@@ -1,22 +1,98 @@
 'use client';
+
+import { useState } from 'react';
 import { GalleryVerticalEnd, ArrowLeft } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { useToast } from '@/hooks/useToast';
 import { AdminLoginForm } from '@/components/form/AdminLoginForm';
+import { API_ROUTES } from '@/constants/ApiRoutes';
 
-export default function ExecutivePage() {
+/** 관리자 인증 페이지 */
+export default function ManagerPage() {
+  const { data: session, status } = useSession();
   const router = useRouter();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+
+  const handleAdminAuth = async (password: string) => {
+    console.log('🔍 [handleAdminAuth] 관리자 인증 요청 시작');
+
+    if (status === 'loading') {
+      return;
+    }
+
+    if (!session || !session.accessToken) {
+      console.error('❌ [handleAdminAuth] 인증 실패: 액세스 토큰 없음');
+      toast({
+        variant: 'destructive',
+        title: '인증 실패',
+        description: '로그인이 필요합니다. 다시 로그인해주세요.',
+        duration: 2000,
+      });
+      router.push('/signin');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(API_ROUTES.AUTH_MANAGER_SIGNIN, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        console.error('❌ [handleAdminAuth] 로그인 실패:', result.message);
+        throw new Error(
+          result.message || '로그인이 실패했습니다. 관리자 권한이 없습니다.',
+        );
+      }
+      console.log('✅ [handleAdminAuth] 관리자 인증 성공');
+
+      toast({
+        title: '인증 성공',
+        description: '관리자 페이지로 이동합니다.',
+        duration: 2000,
+      });
+
+      router.push('/executive');
+    } catch (error) {
+      console.error(
+        '🚨 [handleAdminAuth] 관리자 인증 요청 중 오류 발생:',
+        error,
+      );
+      toast({
+        variant: 'destructive',
+        title: '로그인 실패',
+        description: error.message || '관리자 인증에 실패했습니다.',
+        duration: 2000,
+      });
+    } finally {
+      setLoading(false);
+      console.log('🔚 [handleAdminAuth] 관리자 인증 요청 종료');
+    }
+  };
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-center gap-2 md:justify-start">
-          <a href="#" className="flex items-center gap-2 font-medium">
+          <button
+            onClick={() => router.push('/')}
+            className="flex items-center gap-2 font-medium hover:underline"
+          >
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
               <GalleryVerticalEnd className="size-4" />
             </div>
             ARCHI SEMTLE
-          </a>
+          </button>
         </div>
 
         {/* 로그인 폼 */}
@@ -29,7 +105,7 @@ export default function ExecutivePage() {
               <ArrowLeft className="size-4" />
               돌아가기
             </button>
-            <AdminLoginForm />
+            <AdminLoginForm onSubmit={handleAdminAuth} loading={loading} />
           </div>
         </div>
       </div>

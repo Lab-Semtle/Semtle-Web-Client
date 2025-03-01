@@ -1,6 +1,5 @@
-/** 활동 게시판 페이지 */
-
 'use client';
+
 import { useState, useEffect, useCallback } from 'react';
 import {
   Select,
@@ -15,7 +14,8 @@ import ActivityCard2List from '@/components/card/ActivityCard2List';
 import { useRouter } from 'next/navigation';
 import { useFetchActivities } from '@/hooks/api/useFetchActivities';
 
-export default function ActivitiesPage() {
+/** 활동 게시판 페이지 */
+export default function ActivityBoardPage() {
   const router = useRouter();
   const [category, setCategory] = useState('공지');
   const [showScrollTop, setShowScrollTop] = useState(false);

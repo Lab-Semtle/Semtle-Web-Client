@@ -79,7 +79,7 @@ type Filter = {
   searchTerm: string;
 };
 
-export default function ProjectPage() {
+export default function ProjectBoardPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, status } = useSession(); // 로그인 세션 확인

@@ -1,5 +1,3 @@
-/** 조직도 페이지 */
-
 import { SiInstagram, SiFacebook, SiGithub, SiThreads } from 'react-icons/si';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -7,6 +5,7 @@ import Image from 'next/image';
 import { boardMembers, boardDevelopers } from '@/constants/TeamData';
 import PageHeading from '@/components/common/PageHeading';
 
+/** 조직도 페이지 */
 export default function TeamPage() {
   return (
     <main className="flex flex-col items-center px-6 pb-32 pt-24">

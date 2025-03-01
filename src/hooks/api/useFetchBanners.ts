@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { API_ROUTES } from '@/constants/ApiRoutes';
-import { fetchPresignedUrl } from './useFetchPresignedUrls';
+import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
 
 interface Banner {
   bannerId: number;
@@ -9,7 +9,7 @@ interface Banner {
   altText?: string;
   postTitle: string;
   createdAt: string;
-  imageUrl?: string;
+  imageUrl?: string | null; // 🔹 null 허용
 }
 
 export function useFetchBanners() {
@@ -50,11 +50,12 @@ export function useFetchBanners() {
           console.warn('bannersData가 빈 배열입니다.');
         }
 
-        // Cloudflare R2에서 Presigned URL 가져오기 (공통 함수 활용)
+        // 🔹 NCP Object Storage에서 Presigned URL 가져오기
         const updatedBanners = await Promise.all(
           bannersData.map(async (banner: Banner) => ({
             ...banner,
-            imageUrl: await fetchPresignedUrl(banner.imagePath),
+            imageUrl:
+              (await fetchNcpPresignedUrl(banner.imagePath)) || undefined, // 🔹 null이면 undefined로 변환
           })),
         );
 

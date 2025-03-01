@@ -1,6 +1,5 @@
-/** 타임라인 페이지 */
-
 'use client';
+
 import { useRouter } from 'next/navigation';
 import {
   Carousel,
@@ -25,6 +24,7 @@ function groupByYear(
   }, {});
 }
 
+/** 학회연혁 페이지 */
 export default function TimelinePage() {
   const groupedData = groupByYear(TimelineData); // 연도별로 그룹화
   const router = useRouter();

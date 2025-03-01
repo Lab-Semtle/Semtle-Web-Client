@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Input } from '@/components/ui/input';
@@ -16,15 +16,19 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import PageHeading from '@/components/common/PageHeading';
 import { API_ROUTES } from '@/constants/ApiRoutes';
-import { fetchPresignedUrl } from '@/hooks/api/useFetchPresignedUrls';
+import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
 
+/** 게시글 타입 */
 type Post = {
   board_id: number;
   title: string;
   writer: string;
-  imageUrl: string | null;
   createdAt: string;
+  images?: string[];
+  imageUrl?: string;
 };
+
+/** API 응답 타입 */
 type SecretPost = {
   total_posts: number;
   total_pages: number;
@@ -55,105 +59,115 @@ export default function SecretPage() {
   }, [status, router]);
 
   // 데이터 Fetch 함수
-  const fetchPosts = async (page = 1, searchKeyword = '') => {
-    try {
-      setLoading(true);
+  const fetchPosts = useCallback(
+    async (page = 1, searchKeyword = '') => {
+      try {
+        setLoading(true);
 
-      if (!session) {
-        console.error('🚨 세션 정보가 없습니다. 로그인 후 다시 시도해주세요.');
-        return;
-      }
+        if (!session) {
+          console.error(
+            '🚨 세션 정보가 없습니다. 로그인 후 다시 시도해주세요.',
+          );
+          return;
+        }
 
-      if (!session?.accessToken) {
-        console.error('🚨 인증 토큰이 없습니다. 로그인 후 다시 시도해주세요.');
-        return;
-      }
+        if (!session?.accessToken) {
+          console.error(
+            '🚨 인증 토큰이 없습니다. 로그인 후 다시 시도해주세요.',
+          );
+          return;
+        }
 
-      // 캐시 확인: 동일한 검색어 & 페이지가 있다면 API 호출 없이 사용
-      const cacheKey = `${searchKeyword}_${page}`;
-      if (cacheRef.current[cacheKey]) {
-        setSecretPost(cacheRef.current[cacheKey]);
-        setLoading(false);
-        return;
-      }
+        // 캐시 확인: 동일한 검색어 & 페이지가 있다면 API 호출 없이 사용
+        const cacheKey = `${searchKeyword}_${page}`;
+        if (cacheRef.current[cacheKey]) {
+          setSecretPost(cacheRef.current[cacheKey]);
+          setLoading(false);
+          return;
+        }
 
-      console.log(
-        '[족보 게시판 조회] 요청:',
-        API_ROUTES.GET_ARCHIVE_LIST(page, 8, searchKeyword),
-      );
+        console.log(
+          '[족보 게시판 조회] 요청:',
+          API_ROUTES.GET_ARCHIVE_LIST(page, 8, searchKeyword),
+        );
 
-      const response = await fetch(
-        API_ROUTES.GET_ARCHIVE_LIST(page, 8, searchKeyword),
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${session.accessToken}`,
+        const response = await fetch(
+          API_ROUTES.GET_ARCHIVE_LIST(page, 8, searchKeyword),
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${session.accessToken}`,
+            },
           },
-        },
-      );
-
-      console.log('[족보 게시판 조회] 응답 : ', response);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('❌ 서버 오류 응답:', errorText);
-        throw new Error(
-          `게시물 조회 실패: ${errorText || response.statusText}`,
-        );
-      }
-
-      const json = await response.json();
-
-      if (json.success && json.data) {
-        const postsData = json.data.posts;
-
-        // Presigned URL 변환 적용
-        const updatedPosts = await Promise.all(
-          postsData.map(async (post: Post) => ({
-            ...post,
-            imageUrl: post.imageUrl?.[0]
-              ? await fetchPresignedUrl(post.imageUrl[0])
-              : null,
-          })),
         );
 
-        const processedData = {
-          total_posts: json.data.total_post,
-          total_pages: json.data.total_pages,
-          posts: updatedPosts,
-        };
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('❌ 서버 오류 응답:', errorText);
+          throw new Error(
+            `게시물 조회 실패: ${errorText || response.statusText}`,
+          );
+        }
 
-        setSecretPost(processedData);
+        const json = await response.json();
 
-        // 가져온 데이터를 캐시에 저장
-        cacheRef.current[cacheKey] = processedData;
-      } else {
-        console.error('데이터 로드 실패:', json.message);
+        if (json.success && json.data) {
+          const postsData = json.data.posts;
+
+          // NCP Presigned URL 변환
+          const updatedPosts = await Promise.all(
+            postsData.map(async (post: Post) => {
+              const imagePath = post.images?.[0] ?? undefined;
+              const imageUrl = imagePath
+                ? await fetchNcpPresignedUrl(imagePath).then(
+                    (url) => url ?? undefined,
+                  )
+                : undefined;
+
+              return {
+                ...post,
+                imageUrl,
+              };
+            }),
+          );
+
+          const processedData = {
+            total_posts: json.data.total_post,
+            total_pages: json.data.total_pages,
+            posts: updatedPosts,
+          };
+
+          setSecretPost(processedData);
+          cacheRef.current[cacheKey] = processedData; // 캐싱
+        } else {
+          console.error('데이터 로드 실패:', json.message);
+        }
+      } catch (error) {
+        console.error('데이터 가져오기 실패:', error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('데이터 가져오기 실패:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [session], // session이 변경될 때만 fetchPosts가 다시 생성됨
+  );
 
-  // 처음 마운트 시 데이터 불러오기
+  // useEffect 내부에 fetchPosts를 의존성으로 포함
   useEffect(() => {
     if (status === 'authenticated') {
       fetchPosts(currentPage, searchTerm);
     }
-  }, [currentPage, searchTerm, status]);
+  }, [fetchPosts, currentPage, searchTerm, status]);
 
   if (loading)
     return <p className="text-center text-lg font-semibold">Loading...</p>;
 
-  const totalPages = secretPost.total_pages; // 실제 API에서 반환하는 전체 페이지 수 사용
+  const totalPages = secretPost.total_pages;
 
   // 검색 기능
   const handleSearch = () => {
-    setCurrentPage(1); // 검색 시 1페이지부터 다시 불러오기
-    cacheRef.current = {}; // 기존 캐시 초기화 (새로운 검색어 입력 시)
+    setCurrentPage(1);
+    cacheRef.current = {}; // 기존 캐시 초기화
     fetchPosts(1, searchTerm);
   };
 
@@ -161,7 +175,7 @@ export default function SecretPage() {
     if (e.key === 'Enter') handleSearch();
   };
 
-  // 페이지 변경 핸들러
+  // ✅ 페이지 변경 핸들러
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
@@ -210,21 +224,20 @@ export default function SecretPage() {
               id={post.board_id}
               title={post.title}
               writer={post.writer}
-              image_url={post.imageUrl || undefined}
+              image_url={post.imageUrl}
               created_at={post.createdAt}
             />
           ))
         )}
       </section>
 
+      {/* ✅ 페이지네이션 추가 */}
       <section className="mb-12">
         <Pagination>
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious
-                className={`hover:cursor-pointer ${
-                  currentPage === 1 ? 'pointer-events-none opacity-50' : ''
-                }`}
+                className={`hover:cursor-pointer ${currentPage === 1 ? 'pointer-events-none opacity-50' : ''}`}
                 onClick={() => handlePageChange(currentPage - 1)}
               />
             </PaginationItem>
@@ -241,11 +254,7 @@ export default function SecretPage() {
             ))}
             <PaginationItem>
               <PaginationNext
-                className={`hover:cursor-pointer ${
-                  currentPage === totalPages
-                    ? 'pointer-events-none opacity-50'
-                    : ''
-                }`}
+                className={`hover:cursor-pointer ${currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}`}
                 onClick={() => handlePageChange(currentPage + 1)}
               />
             </PaginationItem>

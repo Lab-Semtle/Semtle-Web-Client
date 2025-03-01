@@ -14,7 +14,7 @@ interface PostData {
   type: string;
 }
 
-export default function EditPost() {
+export default function ActivityEditPage() {
   const { id } = useParams();
   const router = useRouter();
   const [postData, setPostData] = useState<PostData | null>(null);

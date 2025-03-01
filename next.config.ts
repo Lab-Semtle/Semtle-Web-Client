@@ -5,13 +5,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'shadcnblocks.com',
-      },
-      {
-        protocol: 'https',
-        hostname:
-          'semtle.9f8a3d5a958d5b6edbdae5ade12bc028.r2.cloudflarestorage.com',
-        pathname: '/**', // 모든 이미지 허용
+        hostname: 'archi-semtle.kr.object.ncloudstorage.com',
+        pathname: '/**',
       },
     ],
   },

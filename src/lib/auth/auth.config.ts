@@ -95,12 +95,7 @@ export const {
     // trigger : 갱신 이벤트, session : 갱신된 세션 정보
     jwt: async ({ token, user }: { token: JWT; user?: User }) => {
       // 로그인 시
-      console.log('[jwt] 기존 토큰:', token);
       if (user) {
-        console.log(
-          '[jwt] 새 사용자 로그인 감지 - 토큰 저장:',
-          user.accessToken,
-        );
         token.accessToken = user.accessToken ?? '';
         token.refreshToken = user.refreshToken ?? '';
         token.id = user.id ?? '';
@@ -111,8 +106,6 @@ export const {
     },
     // jwt 콜백이 반환하는 token 받아서 세션이 확인될 때마다 호출
     session: async ({ session, token }: { session: Session; token: JWT }) => {
-      console.log('[session] 기존 세션:', session);
-
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
       session.id = token.id;

@@ -30,6 +30,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   '500': '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
 };
 
+/**  로그인 페이지 */
 export default function SignInPage() {
   const { register, handleSubmit, formState } = useForm<
     z.infer<typeof loginSchema>

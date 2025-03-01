@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { API_ROUTES } from '@/constants/ApiRoutes';
-import { fetchPresignedUrl } from './useFetchPresignedUrls';
+import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
 
 interface RecentActivityPost {
   board_id: number;
@@ -68,17 +68,26 @@ export function useFetchActivitiesRecent(limit = 3) {
           console.warn('최근 활동 게시물이 없습니다.');
         }
 
-        // ✅ Presigned URL을 가져와서 업데이트 (공통 함수 활용)
+        // NCP Presigned URL을 가져와서 업데이트
         const updatedPosts = await Promise.all(
-          postsData.map(async (post) => ({
-            board_id: post.board_id,
-            title: post.title,
-            content: post.content,
-            createdAt: post.createdAt,
-            writer: post.writer,
-            type: post.type,
-            imageUrl: await fetchPresignedUrl(post.images?.[0]), // ✅ 공통 함수 적용
-          })),
+          postsData.map(async (post) => {
+            const imagePath = post.images?.[0] ?? undefined;
+            const imageUrl = imagePath
+              ? await fetchNcpPresignedUrl(imagePath).then(
+                  (url) => url ?? undefined,
+                ) // 🔹 null → undefined 변환
+              : undefined;
+
+            return {
+              board_id: post.board_id,
+              title: post.title,
+              content: post.content,
+              createdAt: post.createdAt,
+              writer: post.writer,
+              type: post.type,
+              imageUrl,
+            };
+          }),
         );
 
         setPosts(updatedPosts);

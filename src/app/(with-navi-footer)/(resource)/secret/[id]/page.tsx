@@ -9,7 +9,7 @@ import { FolderArchive, Download } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import { API_ROUTES } from '@/constants/ApiRoutes';
-import { fetchPresignedUrl } from '@/hooks/api/useFetchPresignedUrls';
+import { fetchPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
 
 type PostDetail = {
   post_id: number;

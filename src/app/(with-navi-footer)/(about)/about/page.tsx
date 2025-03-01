@@ -32,6 +32,7 @@ const tabTriggerClasses = `text-[19px] transition-colors duration-300 ease-in-ou
    dark:data-[state=active]:border-semtle-dark 
    dark:data-[state=active]:bg-semtle-dark dark:data-[state=active]:text-black`;
 
+/** 소개 페이지 */
 export default function AboutPage() {
   return (
     <>

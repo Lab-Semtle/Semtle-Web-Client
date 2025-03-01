@@ -9,7 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import { API_ROUTES } from '@/constants/ApiRoutes';
-import { fetchPresignedUrl } from '@/hooks/api/useFetchPresignedUrls';
+import { fetchPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
 
 interface PostData {
   board_id: number;
@@ -19,10 +19,11 @@ interface PostData {
   createdAt: string;
   images?: string[];
   type: string;
-  imageUrl?: string; // 변환된 Presigned URL 저장
+  imageUrl?: string;
 }
 
-export default function PostDetail() {
+/** 활동 게시물 페이지 */
+export default function ActivityPostPage() {
   const [post, setPost] = useState<PostData | null>(null);
   const [loading, setLoading] = useState(true);
   const params = useParams();
@@ -31,7 +32,7 @@ export default function PostDetail() {
   // 게시물 데이터 가져오기 (id가 변경될 때마다 실행)
   const fetchPost = async (id: number) => {
     try {
-      const response = await fetch(API_ROUTES.GET_ACTIVITY_DETAIL(id)); // ✅ API_ROUTES 사용
+      const response = await fetch(API_ROUTES.GET_ACTIVITY_DETAIL(id));
       if (!response.ok) {
         if (response.status === 404) {
           alert('해당 게시물이 존재하지 않습니다.');
@@ -44,7 +45,7 @@ export default function PostDetail() {
 
       const { success, data } = await response.json();
       if (success) {
-        // ✅ 이미지 Presigned URL 변환
+        // 이미지 Presigned URL 변환
         const imageUrl = data.images?.[0]
           ? await fetchPresignedUrl(data.images[0])
           : '/placeholder.svg';

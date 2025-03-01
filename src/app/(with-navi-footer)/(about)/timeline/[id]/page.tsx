@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { TimelineData } from '@/constants/TimelineData';
 
+/** 학회 연혁 상세 페이지 */
 export default function TimelineStoryPage({ id }: { id: string }) {
   const eventId = Number(id);
   if (!eventId) return <div className="text-red-500">잘못된 요청입니다.</div>;

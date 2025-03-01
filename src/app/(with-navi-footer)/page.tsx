@@ -1,6 +1,5 @@
-/** Home(Index) 페이지 */
-
 'use client';
+
 import Image from 'next/image';
 import BannerCarousel from '@/components/sections/BannerCarousel';
 import BannerCarouselSkeleton from '@/components/skeleton/BannerCarouselSkeleton';
@@ -11,6 +10,7 @@ import RecruitCard from '@/components/sections/RecruitCard';
 import { useFetchBanners } from '@/hooks/api/useFetchBanners';
 import { AuroraText } from '@/components/animation/AuroraText';
 
+/** Home(Index) 페이지 */
 export default function HomePage() {
   return (
     <>

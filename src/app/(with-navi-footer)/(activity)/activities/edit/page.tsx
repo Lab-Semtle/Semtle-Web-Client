@@ -4,7 +4,7 @@ import PostForm from '@/components/form/ActivityEditForm';
 import { useRouter } from 'next/navigation';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 
-export default function CreatePost() {
+export default function ActivityCreatePage() {
   const router = useRouter();
 
   const handleCreate = async (formData: FormData) => {

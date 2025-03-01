@@ -11,7 +11,7 @@ import AlertSchedule from '@/components/common/AlertSchedule';
 import PageHeading from '@/components/common/PageHeading';
 import { ScheduleEvent, ScheduleEventType } from '@/constants/Schedule';
 
-export default function CalendarPage() {
+export default function SchedulePage() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<ScheduleEventType | null>(
     null,

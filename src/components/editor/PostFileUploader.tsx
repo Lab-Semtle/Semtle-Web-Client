@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, ChangeEvent, FormEvent, useRef } from 'react';
-import clsx from 'clsx'; // ✅ classNames 합치기용 라이브러리
+import clsx from 'clsx'; // classNames 합치기용 라이브러리
 
 interface UploadedFile {
   name: string;
@@ -10,7 +10,7 @@ interface UploadedFile {
 
 interface FileUploadManagerProps {
   postId: string; // 게시물 ID를 전달받음
-  className?: string; // ✅ 외부에서 추가할 클래스
+  className?: string; // 외부에서 추가할 클래스
 }
 
 export default function PostFileUploader({

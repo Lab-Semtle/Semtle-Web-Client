@@ -11,6 +11,7 @@ import {
   TrophyIcon,
   SquareKanban,
   UserRoundCheck,
+  GalleryThumbnails,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -40,6 +41,11 @@ const navItems: NavItem[] = [
     title: '대시보드',
     href: '/executive',
     icon: LayoutDashboard,
+  },
+  {
+    title: '배너 관리',
+    href: '/executive/banner',
+    icon: GalleryThumbnails,
   },
   {
     title: '학회원 관리',

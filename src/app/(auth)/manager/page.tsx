@@ -23,8 +23,8 @@ export default function ManagerPage() {
       return;
     }
 
-    if (!session || !session.accessToken) {
-      console.error('❌ [handleAdminAuth] 인증 실패: 액세스 토큰 없음');
+    if (!session?.accessToken) {
+      console.error('[handleAdminAuth] 인증 실패: 액세스 토큰 없음');
       toast({
         variant: 'destructive',
         title: '인증 실패',
@@ -47,14 +47,20 @@ export default function ManagerPage() {
         body: JSON.stringify({ password }),
       });
 
-      const result = await response.json();
+      // 응답이 JSON이 아닐 수도 있음 → `text()`를 먼저 확인
+      const responseText = await response.text();
+      console.log('🔍 [handleAdminAuth] 응답 데이터:', responseText);
+
+      // JSON이 아닐 경우 예외 처리
+      const result = responseText ? JSON.parse(responseText) : null;
+
       if (!response.ok || !result.success) {
-        console.error('❌ [handleAdminAuth] 로그인 실패:', result.message);
+        console.error('[handleAdminAuth] 로그인 실패:', result.message);
         throw new Error(
           result.message || '로그인이 실패했습니다. 관리자 권한이 없습니다.',
         );
       }
-      console.log('✅ [handleAdminAuth] 관리자 인증 성공');
+      console.log('[handleAdminAuth] 관리자 인증 성공');
 
       toast({
         title: '인증 성공',
@@ -64,10 +70,7 @@ export default function ManagerPage() {
 
       router.push('/executive');
     } catch (error) {
-      console.error(
-        '🚨 [handleAdminAuth] 관리자 인증 요청 중 오류 발생:',
-        error,
-      );
+      console.error('[handleAdminAuth] 관리자 인증 요청 중 오류 발생:', error);
       toast({
         variant: 'destructive',
         title: '로그인 실패',
@@ -76,7 +79,7 @@ export default function ManagerPage() {
       });
     } finally {
       setLoading(false);
-      console.log('🔚 [handleAdminAuth] 관리자 인증 요청 종료');
+      console.log('[handleAdminAuth] 관리자 인증 요청 종료');
     }
   };
 

@@ -72,6 +72,7 @@ export default function UsersPage() {
     },
   ]);
 
+  // 다이얼로그(팝업) 상태 관리
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<Partial<User>>({
     name: '',
@@ -80,9 +81,11 @@ export default function UsersPage() {
   });
   const [dialogMode, setDialogMode] = useState<'add' | 'edit'>('add');
 
+  // 사용자 추가 및 수정
   const handleSaveUser = () => {
     if (currentUser.name && currentUser.email) {
       if (dialogMode === 'add') {
+        // 새로운 사용자 추가
         const newUser: User = {
           id: String(users.length + 1),
           name: currentUser.name,
@@ -91,7 +94,7 @@ export default function UsersPage() {
         };
         setUsers([...users, newUser]);
       } else {
-        // Edit existing user
+        // 기존 사용자 수정
         setUsers(
           users.map((user) =>
             user.id === currentUser.id
@@ -101,27 +104,32 @@ export default function UsersPage() {
         );
       }
 
+      // 팝업 닫기 및 입력 필드 초기화
       setIsDialogOpen(false);
       setCurrentUser({ name: '', email: '', role: 'user' });
     }
   };
 
+  // 선택된 사용자 삭제
   const handleDeleteUsers = (rowsToDelete: User[]) => {
     setUsers(
       users.filter((user) => !rowsToDelete.some((row) => row.id === user.id)),
     );
   };
 
+  // 개별 사용자 삭제
   const handleDeleteSingleUser = (userId: string) => {
     setUsers(users.filter((user) => user.id !== userId));
   };
 
+  // 사용자 편집 다이얼로그 열기
   const openEditDialog = (user: User) => {
     setCurrentUser(user);
     setDialogMode('edit');
     setIsDialogOpen(true);
   };
 
+  // 테이블 컬럼 정의
   const columns: ColumnDef<User>[] = [
     {
       id: 'select',
@@ -233,6 +241,7 @@ export default function UsersPage() {
 
   return (
     <div>
+      {/* 사용자 추가/편집 다이얼로그 */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -298,6 +307,7 @@ export default function UsersPage() {
         </DialogContent>
       </Dialog>
 
+      {/* 데이터 테이블 렌더링 */}
       <DataTable
         columns={columns}
         data={users}

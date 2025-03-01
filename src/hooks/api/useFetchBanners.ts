@@ -50,12 +50,13 @@ export function useFetchBanners() {
           console.warn('bannersData가 빈 배열입니다.');
         }
 
-        // 🔹 NCP Object Storage에서 Presigned URL 가져오기
+        // NCP Object Storage에서 Presigned URL 가져오기
         const updatedBanners = await Promise.all(
           bannersData.map(async (banner: Banner) => ({
             ...banner,
+            altText: banner.altText || '이미지 설명 없음',
             imageUrl:
-              (await fetchNcpPresignedUrl(banner.imagePath)) || undefined, // 🔹 null이면 undefined로 변환
+              (await fetchNcpPresignedUrl(banner.imagePath)) || undefined, // null이면 undefined로 변환
           })),
         );
 

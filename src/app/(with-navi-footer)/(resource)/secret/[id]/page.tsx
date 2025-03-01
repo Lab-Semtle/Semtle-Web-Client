@@ -1,13 +1,14 @@
 'use client';
 import { useState, useEffect } from 'react';
 import * as React from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { FolderArchive, Download } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 
-// 게시글 내용 조회 Data Fetching 타입 정의
 type PostDetail = {
   post_id: number;
   title: string;
@@ -29,12 +30,19 @@ type PostDetail = {
 };
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [post, setPost] = useState<PostDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const { id } = React.use(params);
 
-  // 게시글 데이터 가져오기
   useEffect(() => {
+    if (status === 'unauthenticated') {
+      alert('로그인이 필요합니다.');
+      router.push('/signin');
+      return;
+    }
+
     const getPosts = async () => {
       try {
         const response = await fetch(`/api/archives/${id}`);
@@ -52,10 +60,10 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       }
     };
 
-    if (id) {
+    if (status === 'authenticated' && id) {
       getPosts();
     }
-  }, [id]);
+  }, [id, status, router]);
 
   if (!post) {
     return (
@@ -68,17 +76,13 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   if (loading)
     return <p className="text-center text-lg font-semibold">Loading...</p>;
 
-  console.log(post);
   return (
     <div className="min-h-screen">
       <div className="container mx-auto mb-36 mt-40 max-w-4xl p-4">
         <Card className="border-none bg-transparent shadow-none">
           <CardContent className="p-0">
             <div className="space-y-6">
-              {/* 제목 */}
               <h1 className="text-left text-4xl font-bold">{post.title}</h1>
-
-              {/* 작성자 & 작성일 */}
               <div className="flex w-full items-center justify-between border-b pb-4 text-sm text-gray-200">
                 <p className="text-lg font-medium">{post.writer}</p>
                 <span className="text-lg font-medium dark:text-gray-200">
@@ -86,7 +90,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                 </span>
               </div>
 
-              {/* 대표 이미지 */}
               {post.images && post.images.length > 0 && (
                 <div className="relative aspect-video w-full overflow-hidden rounded-xl">
                   <Image
@@ -99,12 +102,10 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                 </div>
               )}
 
-              {/* 게시물 내용 */}
               <div className="min-h-[150px] whitespace-pre-line text-lg font-medium">
                 {post.content}
               </div>
 
-              {/* 첨부 파일 */}
               <div className="mt-6">
                 {post.attachments && post.attachments.length > 0 ? (
                   <div className="space-y-4">
@@ -143,7 +144,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                 )}
               </div>
 
-              {/* 버튼 */}
               <div className="mt-10 flex justify-center gap-5">
                 <Link href="/secret">
                   <Button>목록으로</Button>

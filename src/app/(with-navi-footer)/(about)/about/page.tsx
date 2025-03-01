@@ -195,10 +195,9 @@ const SupportTab: React.FC<SupportTabProps> = ({ supportLogo }) => {
         <Label className="text-2xl font-bold md:text-3xl">후원</Label>
       </div>
       <p className="mt-10 text-left text-xl leading-8">
-        현재 아치셈틀은 <b>인공지능공학부</b>의 공식 지원을 받고 있으며,
-        <b>Naver Cloud</b> 후원도 준비 중에 있습니다. 앞으로 더 다양한 기업 및
-        단체의 후원을 통해 학회원들에게 더욱 많은 기회와 지원을 제공할 수 있도록
-        노력하겠습니다.
+        현재 아치셈틀은 <b>인공지능공학부</b>의 공식 지원을 받고 있으며, 후원도
+        준비 중에 있습니다. 앞으로 더 다양한 기업 및 단체의 후원을 통해
+        학회원들에게 더욱 많은 기회와 지원을 제공할 수 있도록 노력하고 있습니다.
       </p>
 
       {/* 후원 로고 섹션 */}

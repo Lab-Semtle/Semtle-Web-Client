@@ -1,4 +1,3 @@
-/** 최근 활동 게시물 UI 컴포넌트 */
 'use client';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -12,8 +11,8 @@ interface ActivityPost {
   content: string;
   writer: string;
   createdAt: string;
-  images: string[];
   type: string;
+  imageUrl?: string; // Presigned URL 사용
 }
 
 interface ActivityListProps {
@@ -28,12 +27,12 @@ const ActivityCard2List = ({ posts, loading, error }: ActivityListProps) => {
 
   return (
     <section>
-      <div className="container mx-auto flex flex-col items-center gap-10 lg:px-16">
+      <div className="container mx-auto flex w-full flex-col items-center gap-10 lg:px-16">
         {/* 게시물 리스트 */}
         {loading ? (
           <RecentActivitySkeleton />
         ) : error ? (
-          <div className="relative w-full max-w-[1200px]">
+          <div className="relative w-full">
             <RecentActivitySkeleton />
             <div className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl bg-black/50 text-white">
               <p className="text-lg font-semibold">
@@ -50,23 +49,21 @@ const ActivityCard2List = ({ posts, loading, error }: ActivityListProps) => {
         ) : (
           <FadeUp
             direction="up"
-            className="flex w-full max-w-[1200px] flex-col gap-2"
+            className="flex w-full flex-col gap-2"
             staggerChildren={0.2}
           >
             {posts.map((post) => (
               <FadeUp key={post.board_id} direction="up">
                 <div
-                  className="relative cursor-pointer overflow-hidden rounded-xl p-6 transition-shadow hover:shadow-md lg:grid lg:grid-cols-6 lg:items-center lg:gap-8"
+                  className="relative flex w-full cursor-pointer flex-col overflow-hidden rounded-xl p-3 transition-shadow hover:shadow-md lg:grid lg:grid-cols-5 lg:items-center lg:gap-8"
                   onClick={() => router.push(`/activities/${post.board_id}`)}
                 >
                   {/* 이미지 컨테이너 */}
-                  <div className="hidden lg:col-span-2 lg:block">
-                    <div className="h-48 w-full overflow-hidden rounded-xl">
+                  <div className="w-full lg:col-span-2">
+                    <div className="mb-4 h-48 w-full overflow-hidden rounded-xl lg:mb-0">
                       <Image
                         className="aspect-[16/9] h-full w-full object-cover"
-                        src={
-                          post.images.length > 0 ? post.images[0] : defaultImage
-                        }
+                        src={post.imageUrl || defaultImage}
                         alt={post.title}
                         width={500}
                         height={300}
@@ -75,7 +72,7 @@ const ActivityCard2List = ({ posts, loading, error }: ActivityListProps) => {
                   </div>
 
                   {/* 콘텐츠 컨테이너 */}
-                  <div className="lg:col-span-4">
+                  <div className="w-full lg:col-span-3">
                     <blockquote>
                       <p className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-800 dark:bg-blue-900 dark:text-blue-300">
                         {post.type}
@@ -89,22 +86,12 @@ const ActivityCard2List = ({ posts, loading, error }: ActivityListProps) => {
                         {post.content}
                       </p>
 
-                      <footer className="mt-6 flex items-center">
-                        <Avatar className="size-12">
-                          <AvatarImage
-                            src={
-                              post.images[0] || '/images/default-profile.jpg'
-                            }
-                            alt="Avatar"
-                          />
-                          <AvatarFallback>{post.writer[0]}</AvatarFallback>
-                        </Avatar>
-                        <div className="ms-4">
-                          <p className="font-medium">{post.writer}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {post.createdAt}
-                          </p>
-                        </div>
+                      <footer className="mt-6 text-sm text-muted-foreground">
+                        <p>
+                          <span className="font-medium">{post.writer}</span>
+                          <span className="mx-2">•</span>
+                          <span>{post.createdAt}</span>
+                        </p>
                       </footer>
                     </blockquote>
                   </div>

@@ -1,5 +1,7 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { Input } from '@/components/ui/input';
 import {
   Pagination,
@@ -13,8 +15,9 @@ import PostCard from '@/components/common/PostCard';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import PageHeading from '@/components/common/PageHeading';
+import { API_ROUTES } from '@/constants/ApiRoutes';
+import { fetchPresignedUrl } from '@/hooks/api/useFetchPresignedUrls';
 
-// 게시글 목록 Data Fetching 용 타입 정의
 type Post = {
   board_id: number;
   title: string;
@@ -29,6 +32,8 @@ type SecretPost = {
 };
 
 export default function SecretPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [secretPost, setSecretPost] = useState<SecretPost>({
     total_posts: 0,
     total_pages: 1,
@@ -40,6 +45,14 @@ export default function SecretPage() {
 
   // 캐싱을 위한 useRef 추가 (각 페이지 & 검색어별 데이터를 저장)
   const cacheRef = useRef<{ [key: string]: SecretPost }>({});
+
+  // 로그인되지 않은 경우 로그인 페이지로 리디렉트
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      alert('로그인이 필요합니다.');
+      router.push('/signin');
+    }
+  }, [status, router]);
 
   // 데이터 Fetch 함수
   const fetchPosts = async (page = 1, searchKeyword = '') => {
@@ -55,15 +68,33 @@ export default function SecretPage() {
       }
 
       const response = await fetch(
-        `/api/archives?page=${page}&size=8&search_keyword=${searchKeyword}`,
+        API_ROUTES.GET_ARCHIVE_LIST(page, 8, searchKeyword),
       );
 
       const json = await response.json();
-      if (json.success) {
-        setSecretPost(json.data);
+      if (json.success && json.data) {
+        const postsData = json.data.posts;
+
+        // Presigned URL 변환 적용
+        const updatedPosts = await Promise.all(
+          postsData.map(async (post: Post) => ({
+            ...post,
+            imageUrl: post.imageUrl?.[0]
+              ? await fetchPresignedUrl(post.imageUrl[0])
+              : null,
+          })),
+        );
+
+        const processedData = {
+          total_posts: json.data.total_post,
+          total_pages: json.data.total_pages,
+          posts: updatedPosts,
+        };
+
+        setSecretPost(processedData);
 
         // 가져온 데이터를 캐시에 저장
-        cacheRef.current[cacheKey] = json.data;
+        cacheRef.current[cacheKey] = processedData;
       } else {
         console.error('데이터 로드 실패:', json.message);
       }
@@ -76,8 +107,10 @@ export default function SecretPage() {
 
   // 처음 마운트 시 데이터 불러오기
   useEffect(() => {
-    fetchPosts(currentPage, searchTerm);
-  }, [currentPage, searchTerm]);
+    if (status === 'authenticated') {
+      fetchPosts(currentPage, searchTerm);
+    }
+  }, [currentPage, searchTerm, status]);
 
   if (loading)
     return <p className="text-center text-lg font-semibold">Loading...</p>;

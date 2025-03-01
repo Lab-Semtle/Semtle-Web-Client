@@ -78,6 +78,7 @@ export default function SecretNoteEditor({
       deletedFiles: deletedFileIds,
       deletedImages: deletedImageIds,
     };
+
     setSubmitLoading(true);
     try {
       await onSubmit(completeData);

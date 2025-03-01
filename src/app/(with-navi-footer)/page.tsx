@@ -21,7 +21,7 @@ export default function HomePage() {
           <section className="mx-auto max-w-5xl">
             <Introduction />
           </section>
-          <section className="mx-auto max-w-5xl">
+          <section className="mx-auto max-w-6xl">
             <RecentActivityPosts limit={3} />
           </section>
         </main>

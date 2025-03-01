@@ -1,7 +1,56 @@
+//       {/* 페이지네이션 */}
+//       {totalPages > 1 && (
+//         <Pagination>
+//           <PaginationContent>
+//             <PaginationItem>
+//               <PaginationPrevious
+//                 onClick={() => {
+//                   if (currentPage > 1) handlePageChange(currentPage - 1);
+//                 }}
+//                 aria-disabled={currentPage === 1}
+//                 className={
+//                   currentPage === 1
+//                     ? 'pointer-events-none cursor-not-allowed opacity-50'
+//                     : ''
+//                 }
+//               />
+//             </PaginationItem>
+//             {Array.from({ length: totalPages }, (_, index) => (
+//               <PaginationItem key={index}>
+//                 <PaginationLink
+//                   isActive={currentPage === index + 1}
+//                   onClick={() => handlePageChange(index + 1)}
+//                 >
+//                   {index + 1}
+//                 </PaginationLink>
+//               </PaginationItem>
+//             ))}
+//             <PaginationItem>
+//               <PaginationNext
+//                 onClick={() => {
+//                   if (currentPage < totalPages)
+//                     handlePageChange(currentPage + 1);
+//                 }}
+//                 aria-disabled={currentPage === totalPages}
+//                 className={
+//                   currentPage === totalPages
+//                     ? 'pointer-events-none cursor-not-allowed opacity-50'
+//                     : ''
+//                 }
+//               />
+//             </PaginationItem>
+//           </PaginationContent>
+//         </Pagination>
+//       )}
+//     </main>
+//   );
+// }
+
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import {
   Pagination,
@@ -15,11 +64,15 @@ import FilterBar from '@/components/common/FilterBar';
 import CardListA from '@/components/common/CardListA';
 import CardListC from '@/components/common/CardListC';
 import PageHeading from '@/components/common/PageHeading';
+import { API_ROUTES } from '@/constants/ApiRoutes';
 
-type Card = {
+type ProjectCard = {
   id: number;
   title: string;
-  description: string;
+  writer: string;
+  projectType: string;
+  categories: string[];
+  endTime: string;
 };
 
 type Filter = {
@@ -29,26 +82,42 @@ type Filter = {
 export default function ProjectPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { data: session, status } = useSession(); // 로그인 세션 확인
+
   const defaultTab =
     searchParams.get('tab') === 'showcase' ? 'completed' : 'active';
 
   const [activeTab, setActiveTab] = useState<'active' | 'completed'>(
     defaultTab,
-  ); // 현재 선택된 탭
-  const [activeCards, setActiveCards] = useState<Card[]>([]);
-  const [completedCards, setCompletedCards] = useState<Card[]>([]);
-  const [filteredCards, setFilteredCards] = useState<Card[]>([]);
+  );
+
+  const [activeProjects, setActiveProjects] = useState<ProjectCard[]>([]);
+  const [completedProjects, setCompletedProjects] = useState<ProjectCard[]>([]);
+  const [filteredProjects, setFilteredProjects] = useState<ProjectCard[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 9;
 
-  // 진행 중 프로젝트 데이터 가져오기
+  // ✅ 모집 중인 프로젝트 API 호출
   useEffect(() => {
     const fetchActiveProjects = async () => {
       try {
-        const response = await fetch('/api/projects');
-        const data: Card[] = await response.json();
-        setActiveCards(data);
-        if (activeTab === 'active') setFilteredCards(data);
+        const response = await fetch(API_ROUTES.GET_PROJECT_LIST(1, 50)); // 페이지 1, 50개 요청
+        const json = await response.json();
+
+        if (json.success && json.data?.content) {
+          const projects = json.data.content.map((item: any) => ({
+            id: item.projectBoardId,
+            title: item.title,
+            writer: item.writerName,
+            projectType: item.projectTypeCategoryName,
+            categories: item.relationFieldCategoryName || [],
+            endTime: item.projectRecruitingEndTime,
+          }));
+          setActiveProjects(projects);
+          if (activeTab === 'active') setFilteredProjects(projects);
+        } else {
+          console.error('Error loading active projects:', json.message);
+        }
       } catch (error) {
         console.error('Failed to fetch active projects:', error);
       }
@@ -56,14 +125,27 @@ export default function ProjectPage() {
     fetchActiveProjects();
   }, []);
 
-  // 완료된 프로젝트 데이터 가져오기
+  // ✅ 완료된 프로젝트 API 호출
   useEffect(() => {
     const fetchCompletedProjects = async () => {
       try {
-        const response = await fetch('/api/promotion');
-        const data: Card[] = await response.json();
-        setCompletedCards(data);
-        if (activeTab === 'completed') setFilteredCards(data);
+        const response = await fetch(API_ROUTES.GET_PROMOTION_LIST('', 1, 50));
+        const json = await response.json();
+
+        if (json.success && json.data?.content) {
+          const projects = json.data.content.map((item: any) => ({
+            id: item.projectBoardId,
+            title: item.title,
+            writer: item.writerName,
+            projectType: item.projectTypeCategoryName,
+            categories: item.relationFieldCategoryName || [],
+            endTime: item.projectRecruitingEndTime,
+          }));
+          setCompletedProjects(projects);
+          if (activeTab === 'completed') setFilteredProjects(projects);
+        } else {
+          console.error('Error loading completed projects:', json.message);
+        }
       } catch (error) {
         console.error('Failed to fetch completed projects:', error);
       }
@@ -71,23 +153,30 @@ export default function ProjectPage() {
     fetchCompletedProjects();
   }, []);
 
-  // 필터 적용
+  // ✅ 필터 적용
   const handleFilter = (filter: Filter) => {
-    const sourceCards = activeTab === 'active' ? activeCards : completedCards;
-    const filtered = sourceCards.filter((card) =>
-      card.title.includes(filter.searchTerm),
+    const sourceProjects =
+      activeTab === 'active' ? activeProjects : completedProjects;
+    const filtered = sourceProjects.filter((project) =>
+      project.title.includes(filter.searchTerm),
     );
-    setFilteredCards(filtered);
+    setFilteredProjects(filtered);
     setCurrentPage(1);
   };
 
-  // 페이지 변경
+  // ✅ 페이지 변경
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  // 프로젝트 등록 버튼 클릭 시 이동
+  // ✅ 프로젝트 등록 버튼 클릭 시 로그인 확인
   const handleCreateProject = () => {
+    if (status !== 'authenticated' || !session?.id) {
+      alert('로그인이 필요합니다.');
+      router.push('/signin');
+      return;
+    }
+
     const path =
       activeTab === 'active'
         ? '/projects/hire/edit'
@@ -95,23 +184,23 @@ export default function ProjectPage() {
     router.push(path);
   };
 
-  // 프로젝트 삭제 (완료된 프로젝트에서만 가능)
+  // ✅ 프로젝트 삭제 (완료된 프로젝트에서만 가능)
   const handleDelete = (selectedCardIds: number[]) => {
-    setCompletedCards((prev) =>
-      prev.filter((card) => !selectedCardIds.includes(card.id)),
+    setCompletedProjects((prev) =>
+      prev.filter((project) => !selectedCardIds.includes(project.id)),
     );
-    setFilteredCards((prev) =>
-      prev.filter((card) => !selectedCardIds.includes(card.id)),
+    setFilteredProjects((prev) =>
+      prev.filter((project) => !selectedCardIds.includes(project.id)),
     );
   };
 
-  // 현재 페이지에 보여줄 데이터
-  const paginatedCards = filteredCards.slice(
+  // ✅ 현재 페이지에 보여줄 데이터
+  const paginatedProjects = filteredProjects.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
 
-  const totalPages = Math.ceil(filteredCards.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
 
   return (
     <main className="flex flex-col items-center px-6 pb-32 pt-24">
@@ -131,7 +220,7 @@ export default function ProjectPage() {
             }`}
             onClick={() => {
               setActiveTab('active');
-              setFilteredCards(activeCards);
+              setFilteredProjects(activeProjects);
               setCurrentPage(1);
             }}
           >
@@ -145,7 +234,7 @@ export default function ProjectPage() {
             }`}
             onClick={() => {
               setActiveTab('completed');
-              setFilteredCards(completedCards);
+              setFilteredProjects(completedProjects);
               setCurrentPage(1);
             }}
           >
@@ -156,10 +245,7 @@ export default function ProjectPage() {
 
       {/* 필터 + 버튼 */}
       <div className="mx-auto flex w-full max-w-[1000px] items-center justify-between gap-4 p-4 pb-0 pt-0">
-        <Button
-          className="text-base hover:bg-semtle-lite hover:text-blue-950 hover:dark:bg-semtle-dark hover:dark:text-black"
-          onClick={handleCreateProject}
-        >
+        <Button onClick={handleCreateProject}>
           {activeTab === 'active'
             ? '새로운 프로젝트 시작하기'
             : '프로젝트 성과 등록하기'}
@@ -170,9 +256,9 @@ export default function ProjectPage() {
       {/* 카드 리스트 */}
       <div className="mx-auto w-full max-w-[1000px]">
         {activeTab === 'active' ? (
-          <CardListA cards={paginatedCards} />
+          <CardListA cards={paginatedProjects} />
         ) : (
-          <CardListC cards={paginatedCards} onDelete={handleDelete} />
+          <CardListC cards={paginatedProjects} onDelete={handleDelete} />
         )}
       </div>
 
@@ -182,39 +268,19 @@ export default function ProjectPage() {
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious
-                onClick={() => {
-                  if (currentPage > 1) handlePageChange(currentPage - 1);
-                }}
-                aria-disabled={currentPage === 1}
-                className={
-                  currentPage === 1
-                    ? 'pointer-events-none cursor-not-allowed opacity-50'
-                    : ''
-                }
+                onClick={() => handlePageChange(currentPage - 1)}
               />
             </PaginationItem>
-            {Array.from({ length: totalPages }, (_, index) => (
+            {[...Array(totalPages)].map((_, index) => (
               <PaginationItem key={index}>
-                <PaginationLink
-                  isActive={currentPage === index + 1}
-                  onClick={() => handlePageChange(index + 1)}
-                >
+                <PaginationLink onClick={() => handlePageChange(index + 1)}>
                   {index + 1}
                 </PaginationLink>
               </PaginationItem>
             ))}
             <PaginationItem>
               <PaginationNext
-                onClick={() => {
-                  if (currentPage < totalPages)
-                    handlePageChange(currentPage + 1);
-                }}
-                aria-disabled={currentPage === totalPages}
-                className={
-                  currentPage === totalPages
-                    ? 'pointer-events-none cursor-not-allowed opacity-50'
-                    : ''
-                }
+                onClick={() => handlePageChange(currentPage + 1)}
               />
             </PaginationItem>
           </PaginationContent>

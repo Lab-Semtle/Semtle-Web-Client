@@ -1,6 +1,7 @@
 'use client';
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import SecretNoteEditor, { FormValues } from '@/components/form/SecretEditForm';
 
@@ -11,12 +12,23 @@ export default function ModifyPostEditor({
 }) {
   const { id } = use(params);
   const router = useRouter();
-
+  const { data: session, status } = useSession();
   const [post, setPost] = useState<FormValues | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (status === 'unauthenticated') {
+      alert('로그인이 필요합니다.');
+      router.push('/signin');
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      // 게시글 데이터를 가져오는 로직
+    }
+
     const fetchPost = async () => {
       try {
         const data = {
@@ -72,7 +84,7 @@ export default function ModifyPostEditor({
     };
 
     fetchPost();
-  }, [id]);
+  }, [id, status]);
 
   const handleUpdatePost = async (data: FormValues) => {
     try {

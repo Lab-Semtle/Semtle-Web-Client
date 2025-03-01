@@ -2,7 +2,6 @@
 
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import {
   Select,
   SelectContent,
@@ -14,20 +13,16 @@ import GoUp from '@/components/common/GoUp';
 import PageHeading from '@/components/common/PageHeading';
 import ActivityCard2List from '@/components/card/ActivityCard2List';
 import { useRouter } from 'next/navigation';
-import { usefetchActivities } from '@/hooks/api/useFetchActivity';
+import { useFetchActivities } from '@/hooks/api/useFetchActivities';
 
 export default function ActivitiesPage() {
   const router = useRouter();
-  const [category, setCategory] = useState('전체');
+  const [category, setCategory] = useState('공지');
   const [showScrollTop, setShowScrollTop] = useState(false);
 
+  // React Query 기반 API 호출
   const { data, fetchNextPage, hasNextPage, isFetching, isLoading, error } =
-    useInfiniteQuery({
-      queryKey: ['activities', category],
-      queryFn: usefetchActivities,
-      getNextPageParam: (lastPage) => lastPage.nextPage ?? undefined,
-      initialPageParam: 1,
-    });
+    useFetchActivities(category);
 
   // 무한 스크롤 감지
   const lastElementRef = useCallback(
@@ -78,7 +73,6 @@ export default function ActivitiesPage() {
                 <SelectValue placeholder="카테고리 선택" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="전체">전체</SelectItem>
                 <SelectItem value="공지">공지</SelectItem>
                 <SelectItem value="세미나">세미나</SelectItem>
                 <SelectItem value="행사">행사</SelectItem>

@@ -1,7 +1,7 @@
 /** 활동게시판 최근 게시물 N개 조회 섹션 */
 
 'use client';
-import { useRecentActivityPosts } from '@/hooks/api/useFetchActivity';
+import { useFetchActivitiesRecent } from '@/hooks/api/useFetchActivitiesRecent';
 import ActivityCard2List from '@/components/card/ActivityCard2List';
 import { FadeUp } from '@/components/animation/FadeUp';
 
@@ -10,10 +10,10 @@ interface RecentActivityPostsProps {
 }
 
 const RecentActivityPosts = ({ limit = 3 }: RecentActivityPostsProps) => {
-  const { posts, loading, error } = useRecentActivityPosts(limit);
+  const { posts, loading, error } = useFetchActivitiesRecent(limit);
 
   return (
-    <section className="py-20">
+    <section className="w-full py-20">
       <div className="container mx-auto flex flex-col items-center gap-10 lg:px-16">
         <FadeUp
           direction="up"
@@ -25,7 +25,9 @@ const RecentActivityPosts = ({ limit = 3 }: RecentActivityPostsProps) => {
         </FadeUp>
 
         {/* 최근 활동 게시물 리스트 */}
-        <ActivityCard2List posts={posts} loading={loading} error={!!error} />
+        <div className="w-full">
+          <ActivityCard2List posts={posts} loading={loading} error={!!error} />
+        </div>
       </div>
     </section>
   );

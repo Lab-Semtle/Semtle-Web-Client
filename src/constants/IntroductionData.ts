@@ -32,6 +32,6 @@ export const INTRO_CARDS = [
     description: `최신 트렌드와 전공 과목에서 어려웠던 부분을 세미나와 스터디를 통해 해소할 수 있습니다. 
     학회원들이 서로 가르치고 배우며 함께 성장할 수 있는 환경을 만들어가고자 합니다.`,
     label: 'Projects',
-    image: '/images/semtle2022/Seminar-2022-3.jpeg',
+    image: '/images/semtle2022/Seminar-2022-4.jpeg',
   },
 ];

@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import { API_ROUTES } from '@/constants/ApiRoutes';
+import { fetchPresignedUrl } from './useFetchPresignedUrls';
 
 interface Banner {
   bannerId: number;
-  imagePath: string; // DB에 저장된 Cloudflare R2 파일 경로
+  imagePath: string;
   targetPath: string;
   altText?: string;
   postTitle: string;
   createdAt: string;
-  imageUrl?: string; // Presigned URL 저장할 필드
+  imageUrl?: string;
 }
 
 export function useFetchBanners() {
@@ -20,78 +21,43 @@ export function useFetchBanners() {
     async function fetchBanners() {
       setLoading(true);
       try {
-        console.log('🚀 API 호출 시작: ', API_ROUTES.GET_BANNERS);
+        console.log('[GET_BANNERS] API 요청');
         const response = await fetch(API_ROUTES.GET_BANNERS, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
           mode: 'cors',
         });
 
-        console.log('🔄 API 응답 수신:', response);
         if (!response.ok) {
           throw new Error(`Error ${response.status}: ${response.statusText}`);
         }
 
         const responseData = await response.json();
-        console.log('✅ API 응답 데이터:', responseData);
+        console.log('[GET_BANNERS] API 응답 데이터:', responseData);
 
         if (!responseData.success) {
-          throw new Error(`❌ API 요청 실패: ${responseData.message}`);
+          throw new Error(`API 요청 실패: ${responseData.message}`);
         }
 
-        console.log('📌 API 응답 데이터 구조 확인:', responseData);
-
         if (!Array.isArray(responseData.data?.banners)) {
-          console.error('❌ API 응답 형식이 올바르지 않음:', responseData);
+          console.error('API 응답 형식이 올바르지 않음:', responseData);
           throw new Error('API 응답 형식이 올바르지 않습니다.');
         }
 
         const bannersData: Banner[] = responseData.data.banners;
-        console.log('📌 bannersData:', bannersData);
 
-        console.log('🔍 bannersData 배열 길이:', bannersData.length);
         if (bannersData.length === 0) {
-          console.error('❌ bannersData가 빈 배열입니다.');
+          console.warn('bannersData가 빈 배열입니다.');
         }
 
-        // 🚀 Cloudflare R2에서 Presigned URL 가져오기 (기존 방식 개선)
+        // ✅ Cloudflare R2에서 Presigned URL 가져오기 (공통 함수 활용)
         const updatedBanners = await Promise.all(
-          bannersData.map(async (banner: Banner) => {
-            console.log(`📡 Presigned URL 요청: ${banner.imagePath}`);
-
-            try {
-              const fileUrlRes = await fetch('/api/files', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ key: banner.imagePath }),
-              });
-              console.log(
-                `✅ fetch 응답 수신 (${banner.imagePath}):`,
-                fileUrlRes,
-              );
-              if (!fileUrlRes.ok) {
-                throw new Error(`❌ 요청 실패: ${fileUrlRes.status}`);
-              }
-
-              const fileData = await fileUrlRes.json();
-              console.log(
-                `🔗 Presigned URL 응답 (${banner.imagePath}):`,
-                fileData,
-              );
-
-              return {
-                ...banner,
-                imageUrl: fileData.signedUrl ?? '/images/kmou_2022.jpg',
-              };
-            } catch (error) {
-              console.error('Persigned URL 가져오기 실패: ', error);
-              return {
-                ...banner,
-                imageUrl: '/images/kmou_2022.jpg',
-              };
-            }
-          }),
+          bannersData.map(async (banner: Banner) => ({
+            ...banner,
+            imageUrl: await fetchPresignedUrl(banner.imagePath),
+          })),
         );
+
         setBanners(updatedBanners);
       } catch (err) {
         setError(err instanceof Error ? err.message : '오류가 발생했습니다.');

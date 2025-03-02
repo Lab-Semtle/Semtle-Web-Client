@@ -18,10 +18,11 @@ import {
 import { NavLinkMenu } from '@/components/layouts/NavLinkMenu';
 import { VariantShineButton } from '@/components/common/VariantShineButton';
 import { useSession } from '@/hooks/useSession';
-import { signOutWithForm } from '@/lib/auth/auth.server';
+// import { signOutWithForm } from '@/lib/auth/auth.server';
 import { ROUTES } from '@/constants/Routes';
 import { Session } from 'next-auth';
 import { useState } from 'react';
+import { signOut } from 'next-auth/react';
 
 export default function NavUserMenu() {
   const session = useSession();
@@ -94,20 +95,13 @@ function LoginMenu({
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <form
-            action={async () => {
-              await signOutWithForm();
-              setIsMenuOpen(false);
-            }}
-            className="w-full"
+          <button
+            type="submit"
+            onClick={() => signOut()}
+            className="w-full text-left text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-600"
           >
-            <button
-              type="submit"
-              className="w-full text-left text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-600"
-            >
-              로그아웃
-            </button>
-          </form>
+            로그아웃
+          </button>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

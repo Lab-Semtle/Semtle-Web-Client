@@ -35,7 +35,7 @@ export const signInWithCredentials = async (
 export const signOutWithForm = async () => {
   await signOut();
 
-  revalidatePath('/');
+  revalidatePath('/'); // 캐시 갱신
 };
 
 export { auth as getSession, update as updateSession };

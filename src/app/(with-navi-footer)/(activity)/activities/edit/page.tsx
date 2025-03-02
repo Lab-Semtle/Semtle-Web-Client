@@ -1,6 +1,6 @@
 'use client';
 
-import PostForm from '@/components/form/ActivityEditForm';
+import ActivityEditForm from '@/components/form/ActivityEditForm';
 import { useRouter } from 'next/navigation';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 
@@ -21,5 +21,5 @@ export default function ActivityCreatePage() {
     }
   };
 
-  return <PostForm mode="create" onSubmit={handleCreate} />;
+  return <ActivityEditForm mode="create" onSubmit={handleCreate} />;
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import PostForm from '@/components/form/ActivityEditForm';
+import ActivityEditForm from '@/components/form/ActivityEditForm';
 
 interface PostData {
   board_id: number;
@@ -64,7 +64,7 @@ export default function ActivityEditPage() {
   if (!postData) return <p>게시물을 찾을 수 없습니다.</p>;
 
   return (
-    <PostForm
+    <ActivityEditForm
       mode="update"
       initialData={{
         title: postData.title,

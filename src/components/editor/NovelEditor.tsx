@@ -1,5 +1,5 @@
 'use client';
-// import { defaultEditorContent } from '@/constants/DefaultEditorContent'; // 기본 에디터 초기값 (저장된 내용이 없을 때 사용)
+import { defaultEditorContent } from '@/constants/DefaultEditorContent'; // 기본 에디터 초기값 (저장된 내용이 없을 때 사용)
 import {
   EditorCommand,
   EditorCommandEmpty,
@@ -82,7 +82,7 @@ const NovelEditor = () => {
   useEffect(() => {
     const content = window.localStorage.getItem('novel-content');
     if (content) setInitialContent(JSON.parse(content));
-    // else setInitialContent(defaultEditorContent);
+    else setInitialContent(defaultEditorContent);
   }, []);
 
   if (!initialContent) return null;

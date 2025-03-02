@@ -29,7 +29,7 @@ import { API_ROUTES } from '@/constants/ApiRoutes';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
-// 배너 데이터 타입 정의
+// 배너 데이터 타입
 export type Banner = {
   bannerId: number;
   imagePath: string;
@@ -40,7 +40,7 @@ export type Banner = {
   imageUrl?: string | null;
 };
 
-export default function AdminBannerPage() {
+export default function BannerManagePage() {
   const { data: session, status } = useSession();
   const { banners, loading, error } = useFetchBanners();
   const [isDialogOpen, setIsDialogOpen] = useState(false); // 다이얼로그(팝업) 상태 관리

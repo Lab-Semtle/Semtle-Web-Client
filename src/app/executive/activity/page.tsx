@@ -30,99 +30,108 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { useFetchActivities } from '@/hooks/api/useFetchActivities';
+import { API_ROUTES } from '@/constants/ApiRoutes';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  role: 'admin' | 'user';
+// 활동게시물 데이터 타입
+export type ActivityPost = {
+  board_id: number;
+  title: string;
+  content: string;
+  createdAt: string;
+  writer: string;
+  type: string;
+  imageUrl?: string;
 };
 
-export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([
-    {
-      id: '1',
-      name: 'John Doe',
-      email: 'john@example.com',
-      role: 'admin',
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      email: 'jane@example.com',
-      role: 'user',
-    },
-    {
-      id: '3',
-      name: 'Alice Johnson',
-      email: 'alice@example.com',
-      role: 'user',
-    },
-    {
-      id: '4',
-      name: 'Bob Brown',
-      email: 'bob@example.com',
-      role: 'user',
-    },
-    {
-      id: '5',
-      name: 'Charlie White',
-      email: 'charle@example.com',
-      role: 'user',
-    },
-  ]);
-
+export default function ActivityManagePage() {
+  const { data: session, status } = useSession();
+  const [category, setCategory] = useState<'공지' | '세미나' | '행사' | '기타'>(
+    '공지',
+  );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<Partial<User>>({
-    name: '',
-    email: '',
-    role: 'user',
-  });
   const [dialogMode, setDialogMode] = useState<'add' | 'edit'>('add');
+  const posts: ActivityPost[] = data?.pages.flatMap((page) => page.posts) ?? [];
+  const router = useRouter();
+  const [currentPost, setCurrentPost] = useState<Partial<ActivityPost>>({
+    title: '',
+    content: '',
+  });
+  const { data, isLoading, error } = useFetchActivities(category);
 
-  const handleSaveUser = () => {
-    if (currentUser.name && currentUser.email) {
-      if (dialogMode === 'add') {
-        const newUser: User = {
-          id: String(users.length + 1),
-          name: currentUser.name,
-          email: currentUser.email,
-          role: currentUser.role || 'user',
-        };
-        setUsers([...users, newUser]);
-      } else {
-        // Edit existing user
-        setUsers(
-          users.map((user) =>
-            user.id === currentUser.id
-              ? ({ ...user, ...currentUser } as User)
-              : user,
-          ),
-        );
+  // const handleSaveUser = () => {
+  //   if (currentUser.name && currentUser.email) {
+  //     if (dialogMode === 'add') {
+  //       const newUser: User = {
+  //         id: String(users.length + 1),
+  //         name: currentUser.name,
+  //         email: currentUser.email,
+  //         role: currentUser.role || 'user',
+  //       };
+  //       setUsers([...users, newUser]);
+  //     } else {
+  //       // Edit existing user
+  //       setUsers(
+  //         users.map((user) =>
+  //           user.id === currentUser.id
+  //             ? ({ ...user, ...currentUser } as User)
+  //             : user,
+  //         ),
+  //       );
+  //     }
+
+  //     setIsDialogOpen(false);
+  //     setCurrentUser({ name: '', email: '', role: 'user' });
+  //   }
+  // };
+
+  // const handleDeleteUsers = (rowsToDelete: User[]) => {
+  //   setUsers(
+  //     users.filter((user) => !rowsToDelete.some((row) => row.id === user.id)),
+  //   );
+  // };
+
+  /** 게시물 삭제 API 요청 */
+  const handleDeleteSinglePost = async (postId: number) => {
+    if (!session?.accessToken) {
+      alert('인증이 필요합니다. 다시 로그인해주세요.');
+      return;
+    }
+
+    if (!confirm('정말로 이 게시물을 삭제하시겠습니까?')) return;
+
+    try {
+      const response = await fetch(API_ROUTES.DELETE_ACTIVITY(postId), {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`삭제 실패: ${response.statusText}`);
       }
 
-      setIsDialogOpen(false);
-      setCurrentUser({ name: '', email: '', role: 'user' });
+      alert('게시물이 성공적으로 삭제되었습니다!');
+      router.refresh();
+    } catch (error) {
+      console.error('게시물 삭제 오류:', error);
+      alert('게시물 삭제에 실패했습니다.');
     }
   };
 
-  const handleDeleteUsers = (rowsToDelete: User[]) => {
-    setUsers(
-      users.filter((user) => !rowsToDelete.some((row) => row.id === user.id)),
-    );
-  };
-
-  const handleDeleteSingleUser = (userId: string) => {
-    setUsers(users.filter((user) => user.id !== userId));
-  };
-
-  const openEditDialog = (user: User) => {
-    setCurrentUser(user);
+  /** 게시물 수정 다이얼로그 열기 */
+  const openEditDialog = (post: ActivityPost) => {
+    setCurrentPost(post);
     setDialogMode('edit');
     setIsDialogOpen(true);
   };
 
-  const columns: ColumnDef<User>[] = [
+  const columns: ColumnDef<ActivityPost>[] = [
     {
       id: 'select',
       header: ({ table }) => (
@@ -146,34 +155,63 @@ export default function UsersPage() {
       enableHiding: false,
     },
     {
-      accessorKey: 'name',
-      header: 'Name',
+      accessorKey: 'title',
+      header: '제목',
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue('name')}</div>
+        <div className="font-medium">{row.getValue('title')}</div>
       ),
     },
     {
-      accessorKey: 'email',
-      header: 'Email',
+      accessorKey: 'writer',
+      header: '작성자',
+      cell: ({ row }) => <div>{row.getValue('writer')}</div>,
+    },
+    {
+      accessorKey: 'createdAt',
+      header: '작성일',
       cell: ({ row }) => (
-        <div className="lowercase">{row.getValue('email')}</div>
+        <div>{new Date(row.getValue('createdAt')).toLocaleDateString()}</div>
       ),
     },
     {
-      accessorKey: 'role',
-      header: 'Role',
+      accessorKey: 'type',
+      header: '카테고리',
+      cell: ({ row }) => <div>{row.getValue('type')}</div>,
+    },
+    // {
+    //   accessorKey: 'role',
+    //   header: 'Role',
+    //   cell: ({ row }) => {
+    //     const role = row.getValue('role');
+    //     return (
+    //       <Badge
+    //         className={`${
+    //           role === 'admin'
+    //             ? 'rounded-full bg-green-200 px-4 text-gray-600 shadow-none dark:bg-green-400/20 dark:text-white'
+    //             : 'rounded-full bg-blue-200 px-4 text-gray-600 shadow-none dark:bg-blue-400/20 dark:text-white'
+    //         }`}
+    //       >
+    //         {role as string}
+    //       </Badge>
+    //     );
+    //   },
+    // },
+    {
+      accessorKey: 'imageUrl',
+      header: '이미지',
       cell: ({ row }) => {
-        const role = row.getValue('role');
-        return (
-          <Badge
-            className={`${
-              role === 'admin'
-                ? 'rounded-full bg-green-200 px-4 text-gray-600 shadow-none dark:bg-green-400/20 dark:text-white'
-                : 'rounded-full bg-blue-200 px-4 text-gray-600 shadow-none dark:bg-blue-400/20 dark:text-white'
-            }`}
-          >
-            {role as string}
-          </Badge>
+        const imageUrl = row.getValue('imageUrl') as string | null;
+        return imageUrl ? (
+          <div className="relative h-[100px] w-[200px]">
+            <Image
+              src={imageUrl}
+              alt="게시물 이미지"
+              fill
+              className="rounded-md object-cover"
+            />
+          </div>
+        ) : (
+          <div className="text-gray-400">이미지 없음</div>
         );
       },
     },
@@ -181,7 +219,7 @@ export default function UsersPage() {
       id: 'actions',
       header: 'Actions',
       cell: ({ row }) => {
-        const user = row.original;
+        const post = row.original;
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -194,7 +232,7 @@ export default function UsersPage() {
               <Dialog>
                 <DialogTrigger asChild>
                   <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                    <Eye className="mr-2 h-4 w-4" /> View
+                    <Eye className="mr-2 h-4 w-4" /> 상세 보기
                   </DropdownMenuItem>
                 </DialogTrigger>
                 <DialogContent>
@@ -211,18 +249,18 @@ export default function UsersPage() {
               <DropdownMenuItem
                 onSelect={(e) => {
                   e.preventDefault();
-                  openEditDialog(user);
+                  openEditDialog(post);
                 }}
               >
-                <Edit className="mr-2 h-4 w-4" /> Edit
+                <Edit className="mr-2 h-4 w-4" /> 수정
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={(e) => {
                   e.preventDefault();
-                  handleDeleteSingleUser(user.id);
+                  handleDeleteSinglePost(post.board_id);
                 }}
               >
-                <Trash2 className="mr-2 h-4 w-4" /> Delete
+                <Trash2 className="mr-2 h-4 w-4" /> 삭제
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -232,7 +270,28 @@ export default function UsersPage() {
   ];
 
   return (
-    <div>
+    <div className="p-6">
+      <h2 className="mb-4 text-2xl font-bold">활동 게시물 관리</h2>
+
+      {/* 카테고리 필터 */}
+      <div className="mb-6 flex items-center gap-4">
+        <span className="font-medium">카테고리 필터:</span>
+        <Select
+          value={category}
+          onValueChange={(value) => setCategory(value as any)}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="카테고리 선택" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="공지">공지</SelectItem>
+            <SelectItem value="세미나">세미나</SelectItem>
+            <SelectItem value="행사">행사</SelectItem>
+            <SelectItem value="기타">기타</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -298,16 +357,22 @@ export default function UsersPage() {
         </DialogContent>
       </Dialog>
 
-      <DataTable
-        columns={columns}
-        data={users}
-        onAdd={() => {
-          setCurrentUser({ name: '', email: '', role: 'user' });
-          setDialogMode('add');
-          setIsDialogOpen(true);
-        }}
-        onDelete={handleDeleteUsers}
-      />
+      {isLoading ? (
+        <p className="text-center text-gray-500">데이터 불러오는 중...</p>
+      ) : error ? (
+        <p className="text-center text-red-500">오류 발생: {error.message}</p>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={posts}
+          onAdd={() => {
+            setCurrentUser({ name: '', email: '', role: 'user' });
+            setDialogMode('add');
+            setIsDialogOpen(true);
+          }}
+          onDelete={handleDeleteUsers}
+        />
+      )}
     </div>
   );
 }

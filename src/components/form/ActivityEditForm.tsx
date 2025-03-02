@@ -100,7 +100,28 @@ export default function ActivityEditForm({
             />
           </div>
 
-          {/* 이미지 */}
+          {/* 유형 선택 */}
+          <div className="space-y-2">
+            <Label className="text-lg font-bold">게시물 유형</Label>
+            <Select
+              value={formData.category}
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, category: value }))
+              }
+            >
+              <SelectTrigger className="rounded-lg shadow-lg">
+                <SelectValue placeholder="게시물 유형 선택하기" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="공지">공지</SelectItem>
+                <SelectItem value="세미나">세미나</SelectItem>
+                <SelectItem value="행사">행사</SelectItem>
+                <SelectItem value="기타">기타</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* 대표 이미지 */}
           <div className="space-y-2">
             <Label className="text-lg font-bold">대표 이미지</Label>
             <div className="flex items-start gap-4">
@@ -145,27 +166,6 @@ export default function ActivityEditForm({
                 )}
               </div>
             </div>
-          </div>
-
-          {/* 유형 선택 */}
-          <div className="space-y-2">
-            <Label className="text-lg font-bold">게시물 유형</Label>
-            <Select
-              value={formData.category}
-              onValueChange={(value) =>
-                setFormData((prev) => ({ ...prev, category: value }))
-              }
-            >
-              <SelectTrigger className="rounded-lg shadow-lg">
-                <SelectValue placeholder="게시물 유형 선택하기" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="공지">공지</SelectItem>
-                <SelectItem value="세미나">세미나</SelectItem>
-                <SelectItem value="행사">행사</SelectItem>
-                <SelectItem value="기타">기타</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
 
           <div className="space-y-2">

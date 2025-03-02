@@ -62,9 +62,9 @@ const fetchActivities = async ({
   // NCP Presigned URL 변환
   const postsData: ActivityPost[] = await Promise.all(
     result.data.posts.map(async (post) => {
-      const imagePath = post.images?.[0] ?? undefined; // 🔹 이미지가 없으면 undefined 유지
+      const imagePath = post.images?.[0] ?? undefined; // 이미지가 없으면 undefined 유지
       const imageUrl = imagePath
-        ? await fetchNcpPresignedUrl(imagePath).then((url) => url ?? undefined) // 🔹 null → undefined 변환
+        ? await fetchNcpPresignedUrl(imagePath).then((url) => url ?? undefined) // null → undefined 변환
         : undefined;
 
       return {

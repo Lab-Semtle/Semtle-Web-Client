@@ -21,16 +21,17 @@ import { useSession } from '@/hooks/useSession';
 import { signOutWithForm } from '@/lib/auth/auth.server';
 import { ROUTES } from '@/constants/Routes';
 import { Session } from 'next-auth';
+import { useState } from 'react';
 
 export default function NavUserMenu() {
-  const session = useSession(); // 서버에서 세션 가져오기
-  console.log('[NavUserMenu] 세션 데이터:', session);
+  const session = useSession();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <NavigationMenuList className="flex items-center gap-3">
       {session?.user ? (
         <NavigationMenuItem>
-          <LoginMenu session={session} />
+          <LoginMenu session={session} setIsMenuOpen={setIsMenuOpen} />
         </NavigationMenuItem>
       ) : (
         <>
@@ -48,14 +49,20 @@ export default function NavUserMenu() {
   );
 }
 
-function LoginMenu({ session }: { session: Session | null }) {
+function LoginMenu({
+  session,
+  setIsMenuOpen,
+}: {
+  session: Session | null;
+  setIsMenuOpen: (open: boolean) => void;
+}) {
   return (
-    <DropdownMenu>
+    <DropdownMenu onOpenChange={setIsMenuOpen}>
       <DropdownMenuTrigger asChild>
         <Avatar className="cursor-pointer">
           <AvatarImage
-            src={session?.profileImageUrl || '/images/default-profile.jpg'}
-            alt={session?.username || 'User'}
+            src={session?.user.image || '/images/default-profile.jpg'}
+            alt={session?.user.name || 'User'}
             onError={(e) => {
               (e.target as HTMLImageElement).src =
                 '/images/default-profile.jpg';
@@ -63,17 +70,14 @@ function LoginMenu({ session }: { session: Session | null }) {
             className="h-10 w-10 rounded-full border-2 border-gray-900"
           />
           <AvatarFallback>
-            {session?.username?.slice(0, 2) || '셈틀'}
+            {session?.user.name?.slice(0, 4) || '알수없음'}
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-40">
         <DropdownMenuLabel>
           <span className="block font-bold">
-            {session?.username || '사용자'}
-          </span>
-          <span className="block text-sm text-gray-500 dark:text-gray-400">
-            {session?.role || '알 수 없음'}
+            {session?.user.name || '사용자'}
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -90,7 +94,13 @@ function LoginMenu({ session }: { session: Session | null }) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <form action={signOutWithForm} className="w-full">
+          <form
+            action={async () => {
+              await signOutWithForm();
+              setIsMenuOpen(false);
+            }}
+            className="w-full"
+          >
             <button
               type="submit"
               className="w-full text-left text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-600"

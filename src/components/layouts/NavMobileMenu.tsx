@@ -52,7 +52,7 @@ export default function NavMobileMenu({
         </SheetHeader>
 
         <nav className="mt-4">
-          {/* 🔹 일반 메뉴 (로그인 상태와 무관하게 표시) */}
+          {/* 일반 메뉴 (로그인 상태와 무관하게 표시) */}
           {NAVIGATION_MENU.filter(
             (section) => section.label !== '사용자 메뉴',
           ).map((section, index) => (
@@ -77,9 +77,9 @@ export default function NavMobileMenu({
             </div>
           ))}
 
-          {/* 🔹 로그인 상태에 따라 '사용자 메뉴' OR '가입/로그인' 표시 */}
+          {/* 로그인 상태에 따라 '사용자 메뉴' OR '가입/로그인' 표시 */}
           {session?.user ? (
-            // ✅ 로그인 상태일 때: 사용자 메뉴 표시
+            // 로그인 상태일 때: 사용자 메뉴 표시
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300">
                 사용자 메뉴
@@ -113,7 +113,7 @@ export default function NavMobileMenu({
               </ul>
             </div>
           ) : (
-            // ✅ 로그아웃 상태일 때: 가입하기 & 로그인 버튼만 표시
+            // 로그아웃 상태일 때: 가입하기 & 로그인 버튼만 표시
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300">
                 사용자 메뉴

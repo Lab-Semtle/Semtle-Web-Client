@@ -4,14 +4,16 @@ import { useState } from 'react';
 import { GalleryVerticalEnd, ArrowLeft } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+// import { useSession } from 'next-auth/react';
+import { useSession } from '@/hooks/useSession';
 import { useToast } from '@/hooks/useToast';
 import { AdminLoginForm } from '@/components/form/AdminLoginForm';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 
 /** 관리자 인증 페이지 */
 export default function ManagerPage() {
-  const { data: session, status } = useSession();
+  // const { data: session, status } = useSession();
+  const session = useSession();
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);

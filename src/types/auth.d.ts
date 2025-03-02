@@ -8,6 +8,7 @@ export declare module 'next-auth' {
     refreshToken: string;
     id: string;
     username: string;
+    profileUrl: string;
   }
 
   // 클라이언트에서 현재 로그인된 사용자 정보 확인 시 사용
@@ -17,7 +18,11 @@ export declare module 'next-auth' {
     accessToken: string;
     refreshToken: string;
     id: string;
-    username: string;
+    user: {
+      name: string;
+      email: string; // 기본값?
+      image: string;
+    };
   }
 }
 
@@ -30,5 +35,6 @@ export declare module 'next-auth/jwt' {
     refreshToken: string;
     id: string;
     username: string;
+    profileUrl: string;
   }
 }

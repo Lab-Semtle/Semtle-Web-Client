@@ -120,7 +120,10 @@ export default function ProjectBoardPage() {
           if (activeTab === 'active') setFilteredProjects(projects);
         } else {
           setError(true);
-          console.error('Error loading active projects:', json.message);
+          console.error(
+            '프로젝트 공고 게시물 로딩 중 문제 발생:',
+            json.message,
+          );
         }
       } catch (error) {
         setError(true);
@@ -139,24 +142,39 @@ export default function ProjectBoardPage() {
         const response = await fetch(API_ROUTES.GET_PROMOTION_LIST('', 1, 50));
         const json = await response.json();
 
-        if (json.success && json.data?.content) {
-          const projects = json.data.content.map((item: any) => ({
-            id: item.projectBoardId,
-            title: item.title,
-            writer: item.writerName,
-            projectType: item.projectTypeCategoryName,
-            categories: item.relationFieldCategoryName || [],
-            endTime: item.projectRecruitingEndTime,
-          }));
-          setCompletedProjects(projects);
-          if (activeTab === 'completed') setFilteredProjects(projects);
-        } else {
+        // API 응답 검증
+        if (!json || !json.success) {
           setError(true);
-          console.error('Error loading completed projects:', json.message);
+          console.error(
+            'Error loading completed projects:',
+            json?.message || '응답 데이터 없음',
+          );
+          return;
         }
+
+        // 게시물이 없는 경우 처리
+        if (!json.data?.content || json.data.content.length === 0) {
+          console.warn('완료된 프로젝트가 없습니다.');
+          setCompletedProjects([]);
+          if (activeTab === 'completed') setFilteredProjects([]);
+          return;
+        }
+
+        // 정상적인 데이터 매핑
+        const projects = json.data.content.map((item: any) => ({
+          id: item.projectBoardId,
+          title: item.title,
+          writer: item.writerName,
+          projectType: item.projectTypeCategoryName,
+          categories: item.relationFieldCategoryName || [],
+          endTime: item.projectRecruitingEndTime,
+        }));
+
+        setCompletedProjects(projects);
+        if (activeTab === 'completed') setFilteredProjects(projects);
       } catch (error) {
         setError(true);
-        console.error('Failed to fetch completed projects:', error);
+        console.error('프로젝트 성과 데이터 로딩 중 문제 발생 : ', error);
       } finally {
         setLoading(false);
       }

@@ -11,7 +11,7 @@ export default function ExecutiveLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div>
+    <div className="relative min-h-screen">
       <ThemeProvider
         attribute="class"
         defaultTheme="system"

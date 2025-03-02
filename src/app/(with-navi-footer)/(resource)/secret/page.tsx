@@ -65,16 +65,12 @@ export default function SecretPage() {
         setLoading(true);
 
         if (!session) {
-          console.error(
-            '🚨 세션 정보가 없습니다. 로그인 후 다시 시도해주세요.',
-          );
+          console.error('세션 정보가 없습니다. 로그인 후 다시 시도해주세요.');
           return;
         }
 
         if (!session?.accessToken) {
-          console.error(
-            '🚨 인증 토큰이 없습니다. 로그인 후 다시 시도해주세요.',
-          );
+          console.error('인증 토큰이 없습니다. 로그인 후 다시 시도해주세요.');
           return;
         }
 
@@ -85,11 +81,6 @@ export default function SecretPage() {
           setLoading(false);
           return;
         }
-
-        console.log(
-          '[족보 게시판 조회] 요청:',
-          API_ROUTES.GET_ARCHIVE_LIST(page, 8, searchKeyword),
-        );
 
         const response = await fetch(
           API_ROUTES.GET_ARCHIVE_LIST(page, 8, searchKeyword),
@@ -102,18 +93,24 @@ export default function SecretPage() {
           },
         );
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error('❌ 서버 오류 응답:', errorText);
-          throw new Error(
-            `게시물 조회 실패: ${errorText || response.statusText}`,
-          );
+        if (response.status === 204) {
+          console.warn('서버 응답: 게시물이 없습니다.');
+          setSecretPost({ total_posts: 0, total_pages: 1, posts: [] });
+          return;
+        }
+
+        // 응답이 빈 문자열일 경우 json 파싱 X
+        const responseText = await response.text();
+        if (!responseText.trim()) {
+          console.warn('서버 응답이 비어 있습니다.');
+          setSecretPost({ total_posts: 0, total_pages: 1, posts: [] });
+          return;
         }
 
         const json = await response.json();
 
         if (json.success && json.data) {
-          const postsData = json.data.posts;
+          const postsData = json.data?.posts ?? [];
 
           // NCP Presigned URL 변환
           const updatedPosts = await Promise.all(
@@ -141,10 +138,12 @@ export default function SecretPage() {
           setSecretPost(processedData);
           cacheRef.current[cacheKey] = processedData; // 캐싱
         } else {
-          console.error('데이터 로드 실패:', json.message);
+          console.warn('데이터 없음:', json.message || '게시물이 없습니다.');
+          setSecretPost({ total_posts: 0, total_pages: 1, posts: [] }); // 빈 상태 설정
         }
       } catch (error) {
         console.error('데이터 가져오기 실패:', error);
+        setSecretPost({ total_posts: 0, total_pages: 1, posts: [] }); // 오류 발생 시 빈 데이터 설정
       } finally {
         setLoading(false);
       }
@@ -175,7 +174,7 @@ export default function SecretPage() {
     if (e.key === 'Enter') handleSearch();
   };
 
-  // ✅ 페이지 변경 핸들러
+  // 페이지 변경 핸들러
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
@@ -186,17 +185,16 @@ export default function SecretPage() {
     <main className="flex flex-col items-center px-6 pb-32 pt-24">
       <PageHeading
         title="Secret Note"
-        description="📝 학업, 학습과 관련된 자료를 자유롭게 공유하는 공간입니다."
+        description={`${String.fromCodePoint(0x1f4dd)} 학업, 학습과 관련된 자료를 자유롭게 공유하는 공간입니다.`}
       />
+
+      {/* 상단 바 (새글 작성, 검색 바) */}
       <div className="flex w-full items-center justify-center gap-4">
-        {/* 새 글 작성 버튼 */}
         <Button asChild>
           <Link href="/secret/edit" className="font-bold">
             새 글 작성하기
           </Link>
         </Button>
-
-        {/* 검색 입력창 */}
         <div className="w-[200px] sm:w-[300px]">
           <Input
             type="text"
@@ -207,11 +205,10 @@ export default function SecretPage() {
             className="rounded-md border border-gray-400 shadow-sm focus:border-gray-700 focus:ring-2 focus:ring-gray-600"
           />
         </div>
-
-        {/* 검색 버튼 */}
         <Button onClick={handleSearch}>검색</Button>
       </div>
 
+      {/* 게시물 목록 */}
       <section className="mx-auto mb-12 mt-8 grid max-w-[900px] grid-cols-1 place-items-center gap-x-9 gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {secretPost.posts.length === 0 ? (
           <p className="text-center text-xl font-semibold text-gray-500">
@@ -231,7 +228,7 @@ export default function SecretPage() {
         )}
       </section>
 
-      {/* ✅ 페이지네이션 추가 */}
+      {/* 페이지네이션 */}
       <section className="mb-12">
         <Pagination>
           <PaginationContent>

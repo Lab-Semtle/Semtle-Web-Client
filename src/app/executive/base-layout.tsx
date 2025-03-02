@@ -86,7 +86,7 @@ export function BaseLayout({ children }: { children: React.ReactNode }) {
     <div className="flex h-screen w-full overflow-hidden">
       <Sidebar>
         <SidebarHeader className="px-6 py-4">
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/executive" className="flex items-center space-x-2">
             <Home className="h-6 w-6" />
             <span className="text-xl font-semibold">공홈관리시스템</span>
           </Link>
@@ -107,6 +107,17 @@ export function BaseLayout({ children }: { children: React.ReactNode }) {
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
+            <SidebarMenuItem className="mt-4">
+              <SidebarMenuButton asChild tooltip="홈">
+                <Link
+                  href="/"
+                  className="flex items-center space-x-2 text-gray-700 transition hover:text-black dark:text-gray-300 dark:hover:text-white"
+                >
+                  <Home className="h-5 w-5" />
+                  <span>돌아가기</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter className="flex flex-row items-center gap-2">

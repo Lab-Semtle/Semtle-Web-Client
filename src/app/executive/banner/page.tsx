@@ -27,6 +27,7 @@ import { useFetchBanners } from '@/hooks/api/useFetchBanners';
 import PostFileUploader from '@/components/editor/PostFileUploader';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 // 배너 데이터 타입 정의
 export type Banner = {
@@ -43,6 +44,7 @@ export default function AdminBannerPage() {
   const { data: session, status } = useSession();
   const { banners, loading, error } = useFetchBanners();
   const [isDialogOpen, setIsDialogOpen] = useState(false); // 다이얼로그(팝업) 상태 관리
+  const router = useRouter();
   // const [dialogMode, setDialogMode] = useState<'add' | 'edit'>('add');
   const [currentBanner, setCurrentBanner] = useState<Partial<Banner>>({
     // 배너 입력 데이터 관리
@@ -95,7 +97,7 @@ export default function AdminBannerPage() {
       }
 
       alert('배너가 성공적으로 추가되었습니다!');
-      window.location.reload(); // UI 즉시 반영 (새로고침)
+      router.refresh();
     } catch (error) {
       console.error('배너 추가 오류:', error);
       alert('배너 추가에 실패했습니다.');
@@ -134,44 +136,44 @@ export default function AdminBannerPage() {
       );
 
       alert(`${rowsToDelete.length}개의 배너가 삭제되었습니다!`);
-      window.location.reload();
+      router.refresh();
     } catch (error) {
       console.error('배너 삭제 오류:', error);
       alert('일부 배너 삭제에 실패했습니다.');
     }
   };
 
-  // 개별 배너 삭제
-  const handleDeleteSingleBanner = async (bannerId: number) => {
-    if (!session?.accessToken) {
-      alert('인증이 필요합니다. 다시 로그인해주세요.');
-      return;
-    }
+  // // 개별 배너 삭제
+  // const handleDeleteSingleBanner = async (bannerId: number) => {
+  //   if (!session?.accessToken) {
+  //     alert('인증이 필요합니다. 다시 로그인해주세요.');
+  //     return;
+  //   }
 
-    if (!confirm('정말로 이 배너를 삭제하시겠습니까?')) return;
+  //   if (!confirm('정말로 이 배너를 삭제하시겠습니까?')) return;
 
-    try {
-      const response = await fetch(API_ROUTES.DELETE_BANNERS(bannerId), {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session.accessToken}`,
-        },
-      });
+  //   try {
+  //     const response = await fetch(API_ROUTES.DELETE_BANNERS(bannerId), {
+  //       method: 'DELETE',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authorization: `Bearer ${session.accessToken}`,
+  //       },
+  //     });
 
-      if (!response.ok) {
-        throw new Error(
-          `삭제 실패: ${response.status} - ${response.statusText}`,
-        );
-      }
+  //     if (!response.ok) {
+  //       throw new Error(
+  //         `삭제 실패: ${response.status} - ${response.statusText}`,
+  //       );
+  //     }
 
-      alert('배너가 성공적으로 삭제되었습니다!');
-      window.location.reload();
-    } catch (error) {
-      console.error('배너 삭제 오류:', error);
-      alert('배너 삭제에 실패했습니다.');
-    }
-  };
+  //     alert('배너가 성공적으로 삭제되었습니다!');
+  //     window.location.reload();
+  //   } catch (error) {
+  //     console.error('배너 삭제 오류:', error);
+  //     alert('배너 삭제에 실패했습니다.');
+  //   }
+  // };
 
   // 배너 편집 다이얼로그 열기
   // const openEditDialog = (banner: Banner) => {

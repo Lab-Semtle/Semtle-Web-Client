@@ -26,8 +26,6 @@ export const {
   providers: [
     Credentials({
       authorize: async (credentials) => {
-        console.log('[authorize] Credentials 인증 요청');
-
         // Zod 비동기 검증 (런타임 에러 방지)
         const validationFields = await loginSchema.safeParseAsync(credentials);
         if (!validationFields.success) {
@@ -52,28 +50,21 @@ export const {
           console.log('[authorize] API 응답 : ', response);
           if (!response.ok) {
             console.error(`[authorize] 로그인 실패: ${response.status}`);
-            return null; // 로그인 실패
+            return null;
           }
 
           const json = await response.json();
           console.log('[authorize] 로그인 성공:', json);
 
-          if (!json.success || !json.data || !json.data.accessToken) {
-            console.error(
-              '[authorize] 로그인 응답이 유효하지 않습니다. : ',
-              json,
-            );
-            return null;
-          }
-
           const userData = json.data;
 
-          // 3. NextAuth 세션으로 반환
+          // 세션으로 반환
           return {
             accessToken: userData.accessToken,
             refreshToken: userData.refreshToken,
             id: userData.uuid,
             username: userData.username ?? 'unknown',
+            profileUrl: userData.profileUrl ?? '/images/default-profile.jpg',
           };
         } catch (error) {
           console.error('[authorize] 로그인 처리 중 예외 발생:', error);
@@ -99,9 +90,10 @@ export const {
         token.accessToken = user.accessToken ?? '';
         token.refreshToken = user.refreshToken ?? '';
         token.id = user.id ?? '';
-        token.username = user.username ?? 'Unknown';
+        token.username = user.username ?? '알수없음';
+        token.profileUrl = user.profileUrl ?? '/images/default-profile.jpg';
       }
-      console.log('[jwt] 최종 토큰 값:', token);
+      console.log('[auth-jwt 콜백] 토큰 값:', token);
       return token;
     },
     // jwt 콜백이 반환하는 token 받아서 세션이 확인될 때마다 호출
@@ -109,9 +101,10 @@ export const {
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
       session.id = token.id;
-      session.username = token.username;
+      session.user.name = token.username;
+      session.user.image = token.profileUrl;
 
-      console.log('[session] 업데이트된 세션:', session);
+      console.log('[auth-session 콜백] 세션 업데이트 됨:', session);
       return session;
     },
     // 로그인 이후, 원래 위치한 페이지로 리다이렉트

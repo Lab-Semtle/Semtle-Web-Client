@@ -9,7 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import { API_ROUTES } from '@/constants/ApiRoutes';
-import { fetchPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
+import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
 
 interface PostData {
   board_id: number;
@@ -47,7 +47,7 @@ export default function ActivityPostPage() {
       if (success) {
         // 이미지 Presigned URL 변환
         const imageUrl = data.images?.[0]
-          ? await fetchPresignedUrl(data.images[0])
+          ? await fetchNcpPresignedUrl(data.images[0])
           : '/placeholder.svg';
 
         setPost({

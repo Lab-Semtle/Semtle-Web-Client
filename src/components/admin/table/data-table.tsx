@@ -110,7 +110,7 @@ export function DataTable<TData, TValue>({
           {/* 추가 버튼 */}
           {onAdd && (
             <Button onClick={onAdd}>
-              <Plus className="mr-2 h-4 w-4" /> 배너 추가하기
+              <Plus className="mr-2 h-4 w-4" /> 항목 추가하기
             </Button>
           )}
           {/* 속성 선택 드롭다운 메뉴 */}

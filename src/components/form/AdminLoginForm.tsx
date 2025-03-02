@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { LucideEye, LucideEyeOff } from 'lucide-react';
 
 type AdminLoginFormProps = {
-  onSubmit: (password: string) => Promise<void>;
+  onSubmit: React.FormEventHandler<HTMLFormElement>;
   loading: boolean;
 };
 
@@ -20,15 +20,9 @@ export function AdminLoginForm({
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!password.trim()) return; // 빈 비밀번호 방지
-    await onSubmit(password);
-  };
-
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={onSubmit}
       className={cn('flex flex-col gap-6', className)}
       {...props}
     >
@@ -46,6 +40,7 @@ export function AdminLoginForm({
           <div className="relative">
             <Input
               id="password"
+              name="password"
               type={showPassword ? 'text' : 'password'}
               required
               value={password}

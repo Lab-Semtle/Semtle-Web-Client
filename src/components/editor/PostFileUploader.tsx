@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, ChangeEvent, FormEvent, useRef } from 'react';
-import clsx from 'clsx'; // classNames 합치기용 라이브러리
+import clsx from 'clsx';
 
 interface UploadedFile {
   name: string;
@@ -9,13 +9,15 @@ interface UploadedFile {
 }
 
 interface FileUploadManagerProps {
-  postId: string; // 게시물 ID를 전달받음
-  className?: string; // 외부에서 추가할 클래스
+  postId: string;
+  className?: string;
+  onUploadSuccess?: (uploadedImagePath: string) => void;
 }
 
 export default function PostFileUploader({
   postId,
   className,
+  onUploadSuccess,
 }: FileUploadManagerProps) {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [file, setFile] = useState<File | null>(null);
@@ -42,7 +44,7 @@ export default function PostFileUploader({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          fileName: `${postId}/${file.name}`, // 게시물 ID를 경로로 사용
+          fileName: `${postId}/${file.name}`,
           fileType: file.type,
         }),
       });
@@ -55,11 +57,18 @@ export default function PostFileUploader({
         abortControllerRef.current.signal,
       );
 
-      alert('File uploaded successfully!');
+      alert('파일이 성공적으로 업로드 되었습니다!');
+
+      const uploadedPath = `/banner/${file.name}`; // 저장된 이미지 경로
       setUploadedFiles((prev) => [
         ...prev,
-        { name: file.name, key: `${postId}/${file.name}` },
+        { name: file.name, key: uploadedPath },
       ]);
+
+      if (onUploadSuccess) {
+        onUploadSuccess(uploadedPath); // 업로드 성공 후 콜백 실행
+      }
+
       setFile(null);
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -93,19 +102,19 @@ export default function PostFileUploader({
         if (xhr.status === 200) {
           resolve();
         } else {
-          reject(new Error(`Upload failed with status ${xhr.status}`));
+          reject(new Error(`업로드를 실패했습니다. : ${xhr.status}`));
         }
       };
 
       xhr.onerror = () => {
-        reject(new Error('Upload failed'));
+        reject(new Error('업로드 실패'));
       };
 
       xhr.send(file);
 
       signal.addEventListener('abort', () => {
         xhr.abort();
-        reject(new Error('Upload cancelled'));
+        reject(new Error('업로드 취소'));
       });
     });
   };
@@ -114,7 +123,7 @@ export default function PostFileUploader({
     <div
       className={clsx(
         'mb-4 rounded-lg border border-gray-300 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900',
-        className, // ✅ 외부에서 전달된 클래스 추가
+        className,
       )}
     >
       <h2 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">

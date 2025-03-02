@@ -17,12 +17,14 @@ export default function ManagerPage() {
   const [loading, setLoading] = useState(false);
 
   const handleAdminAuth = async (password: string) => {
-    console.log('🔍 [handleAdminAuth] 관리자 인증 요청 시작');
+    console.log('[handleAdminAuth] 관리자 인증 요청 시작');
 
     if (status === 'loading') {
       return;
     }
 
+    console.log('[handleAdminAuth] 현재 세션 : ', session);
+    console.log('[handleAdminAuth] 엑세스 토큰 : ', session?.accessToken);
     if (!session?.accessToken) {
       console.error('[handleAdminAuth] 인증 실패: 액세스 토큰 없음');
       toast({
@@ -49,7 +51,7 @@ export default function ManagerPage() {
 
       // 응답이 JSON이 아닐 수도 있음 → `text()`를 먼저 확인
       const responseText = await response.text();
-      console.log('🔍 [handleAdminAuth] 응답 데이터:', responseText);
+      console.log('[handleAdminAuth] 응답 데이터:', responseText);
 
       // JSON이 아닐 경우 예외 처리
       const result = responseText ? JSON.parse(responseText) : null;
@@ -71,16 +73,31 @@ export default function ManagerPage() {
       router.push('/executive');
     } catch (error) {
       console.error('[handleAdminAuth] 관리자 인증 요청 중 오류 발생:', error);
+
+      const errorMessage =
+        error instanceof Error ? error.message : '관리자 인증에 실패했습니다.';
+
       toast({
         variant: 'destructive',
         title: '로그인 실패',
-        description: error.message || '관리자 인증에 실패했습니다.',
+        description: errorMessage,
         duration: 2000,
       });
     } finally {
       setLoading(false);
       console.log('[handleAdminAuth] 관리자 인증 요청 종료');
     }
+  };
+
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (
+    event,
+  ) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const password = (formData.get('password') as string) || '';
+
+    if (!password.trim()) return;
+    await handleAdminAuth(password);
   };
 
   return (
@@ -108,7 +125,7 @@ export default function ManagerPage() {
               <ArrowLeft className="size-4" />
               돌아가기
             </button>
-            <AdminLoginForm onSubmit={handleAdminAuth} loading={loading} />
+            <AdminLoginForm onSubmit={handleSubmit} loading={loading} />
           </div>
         </div>
       </div>

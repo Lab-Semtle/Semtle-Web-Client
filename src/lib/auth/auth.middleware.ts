@@ -6,8 +6,16 @@ import { match } from 'path-to-regexp';
 import { getSession } from '@/lib/auth/auth.server';
 
 // 보호할 경로 설정, 배포 전 확인 필요
-const matchersForAuth = ['/setup/*', '/mypage/*', '/executive/*']; // 로그인 이후 접근 가능
-const matchersForSignIn = ['/signin/*', '/recruit/*']; // 로그인 후 접근 불가능
+const matchersForAuth = [
+  '/setup/*',
+  '/mypage/*',
+  '/executive/*',
+  '/secret/*',
+  '/projects/hire/edit/*',
+  '/projects/showcase/edit/*',
+  'activities/edit/*',
+]; // 로그인 이후 접근 가능
+const matchersForSignIn = ['/signin/*', '/recruit/*', '/manager/*']; // 로그인 후 접근 불가능
 
 export async function middleware(request: NextRequest) {
   // 인증이 필요한 경로 접근 시

@@ -1,4 +1,9 @@
-import { useInfiniteQuery, QueryFunctionContext } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import {
+  useInfiniteQuery,
+  useQueryClient,
+  QueryFunctionContext,
+} from '@tanstack/react-query';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
 
@@ -88,12 +93,22 @@ const fetchActivities = async ({
   };
 };
 
-// React Query 기반 무한 스크롤 API 훅 (NCP 적용)
+// React Query 기반 무한 스크롤 API 훅 (NCP 적용) + 에러 처리
 export function useFetchActivities(category: string) {
-  return useInfiniteQuery({
+  const queryClient = useQueryClient();
+
+  const query = useInfiniteQuery({
     queryKey: ['activities', category],
     queryFn: fetchActivities,
     getNextPageParam: (lastPage) => lastPage.nextPage ?? undefined,
     initialPageParam: 1,
   });
+
+  useEffect(() => {
+    if (query.error) {
+      console.error('[GET_ACTIVITY_LIST] API 요청 실패:', query.error);
+    }
+  }, [query.error]);
+
+  return query;
 }

@@ -1,7 +1,7 @@
 /** 활동게시판 최근 게시물 N개 조회 섹션 */
 
 'use client';
-import { useFetchActivitiesRecent } from '@/hooks/api/useFetchActivitiesRecent';
+import { useFetchActivitiesRecent } from '@/hooks/api/activity/useFetchRecentActivity';
 import ActivityCard2List from '@/components/card/ActivityCard2List';
 import { FadeUp } from '@/components/animation/FadeUp';
 

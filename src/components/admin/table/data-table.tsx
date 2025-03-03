@@ -40,6 +40,9 @@ interface DataTableProps<TData, TValue> {
   showSearch?: boolean;
   showPagination?: boolean;
   filterColumn?: string;
+  page?: number;
+  totalPages?: number;
+  onPageChange?: (newPage: number) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -50,6 +53,9 @@ export function DataTable<TData, TValue>({
   showSearch = true,
   showPagination = true,
   filterColumn = '',
+  page = 1, // 기본값 설정
+  totalPages = 1, // 기본값 설정
+  onPageChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);

@@ -12,7 +12,7 @@ import GoUp from '@/components/common/GoUp';
 import PageHeading from '@/components/common/PageHeading';
 import ActivityCard2List from '@/components/card/ActivityCard2List';
 import { useRouter } from 'next/navigation';
-import { useFetchActivities } from '@/hooks/api/useFetchActivities';
+import { useFetchActivities } from '@/hooks/api/activity/useFetchInfiniteActivity';
 
 /** 활동 게시판 페이지 */
 export default function ActivityBoardPage() {

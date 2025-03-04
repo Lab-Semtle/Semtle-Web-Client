@@ -113,6 +113,7 @@ export default function SecretPage() {
           const postsData = json.data?.posts ?? [];
 
           // NCP Presigned URL 변환
+          console.log('[secret page]---------');
           const updatedPosts = await Promise.all(
             postsData.map(async (post: Post) => {
               const imagePath = post.images?.[0] ?? undefined;

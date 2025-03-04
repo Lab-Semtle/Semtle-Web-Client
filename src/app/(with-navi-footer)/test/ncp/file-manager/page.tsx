@@ -1,4 +1,4 @@
-import NCPFileManager from '@/components/editor/NCPFileManager';
+import NCPFileManager from '@/components/file/NCPFileManager';
 
 export default function TestFileManager() {
   return (

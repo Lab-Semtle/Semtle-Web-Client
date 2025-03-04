@@ -2,38 +2,10 @@ import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
+import { mapActivityDetail, ActivityPost } from '@/types/activity';
 
-/** 활동 게시물 상세 타입 */
-interface ActivityPostDetail {
-  board_id: number;
-  title: string;
-  content: string;
-  writer: string;
-  createdAt: string;
-  type: string;
-  imageUrl?: string;
-}
-
-/** API 응답 타입 */
-interface ActivityPostResponse {
-  success: boolean;
-  message: string;
-  data?: {
-    board_id: number;
-    title: string;
-    content: string;
-    writer: string;
-    createdAt: string;
-    images?: (string | null)[]; // null 포함 가능
-    type: string;
-  };
-  error?: string | null;
-}
-
-// 활동 게시물 상세 조회 함수
-const fetchActivityDetail = async (
-  board_id: number,
-): Promise<ActivityPostDetail> => {
+/** 활동 게시물 상세 조회 함수 */
+const fetchActivityDetail = async (board_id: number): Promise<ActivityPost> => {
   console.log(`[GET_ACTIVITY_DETAIL] API 요청: board_id=${board_id}`);
 
   const response = await fetch(API_ROUTES.GET_ACTIVITY_DETAIL(board_id), {
@@ -46,32 +18,26 @@ const fetchActivityDetail = async (
     throw new Error(`Error ${response.status}: ${response.statusText}`);
   }
 
-  const result: ActivityPostResponse = await response.json();
+  const result = await response.json();
   console.log('[GET_ACTIVITY_DETAIL] API 응답 데이터:', result);
 
-  if (!result.success || !result.data) {
+  if (!result.success) {
     throw new Error(result.error ?? 'API 응답이 올바르지 않습니다.');
   }
 
-  // 대표 이미지 Presigned URL 변환
-  const imagePath = result.data.images?.[0] ?? undefined; // null → undefined 처리
-  const imageUrl =
-    imagePath && imagePath !== null
-      ? await fetchNcpPresignedUrl(imagePath).then((url) => url ?? undefined)
-      : undefined;
+  // API 데이터를 프론트에서 사용하는 타입으로 변환
+  const mappedData = mapActivityDetail(result);
 
-  return {
-    board_id: result.data.board_id,
-    title: result.data.title,
-    content: result.data.content,
-    writer: result.data.writer,
-    createdAt: result.data.createdAt,
-    type: result.data.type,
-    imageUrl,
-  };
+  // Presigned URL 변환
+  if (mappedData.image_url) {
+    mappedData.image_url =
+      (await fetchNcpPresignedUrl(mappedData.image_url)) || '';
+  }
+
+  return mappedData;
 };
 
-// 활동 게시물 상세 조회 훅
+/** 활동 게시물 상세 조회 훅 */
 export function useFetchActivityDetail(board_id: number) {
   const { data, error, isLoading } = useQuery({
     queryKey: ['activityDetail', board_id],
@@ -80,7 +46,6 @@ export function useFetchActivityDetail(board_id: number) {
     staleTime: 1000 * 60 * 5, // 5분 동안 캐싱
   });
 
-  // API 요청 실패 시 로그 출력
   useEffect(() => {
     if (error) {
       console.error('[GET_ACTIVITY_DETAIL] API 요청 실패:', error);

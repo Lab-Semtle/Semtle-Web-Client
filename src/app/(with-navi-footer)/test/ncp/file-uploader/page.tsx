@@ -1,4 +1,4 @@
-import NCPFileUploader from '@/components/editor/NCPFileUploader';
+import NCPFileUploader from '@/components/file/NCPFileUploader';
 
 export default function PostEditor() {
   return (

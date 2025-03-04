@@ -13,7 +13,7 @@ interface Activity {
   onClick: (id: number) => void;
 }
 
-export default function ActivityCard1({
+export default function CardList2({
   id,
   title,
   content,

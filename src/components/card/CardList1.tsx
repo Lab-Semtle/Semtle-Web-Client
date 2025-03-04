@@ -1,29 +1,35 @@
 'use client';
 import Image from 'next/image';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { FadeUp } from '@/components/animation/FadeUp';
 import { useRouter } from 'next/navigation';
 import RecentActivitySkeleton from '@/components/skeleton/RecentActivitySkeleton';
 
-interface ActivityPost {
-  board_id: number;
+interface CardItem1 {
+  id: number;
   title: string;
-  content: string;
-  writer: string;
-  createdAt: string;
-  type: string;
-  imageUrl?: string; // Presigned URL 사용
+  description: string;
+  author: string;
+  date: string;
+  category: string;
+  imageUrl?: string;
+  link?: string;
 }
 
-interface ActivityListProps {
-  posts: ActivityPost[];
+interface CardList1Props {
+  items: CardItem1[];
   loading: boolean;
   error: boolean;
+  onItemClick?: (id: number) => void;
 }
 
-const ActivityCard2List = ({ posts, loading, error }: ActivityListProps) => {
+const CardList1 = ({
+  items = [],
+  loading,
+  error,
+  onItemClick,
+}: CardList1Props) => {
   const router = useRouter();
-  const defaultImage = '/temp-server/sample-7.jpg';
+  const defaultImage = '/logo/semtle-logo-bg-square-v2022.png';
 
   return (
     <section>
@@ -46,7 +52,7 @@ const ActivityCard2List = ({ posts, loading, error }: ActivityListProps) => {
               </button>
             </div>
           </div>
-        ) : posts.length === 0 ? (
+        ) : items.length === 0 ? (
           <p className="text-center text-lg font-semibold text-gray-500">
             게시물이 존재하지 않습니다.
           </p>
@@ -56,19 +62,21 @@ const ActivityCard2List = ({ posts, loading, error }: ActivityListProps) => {
             className="flex w-full flex-col gap-2"
             staggerChildren={0.2}
           >
-            {posts.map((post) => (
-              <FadeUp key={post.board_id} direction="up">
+            {items.map((item) => (
+              <FadeUp key={item.id} direction="up">
                 <div
                   className="relative flex w-full cursor-pointer flex-col overflow-hidden rounded-xl p-3 transition-shadow hover:shadow-md lg:grid lg:grid-cols-5 lg:items-center lg:gap-8"
-                  onClick={() => router.push(`/activities/${post.board_id}`)}
+                  onClick={() =>
+                    item.link ? router.push(item.link) : onItemClick?.(item.id)
+                  }
                 >
                   {/* 이미지 컨테이너 */}
                   <div className="w-full lg:col-span-2">
                     <div className="mb-4 h-48 w-full overflow-hidden rounded-xl lg:mb-0">
                       <Image
                         className="aspect-[16/9] h-full w-full object-cover"
-                        src={post.imageUrl || defaultImage}
-                        alt={post.title}
+                        src={item.imageUrl || defaultImage}
+                        alt={item.title}
                         width={500}
                         height={300}
                       />
@@ -79,22 +87,22 @@ const ActivityCard2List = ({ posts, loading, error }: ActivityListProps) => {
                   <div className="w-full lg:col-span-3">
                     <blockquote>
                       <p className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                        {post.type}
+                        {item.category}
                       </p>
 
                       <h3 className="mb-1 text-lg font-bold lg:text-xl">
-                        {post.title}
+                        {item.title}
                       </h3>
 
                       <p className="text-base font-medium lg:text-lg lg:leading-normal">
-                        {post.content}
+                        {item.description}
                       </p>
 
                       <footer className="mt-6 text-sm text-muted-foreground">
                         <p>
-                          <span className="font-medium">{post.writer}</span>
+                          <span className="font-medium">{item.author}</span>
                           <span className="mx-2">•</span>
-                          <span>{post.createdAt}</span>
+                          <span>{item.date}</span>
                         </p>
                       </footer>
                     </blockquote>
@@ -109,4 +117,4 @@ const ActivityCard2List = ({ posts, loading, error }: ActivityListProps) => {
   );
 };
 
-export default ActivityCard2List;
+export default CardList1;

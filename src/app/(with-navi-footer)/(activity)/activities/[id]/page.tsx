@@ -46,6 +46,7 @@ export default function ActivityPostPage() {
       const { success, data } = await response.json();
       if (success) {
         // 이미지 Presigned URL 변환
+        console.log('[activities/id]===============');
         const imageUrl = data.images?.[0]
           ? await fetchNcpPresignedUrl(data.images[0])
           : '/placeholder.svg';

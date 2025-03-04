@@ -10,9 +10,9 @@ import {
 } from '@/components/ui/select';
 import GoUp from '@/components/common/GoUp';
 import PageHeading from '@/components/common/PageHeading';
-import ActivityCard2List from '@/components/card/ActivityCard2List';
+import CardList1 from '@/components/card/CardList1';
 import { useRouter } from 'next/navigation';
-import { useFetchActivities } from '@/hooks/api/activity/useFetchInfiniteActivity';
+import { useFetchInfiniteActivity } from '@/hooks/api/activity/useFetchInfiniteActivities';
 
 /** 활동 게시판 페이지 */
 export default function ActivityBoardPage() {
@@ -22,7 +22,7 @@ export default function ActivityBoardPage() {
 
   // React Query 기반 API 호출
   const { data, fetchNextPage, hasNextPage, isFetching, isLoading, error } =
-    useFetchActivities(category);
+    useFetchInfiniteActivity(category);
 
   // 무한 스크롤 감지
   const lastElementRef = useCallback(
@@ -83,8 +83,17 @@ export default function ActivityBoardPage() {
         </div>
 
         {/* 활동 리스트 렌더링 */}
-        <ActivityCard2List
-          posts={activities}
+        <CardList1
+          items={activities.map((post) => ({
+            id: post.id,
+            title: post.title,
+            description: post.content,
+            author: post.writer,
+            date: new Date(post.created_at).toLocaleDateString(),
+            category: post.type,
+            imageUrl: post.image_url,
+            link: `/activity/${post.id}`,
+          }))}
           loading={isLoading}
           error={!!error}
         />

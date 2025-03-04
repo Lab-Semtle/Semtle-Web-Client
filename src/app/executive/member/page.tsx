@@ -31,6 +31,7 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 
+// 데이터 타입 정의
 export type User = {
   id: string;
   name: string;
@@ -39,6 +40,7 @@ export type User = {
 };
 
 export default function UsersPage() {
+  // 초기값 설정
   const [users, setUsers] = useState<User[]>([
     {
       id: '1',
@@ -74,18 +76,23 @@ export default function UsersPage() {
 
   // 다이얼로그(팝업) 상태 관리
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  // 체크박스에서 현재 선택된 데이터 관리
   const [currentUser, setCurrentUser] = useState<Partial<User>>({
     name: '',
     email: '',
     role: 'user',
   });
+  // 다이얼로그 모드 (추가/수정)
   const [dialogMode, setDialogMode] = useState<'add' | 'edit'>('add');
 
-  // 사용자 추가 및 수정
+  /**
+   * 데이터 추가 또는 수정 함수
+   * - 사용자가 입력한 데이터를 기반으로 새로운 사용자를 추가하거나 기존 사용자를 수정
+   */
   const handleSaveUser = () => {
     if (currentUser.name && currentUser.email) {
       if (dialogMode === 'add') {
-        // 새로운 사용자 추가
+        // 새로운 데이터 추가
         const newUser: User = {
           id: String(users.length + 1),
           name: currentUser.name,
@@ -94,7 +101,7 @@ export default function UsersPage() {
         };
         setUsers([...users, newUser]);
       } else {
-        // 기존 사용자 수정
+        // 기존 데이터 수정
         setUsers(
           users.map((user) =>
             user.id === currentUser.id
@@ -110,26 +117,38 @@ export default function UsersPage() {
     }
   };
 
-  // 선택된 사용자 삭제
+  /**
+   * 선택한 여러 데이터 삭제
+   * - 테이블에서 선택한 사용자 목록을 받아와서 삭제 처리
+   */
   const handleDeleteUsers = (rowsToDelete: User[]) => {
     setUsers(
       users.filter((user) => !rowsToDelete.some((row) => row.id === user.id)),
     );
   };
 
-  // 개별 사용자 삭제
+  /**
+   * 개별 데이터 삭제
+   * - 특정 사용자 ID를 받아와서 해당 사용자를 삭제
+   */
   const handleDeleteSingleUser = (userId: string) => {
     setUsers(users.filter((user) => user.id !== userId));
   };
 
-  // 사용자 편집 다이얼로그 열기
+  /**
+   * 데이터 편집 다이얼로그 열기
+   * - 기존 데이터 정보를 불러와서 편집할 수 있도록 설정
+   */
   const openEditDialog = (user: User) => {
     setCurrentUser(user);
     setDialogMode('edit');
     setIsDialogOpen(true);
   };
 
-  // 테이블 컬럼 정의
+  /**
+   * 테이블 컬럼 정의
+   * - 사용자 데이터를 표시할 테이블의 각 열을 정의
+   */
   const columns: ColumnDef<User>[] = [
     {
       id: 'select',
@@ -249,6 +268,7 @@ export default function UsersPage() {
               {dialogMode === 'add' ? 'Add New User' : 'Edit User'}
             </DialogTitle>
           </DialogHeader>
+
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
@@ -307,7 +327,7 @@ export default function UsersPage() {
         </DialogContent>
       </Dialog>
 
-      {/* 데이터 테이블 렌더링 */}
+      {/* 데이터 테이블 */}
       <DataTable
         columns={columns}
         data={users}

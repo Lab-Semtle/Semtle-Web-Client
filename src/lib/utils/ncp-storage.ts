@@ -15,6 +15,11 @@ export interface FileObject {
   StorageClass?: string;
 }
 
+export interface FolderObject {
+  name: string;
+  path: string;
+}
+
 const NCP_ACCESS_KEY_ID = process.env.NEXT_PUBLIC_NCP_ACCESS_KEY_ID!;
 const NCP_SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_NCP_SECRET_ACCESS_KEY!;
 const NCP_BUCKET = process.env.NEXT_PUBLIC_NCP_BUCKET_NAME!;
@@ -61,21 +66,6 @@ export async function getSignedUrlForDownload(key: string): Promise<string> {
   }
 }
 
-// export async function listFiles(prefix: string = ''): Promise<FileObject[]> {
-//   const command = new ListObjectsV2Command({
-//     Bucket: NCP_BUCKET,
-//     Prefix: prefix,
-//   });
-
-//   try {
-//     const response = await S3.send(command);
-//     return response.Contents || [];
-//   } catch (error) {
-//     console.error('Error listing files:', error);
-//     throw error;
-//   }
-// }
-
 // prefix를 선택적(optional) 매개변수로 두어,
 // 특정 폴더(postId/) 아래의 파일만 가져올 수도 있고,
 // 전체 파일을 가져올 수도 있도록 변경
@@ -97,6 +87,44 @@ export async function listFiles(prefix?: string): Promise<FileObject[]> {
   } catch (error) {
     console.error('Error listing files:', error);
     throw error;
+  }
+}
+
+// 기존 수정 전 listFiles 코드
+// export async function listFiles(prefix: string = ''): Promise<FileObject[]> {
+//   const command = new ListObjectsV2Command({
+//     Bucket: NCP_BUCKET,
+//     Prefix: prefix,
+//   });
+
+//   try {
+//     const response = await S3.send(command);
+//     return response.Contents || [];
+//   } catch (error) {
+//     console.error('Error listing files:', error);
+//     throw error;
+//   }
+// }
+
+// NCP 폴더 목록 조회 기능 추가
+export async function listFolders(): Promise<FolderObject[]> {
+  const command = new ListObjectsV2Command({
+    Bucket: NCP_BUCKET,
+    Delimiter: '/', // 폴더 단위로 조회
+  });
+
+  try {
+    const response = await S3.send(command);
+
+    return (
+      response.CommonPrefixes?.map((prefix) => ({
+        name: prefix.Prefix?.replace(/\/$/, '') || '',
+        path: prefix.Prefix || '',
+      })) || []
+    );
+  } catch (error) {
+    console.error('Error listing folders:', error);
+    return [];
   }
 }
 

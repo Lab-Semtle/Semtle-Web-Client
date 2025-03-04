@@ -113,9 +113,7 @@ export const API_ROUTES = {
   GET_PROJECT_TYPE_CATEGORY: `${baseUrl}/api/v1/projecttypecategory/categorylist`, // 프로젝트 타입 카테고리 조회
 
   /** NCP */
-  // Cloudflare R2 파일 다운로드
   GET_NCP_SIGNED_URL: '/api/files-id', // NCP Presigned URL 요청 (POST)
 
-  // Cloudflare R2 파일 업로드
   UPLOAD_CLOUDFLARE_FILE: `/api/file/upload`,
 } as const;

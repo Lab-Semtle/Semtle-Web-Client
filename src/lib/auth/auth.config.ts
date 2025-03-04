@@ -93,7 +93,7 @@ export const {
         token.username = user.username ?? '알수없음';
         token.profileUrl = user.profileUrl ?? '/images/default-profile.jpg';
       }
-      console.log('[auth-jwt 콜백] 토큰 값:', token);
+      // console.log('[auth-jwt 콜백] 토큰 값:', token);
       return token;
     },
     // jwt 콜백이 반환하는 token 받아서 세션이 확인될 때마다 호출
@@ -104,7 +104,7 @@ export const {
       session.user.name = token.username;
       session.user.image = token.profileUrl;
 
-      console.log('[auth-session 콜백] 세션 업데이트 됨:', session);
+      // console.log('[auth-session 콜백] 세션 업데이트 됨:', session);
       return session;
     },
     // 로그인 이후, 원래 위치한 페이지로 리다이렉트

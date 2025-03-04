@@ -9,7 +9,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -19,8 +18,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, Trash2, Edit, Eye } from 'lucide-react';
+import { MoreHorizontal, Edit, Eye } from 'lucide-react';
 import { DataTable } from '@/components/admin/table/data-table';
+import { Badge } from '@/components/ui/badge';
+import { useFetchPaginatedActivity } from '@/hooks/api/activity/useFetchPaginatedActivities';
+import {
+  useCreateActivity,
+  useUpdateActivity,
+  useDeleteActivity,
+} from '@/hooks/api/activity/useManageActivity';
+import { ActivityPost, mapActivityList } from '@/types/activity';
+import ActivityEditForm from '@/components/form/ActivityEditForm'; // 활동게시물 수정/작성 폼
 import {
   Select,
   SelectContent,
@@ -28,28 +36,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { useFetchPaginatedActivities } from '@/hooks/api/activity/useFetchPaginatedActivity';
-import {
-  useCreateActivity,
-  useUpdateActivity,
-  useDeleteActivity,
-} from '@/hooks/api/activity/useMutateActivity';
+import { useSession } from 'next-auth/react';
 
-// 활동 게시물 타입 정의
-export type ActivityPost = {
-  board_id: number;
-  title: string;
-  content: string;
-  writer: string;
-  createdAt: string;
-  images?: string[];
-  type: string; // '공지' | '세미나' | '행사' | '기타';
-};
-
+// 타입 : '공지' | '세미나' | '행사' | '기타';
 export default function ActivityManagePage() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [dialogMode, setDialogMode] = useState<'add' | 'edit'>('add');
+  const { data: session } = useSession();
+  const [category, setCategory] = useState<'공지' | '세미나' | '행사' | '기타'>(
+    '공지',
+  );
+  const { posts, totalPages, isLoading, error, page, setPage } =
+    useFetchPaginatedActivity(category); // 초기값 페칭 훅
+  const createActivity = useCreateActivity(); // 생성 훅
+  const updateActivity = useUpdateActivity(); // 수정 훅
+  const deleteActivity = useDeleteActivity(); // 삭제 훅
+  const [isDialogOpen, setIsDialogOpen] = useState(false); // 팝업 상태
+  const [dialogMode, setDialogMode] = useState<'add' | 'edit'>('add'); // 팝업 모드
+  // 체크박스 선택 데이터 관리
   const [currentPost, setCurrentPost] = useState<Partial<ActivityPost>>({
     title: '',
     content: '',
@@ -57,43 +59,78 @@ export default function ActivityManagePage() {
     type: '기타',
   });
 
-  // React Query 훅 사용
-  const { posts, totalPages, isLoading, error, page, setPage } =
-    useFetchPaginatedActivities();
-  const createActivity = useCreateActivity();
-  const updateActivity = useUpdateActivity();
-  const deleteActivity = useDeleteActivity();
+  /** 게시물 추가/수정 핸들러 */
+  const handleSubmitForm = async (formData: FormData) => {
+    console.log(
+      '[handleSubmitForm] 요청 시작 - FormData:',
+      Object.fromEntries(formData.entries()),
+    );
 
-  // 게시물 저장 (추가 또는 수정)
-  const handleSavePost = async () => {
-    if (currentPost.title && currentPost.content && currentPost.writer) {
+    const newPost = {
+      title: formData.get('title') as string,
+      content: formData.get('content') as string,
+      writer: session?.user?.name || '관리자',
+      type: formData.get('category') as string,
+      image_url: (formData.get('imagePath') as string) || undefined,
+    };
+
+    console.log(
+      `[handleSubmitForm] ${dialogMode === 'add' ? '게시물 추가' : '게시물 수정'} 요청 데이터:`,
+      newPost,
+    );
+
+    try {
       if (dialogMode === 'add') {
-        createActivity.mutate(currentPost as ActivityPost);
+        console.log('[handleSubmitForm] createActivity 호출 시작...');
+        await createActivity.mutateAsync(newPost);
+        console.log('[handleSubmitForm] createActivity 성공!');
       } else {
-        updateActivity.mutate({
-          post_id: currentPost.board_id!,
-          ...currentPost,
+        if (!currentPost.id) {
+          throw new Error('게시물 ID가 없습니다.');
+        }
+
+        await updateActivity.mutateAsync({
+          post_id: currentPost.id!,
+          ...newPost,
         });
+        console.log('[handleSubmitForm] updateActivity 성공!');
       }
 
       setIsDialogOpen(false);
-      setCurrentPost({ title: '', content: '', writer: '', type: '기타' });
+      alert(`게시물이 ${dialogMode === 'add' ? '추가' : '수정'}되었습니다!`);
+    } catch (error) {
+      console.error('[handleSubmitForm] 게시물 저장 오류:', error);
+      alert('게시물 저장에 실패했습니다.');
     }
   };
 
-  // 게시물 삭제
-  const handleDeletePost = async (postId: number) => {
-    deleteActivity.mutate({ board_id: postId });
+  /** 선택 게시물 삭제 */
+  const handleDeletePost = async (selectedPosts: ActivityPost[]) => {
+    if (
+      !confirm(`정말로 ${selectedPosts.length}개의 게시물을 삭제하시겠습니까?`)
+    )
+      return;
+    try {
+      await Promise.all(
+        selectedPosts.map((post) =>
+          deleteActivity.mutateAsync({ board_id: post.id }),
+        ),
+      );
+      alert(`${selectedPosts.length}개의 게시물이 삭제되었습니다!`);
+    } catch (error) {
+      console.error('게시물 삭제 오류:', error);
+      alert('게시물 삭제에 실패했습니다.');
+    }
   };
 
-  // 수정 모드로 다이얼로그 열기
+  /** 수정모드 다이얼로그 열기 */
   const openEditDialog = (post: ActivityPost) => {
     setCurrentPost(post);
     setDialogMode('edit');
     setIsDialogOpen(true);
   };
 
-  // 테이블 컬럼 정의
+  /** 테이블 컬럼 */
   const columns: ColumnDef<ActivityPost>[] = [
     {
       id: 'select',
@@ -128,9 +165,11 @@ export default function ActivityManagePage() {
       cell: ({ row }) => <div>{row.getValue('writer')}</div>,
     },
     {
-      accessorKey: 'createdAt',
+      accessorKey: 'created_at',
       header: '작성일자',
-      cell: ({ row }) => <div>{row.getValue('createdAt')}</div>,
+      cell: ({ row }) => (
+        <div>{new Date(row.getValue('created_at')).toLocaleString()}</div>
+      ),
     },
     {
       accessorKey: 'type',
@@ -168,7 +207,7 @@ export default function ActivityManagePage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {/* <Dialog>
+              <Dialog>
                 <DialogTrigger asChild>
                   <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                     <Eye className="mr-2 h-4 w-4" /> 상세 보기
@@ -176,20 +215,21 @@ export default function ActivityManagePage() {
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <p>제목: {banner.postTitle}</p>
-                    <p>링크: {banner.targetPath}</p>
+                    <p>ID : {post.id}</p>
+                    <p>제목 : {post.title}</p>
+                    <p>유형 : {post.type}</p>
+                    <p>이미지 : {post.image_url}</p>
+                    <p>내용 : {post.content}</p>
+                    <p>작성자 : {post.writer}</p>
                     <p>
-                      생성 날짜: {new Date(banner.createdAt).toLocaleString()}
+                      작성 일자: {new Date(post.created_at).toLocaleString()}
                     </p>
                   </DialogHeader>
                 </DialogContent>
-              </Dialog> */}
+              </Dialog>
 
               <DropdownMenuItem onClick={() => openEditDialog(post)}>
-                <Edit className="mr-2 h-4 w-4" /> Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleDeletePost(post.board_id)}>
-                <Trash2 className="mr-2 h-4 w-4" /> Delete
+                <Edit className="mr-2 h-4 w-4" /> 수정 하기
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -218,34 +258,42 @@ export default function ActivityManagePage() {
                   {dialogMode === 'add' ? 'Add Post' : 'Edit Post'}
                 </DialogTitle>
               </DialogHeader>
-              <Input
-                placeholder="Title"
-                value={currentPost.title}
-                onChange={(e) =>
-                  setCurrentPost({ ...currentPost, title: e.target.value })
+
+              <ActivityEditForm
+                mode={dialogMode === 'add' ? 'create' : 'update'}
+                initialData={
+                  dialogMode === 'edit'
+                    ? {
+                        title: currentPost.title || '',
+                        category: currentPost.type || '기타',
+                        content: currentPost.content || '',
+                        imageUrl: currentPost.image_url || undefined,
+                      }
+                    : undefined
                 }
+                onSubmit={handleSubmitForm}
               />
-              <Input
-                placeholder="Content"
-                value={currentPost.content}
-                onChange={(e) =>
-                  setCurrentPost({ ...currentPost, content: e.target.value })
-                }
-              />
-              <Input
-                placeholder="Writer"
-                value={currentPost.writer}
-                onChange={(e) =>
-                  setCurrentPost({ ...currentPost, writer: e.target.value })
-                }
-              />
-              <DialogFooter>
-                <Button onClick={handleSavePost}>
-                  {dialogMode === 'add' ? 'Add' : 'Save'}
-                </Button>
-              </DialogFooter>
             </DialogContent>
           </Dialog>
+
+          <div className="mb-6 mt-4 flex justify-end px-4">
+            <Select
+              value={category}
+              onValueChange={(value) =>
+                setCategory(value as '공지' | '세미나' | '행사' | '기타')
+              }
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="카테고리 선택" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="공지">공지</SelectItem>
+                <SelectItem value="세미나">세미나</SelectItem>
+                <SelectItem value="행사">행사</SelectItem>
+                <SelectItem value="기타">기타</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
           {/* 활동 게시물 테이블 */}
           <DataTable
@@ -255,9 +303,19 @@ export default function ActivityManagePage() {
             totalPages={totalPages}
             onPageChange={setPage}
             onAdd={() => {
+              setCurrentPost({
+                title: '',
+                content: '',
+                writer: '',
+                type: '기타',
+              });
               setDialogMode('add');
               setIsDialogOpen(true);
             }}
+            onDelete={handleDeletePost} // 선택 삭제 활성화
+            showSearch={true} // 검색창 활성화
+            showPagination={true} // 페이지네이션 활성화
+            filterColumn="title" // 검색할 컬럼
           />
         </>
       )}

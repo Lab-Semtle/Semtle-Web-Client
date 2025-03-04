@@ -9,7 +9,7 @@ import { FolderArchive, Download } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import { API_ROUTES } from '@/constants/ApiRoutes';
-import { fetchPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
+import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
 
 type PostDetail = {
   post_id: number;
@@ -76,19 +76,21 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           throw new Error('유효한 데이터를 받지 못했습니다.');
         }
 
+        console.log('[secret/id]--------');
         // Presigned URL 변환 적용 (이미지 + 파일)
         const transformedImages = await Promise.all(
           (res.data.imageUrl ?? []).map(async (url: string, index: number) => ({
             image_id: `img-${index}`,
-            image_url: await fetchPresignedUrl(url), // Presigned URL 변환
+            image_url: await fetchNcpPresignedUrl(url), // Presigned URL 변환
             image_name: `이미지-${index + 1}`,
           })),
         );
 
+        console.log('[secret/id]--------');
         const transformedAttachments = await Promise.all(
           (res.data.fileUrl ?? []).map(async (url: string, index: number) => ({
             file_id: index,
-            file_url: await fetchPresignedUrl(url), // Presigned URL 변환
+            file_url: await fetchNcpPresignedUrl(url), // Presigned URL 변환
             file_name: `첨부파일-${index + 1}`,
             file_type: url.split('.').pop() ?? 'unknown',
             file_size: '알 수 없음',

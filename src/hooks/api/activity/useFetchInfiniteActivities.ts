@@ -6,33 +6,7 @@ import {
 } from '@tanstack/react-query';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
-
-/** 활동 게시물 타입 */
-interface ActivityPost {
-  board_id: number;
-  title: string;
-  content: string;
-  createdAt: string;
-  writer: string;
-  type: string;
-  imageUrl?: string;
-}
-
-/** API 응답 타입 */
-interface ActivityResponse {
-  total_post: number;
-  current_page: number;
-  total_pages: number;
-  posts: {
-    board_id: number;
-    title: string;
-    content: string;
-    createdAt: string;
-    writer: string;
-    type: string;
-    images?: string[];
-  }[];
-}
+import { mapActivityList, ActivityPost } from '@/types/activity';
 
 // `queryFn`의 매개변수 타입을 `QueryFunctionContext`로 지정
 const fetchActivities = async ({
@@ -56,45 +30,38 @@ const fetchActivities = async ({
     throw new Error(`Error ${response.status}: ${response.statusText}`);
   }
 
-  const result: { success: boolean; data: ActivityResponse } =
-    await response.json();
+  const result = await response.json();
   console.log('[GET_ACTIVITY_LIST] API 응답 데이터:', result);
 
-  if (!result.success || !Array.isArray(result.data.posts)) {
-    throw new Error('API 응답 형식이 올바르지 않습니다.');
+  if (!result.success) {
+    throw new Error('API 응답이 실패했습니다.');
   }
 
-  // NCP Presigned URL 변환
-  const postsData: ActivityPost[] = await Promise.all(
-    result.data.posts.map(async (post) => {
-      const imagePath = post.images?.[0] ?? undefined; // 이미지가 없으면 undefined 유지
-      const imageUrl = imagePath
-        ? await fetchNcpPresignedUrl(imagePath).then((url) => url ?? undefined) // null → undefined 변환
-        : undefined;
+  // API 데이터를 프론트에서 사용하는 타입으로 변환
+  const mappedData = mapActivityList(result.data);
 
-      return {
-        board_id: post.board_id,
-        title: post.title,
-        content: post.content,
-        createdAt: post.createdAt,
-        writer: post.writer,
-        type: post.type,
-        imageUrl,
-      };
+  // Presigned URL 변환
+  const postsData: ActivityPost[] = await Promise.all(
+    mappedData.posts.map(async (post) => {
+      if (post.image_url) {
+        const presignedUrl = await fetchNcpPresignedUrl(post.image_url);
+        return { ...post, image_url: presignedUrl ?? undefined };
+      }
+      return post;
     }),
   );
 
   return {
     posts: postsData,
     nextPage:
-      result.data.current_page < result.data.total_pages
+      mappedData.current_page < mappedData.total_pages
         ? pageParam + 1
         : undefined, // 다음 페이지 존재 여부
   };
 };
 
-// React Query 기반 무한 스크롤 API 훅 (NCP 적용) + 에러 처리
-export function useFetchActivities(category: string) {
+/** React Query 기반 무한 스크롤 API 훅 */
+export function useFetchInfiniteActivity(category: string) {
   const queryClient = useQueryClient();
 
   const query = useInfiniteQuery({

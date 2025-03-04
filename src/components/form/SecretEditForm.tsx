@@ -204,8 +204,8 @@ import {
   CardFooter,
   CardHeader,
 } from '@/components/ui/card';
-import SecretFileUploader from '@/components/uploader/SecretFileUploader';
-import SecretImageUploader from '@/components/uploader/SecretImageUploader';
+import SecretFileUploader from '@/components/file/SecretFileUploader';
+import SecretImageUploader from '@/components/file/SecretImageUploader';
 
 type FileItem = {
   id?: string;

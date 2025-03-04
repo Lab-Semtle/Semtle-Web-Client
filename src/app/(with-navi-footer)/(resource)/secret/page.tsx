@@ -1,7 +1,7 @@
 'use client';
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useFetchSecretPosts } from '@/hooks/api/secret/useFetchSecretPosts';
 import { Input } from '@/components/ui/input';
 import {
   Pagination,
@@ -15,40 +15,40 @@ import PostCard from '@/components/common/PostCard';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import PageHeading from '@/components/common/PageHeading';
-import { API_ROUTES } from '@/constants/ApiRoutes';
-import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
-
-/** 게시글 타입 */
-type Post = {
-  board_id: number;
-  title: string;
-  writer: string;
-  createdAt: string;
-  images?: string[];
-  imageUrl?: string;
-};
-
-/** API 응답 타입 */
-type SecretPost = {
-  total_posts: number;
-  total_pages: number;
-  posts: Post[];
-};
 
 export default function SecretPage() {
-  const { data: session, status } = useSession();
   const router = useRouter();
-  const [secretPost, setSecretPost] = useState<SecretPost>({
-    total_posts: 0,
-    total_pages: 1,
-    posts: [],
-  });
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const { secretPost, loading, fetchPosts, status } = useFetchSecretPosts();
 
-  // 캐싱을 위한 useRef 추가 (각 페이지 & 검색어별 데이터를 저장)
-  const cacheRef = useRef<{ [key: string]: SecretPost }>({});
+  // 디바운스: 입력 후 300ms 후 `debouncedSearchTerm` 업데이트
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 300); // 300ms 후 API 요청 실행
+
+    return () => clearTimeout(timer); // 이전 요청 취소
+  }, [searchTerm]); // searchTerm 변경 시 실행됨
+
+  // 검색어 변경될 때만 fetch 실행
+  useEffect(() => {
+    if (status === 'authenticated') {
+      fetchPosts(currentPage, debouncedSearchTerm);
+    }
+  }, [fetchPosts, currentPage, debouncedSearchTerm, status]); // `debouncedSearchTerm`이 바뀔 때만 실행됨
+
+  // // Debounce 적용: 입력 후 300ms 후에 fetch 실행
+  // useEffect(() => {
+  //   const debounceTimer = setTimeout(() => {
+  //     if (status === 'authenticated') {
+  //       fetchPosts(currentPage, searchTerm);
+  //     }
+  //   }, 300); // 300ms 후 API 요청 실행
+
+  //   return () => clearTimeout(debounceTimer); // 이전 요청 취소
+  // }, [fetchPosts, currentPage, searchTerm, status]);
 
   // 로그인되지 않은 경우 로그인 페이지로 리디렉트
   useEffect(() => {
@@ -58,121 +58,15 @@ export default function SecretPage() {
     }
   }, [status, router]);
 
-  // 데이터 Fetch 함수
-  const fetchPosts = useCallback(
-    async (page = 1, searchKeyword = '') => {
-      try {
-        setLoading(true);
-
-        if (!session) {
-          console.error('세션 정보가 없습니다. 로그인 후 다시 시도해주세요.');
-          return;
-        }
-
-        if (!session?.accessToken) {
-          console.error('인증 토큰이 없습니다. 로그인 후 다시 시도해주세요.');
-          return;
-        }
-
-        // 캐시 확인: 동일한 검색어 & 페이지가 있다면 API 호출 없이 사용
-        const cacheKey = `${searchKeyword}_${page}`;
-        if (cacheRef.current[cacheKey]) {
-          setSecretPost(cacheRef.current[cacheKey]);
-          setLoading(false);
-          return;
-        }
-
-        const response = await fetch(
-          API_ROUTES.GET_ARCHIVE_LIST(page, 8, searchKeyword),
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${session.accessToken}`,
-            },
-          },
-        );
-
-        if (response.status === 204) {
-          console.warn('서버 응답: 게시물이 없습니다.');
-          setSecretPost({ total_posts: 0, total_pages: 1, posts: [] });
-          return;
-        }
-
-        // 응답이 빈 문자열일 경우 json 파싱 X
-        const responseText = await response.text();
-        if (!responseText.trim()) {
-          console.warn('서버 응답이 비어 있습니다.');
-          setSecretPost({ total_posts: 0, total_pages: 1, posts: [] });
-          return;
-        }
-
-        const json = await response.json();
-
-        if (json.success && json.data) {
-          const postsData = json.data?.posts ?? [];
-
-          // NCP Presigned URL 변환
-          console.log('[secret page]---------');
-          const updatedPosts = await Promise.all(
-            postsData.map(async (post: Post) => {
-              const imagePath = post.images?.[0] ?? undefined;
-              const imageUrl = imagePath
-                ? await fetchNcpPresignedUrl(imagePath).then(
-                    (url) => url ?? undefined,
-                  )
-                : undefined;
-
-              return {
-                ...post,
-                imageUrl,
-              };
-            }),
-          );
-
-          const processedData = {
-            total_posts: json.data.total_post,
-            total_pages: json.data.total_pages,
-            posts: updatedPosts,
-          };
-
-          setSecretPost(processedData);
-          cacheRef.current[cacheKey] = processedData; // 캐싱
-        } else {
-          console.warn('데이터 없음:', json.message || '게시물이 없습니다.');
-          setSecretPost({ total_posts: 0, total_pages: 1, posts: [] }); // 빈 상태 설정
-        }
-      } catch (error) {
-        console.error('데이터 가져오기 실패:', error);
-        setSecretPost({ total_posts: 0, total_pages: 1, posts: [] }); // 오류 발생 시 빈 데이터 설정
-      } finally {
-        setLoading(false);
-      }
-    },
-    [session], // session이 변경될 때만 fetchPosts가 다시 생성됨
-  );
-
-  // useEffect 내부에 fetchPosts를 의존성으로 포함
-  useEffect(() => {
-    if (status === 'authenticated') {
-      fetchPosts(currentPage, searchTerm);
-    }
-  }, [fetchPosts, currentPage, searchTerm, status]);
-
-  if (loading)
-    return <p className="text-center text-lg font-semibold">Loading...</p>;
+  if (loading) {
+    return <p className="text-center text-lg font-semibold">로딩중...</p>;
+  }
 
   const totalPages = secretPost.total_pages;
 
-  // 검색 기능
-  const handleSearch = () => {
-    setCurrentPage(1);
-    cacheRef.current = {}; // 기존 캐시 초기화
-    fetchPosts(1, searchTerm);
-  };
-
-  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') handleSearch();
+  // 검색어 입력 핸들러
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
   };
 
   // 페이지 변경 핸들러
@@ -201,12 +95,10 @@ export default function SecretPage() {
             type="text"
             placeholder="검색어를 입력하세요."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={handleSearchKeyDown}
+            onChange={handleSearchChange}
             className="rounded-md border border-gray-400 shadow-sm focus:border-gray-700 focus:ring-2 focus:ring-gray-600"
           />
         </div>
-        <Button onClick={handleSearch}>검색</Button>
       </div>
 
       {/* 게시물 목록 */}

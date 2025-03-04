@@ -1,7 +1,9 @@
 export default function AdminOperationPage() {
   return (
     <main className="px-4 pt-24">
-      <h2 className="text-4xl font-bold">관리자 페이지 : 운영 관리</h2>
+      <h2 className="text-4xl font-bold text-gray-500">
+        학회 운영 데이터 관리 페이지 - 추가 개발 예정...
+      </h2>
     </main>
   );
 }

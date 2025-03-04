@@ -63,7 +63,7 @@ const navItems: NavItem[] = [
     icon: TrophyIcon,
   },
   {
-    title: '운영 DB',
+    title: '운영 DB (추가 예정)',
     href: '/executive/operation',
     icon: DatabaseZapIcon,
   },

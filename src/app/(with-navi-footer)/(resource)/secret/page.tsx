@@ -39,17 +39,6 @@ export default function SecretPage() {
     }
   }, [fetchPosts, currentPage, debouncedSearchTerm, status]); // `debouncedSearchTerm`이 바뀔 때만 실행됨
 
-  // // Debounce 적용: 입력 후 300ms 후에 fetch 실행
-  // useEffect(() => {
-  //   const debounceTimer = setTimeout(() => {
-  //     if (status === 'authenticated') {
-  //       fetchPosts(currentPage, searchTerm);
-  //     }
-  //   }, 300); // 300ms 후 API 요청 실행
-
-  //   return () => clearTimeout(debounceTimer); // 이전 요청 취소
-  // }, [fetchPosts, currentPage, searchTerm, status]);
-
   // 로그인되지 않은 경우 로그인 페이지로 리디렉트
   useEffect(() => {
     if (status === 'unauthenticated') {

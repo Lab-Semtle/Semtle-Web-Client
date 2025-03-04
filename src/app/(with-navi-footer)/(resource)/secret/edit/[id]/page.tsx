@@ -1,16 +1,17 @@
 'use client';
-import { use } from 'react';
+
+import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
 import SecretNoteEditor, { FormValues } from '@/components/form/SecretEditForm';
+import { API_ROUTES } from '@/constants/ApiRoutes';
 
 export default function ModifyPostEditor({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: number }>;
 }) {
-  const { id } = use(params);
+  const { id } = use(params); // use()로 언래핑
   const router = useRouter();
   const { data: session, status } = useSession();
   const [post, setPost] = useState<FormValues | null>(null);
@@ -26,104 +27,93 @@ export default function ModifyPostEditor({
 
   useEffect(() => {
     if (status === 'authenticated') {
-      // 게시글 데이터를 가져오는 로직
+      fetchPost();
     }
-
-    const fetchPost = async () => {
-      try {
-        const data = {
-          title: '임시 제목입니다!',
-          content: '이것은 임시 본문 내용입니다.',
-          created_at: new Date().toISOString(),
-        };
-
-        const initialFiles = [
-          {
-            id: '1',
-            name: 'example.pdf',
-            size: '2.5MB',
-            url: 'https://example.com/example.pdf',
-          },
-          {
-            id: '2',
-            name: 'archive.zip',
-            size: '2.5MB',
-            url: 'https://example.com/archive.zip',
-          },
-        ];
-
-        const initialImages = [
-          {
-            id: '1',
-            name: 'example1.jpg',
-            size: '1.5MB',
-            url: 'https://example.com/example1.jpg',
-          },
-          {
-            id: '2',
-            name: 'example2.png',
-            size: '2.2MB',
-            url: 'https://example.com/example2.png',
-          },
-        ];
-
-        setPost({
-          ...data,
-          initialFiles,
-          initialImages,
-        });
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError('알 수 없는 오류가 발생했습니다.');
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPost();
   }, [id, status]);
 
-  const handleUpdatePost = async (data: FormValues) => {
+  const fetchPost = async () => {
     try {
-      // 삭제 요청
-      const deletePayload = {
-        deletedFiles: data.deletedFiles || [],
-        deletedImages: data.deletedImages || [],
-      };
-
-      if (
-        deletePayload.deletedFiles.length > 0 ||
-        deletePayload.deletedImages.length > 0
-      ) {
-        await fetch(`/archives/${id}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(deletePayload),
-        });
-      }
-
-      // 수정 요청
-      const response = await fetch(`/archives/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+      setLoading(true);
+      const response = await fetch(API_ROUTES.GET_ARCHIVE_DETAIL(id), {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+        },
       });
 
       if (!response.ok) {
-        throw new Error('게시글 수정 실패');
+        throw new Error('게시글을 불러오는 데 실패했습니다.');
       }
 
       const result = await response.json();
-      router.push(`/secret/${result.post_id}`);
-    } catch (error) {
-      console.error('수정 오류:', error);
-      alert('수정 중 오류가 발생했습니다.');
+      const postData = result.data;
+
+      console.log('불러온 게시글 데이터:', postData);
+
+      setPost({
+        title: postData.title,
+        content: postData.content,
+        created_at: postData.createdAt,
+        imagePath: postData.imageUrl?.[0] || '',
+        filePaths: postData.fileUrl || [],
+      });
+    } catch (err) {
+      console.error('게시글 불러오기 오류:', err);
+      setError('게시글을 불러오는 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
     }
   };
 
+  const handleUpdatePost = async (data: FormData) => {
+    try {
+      console.log(
+        '게시글 수정 요청 데이터:',
+        Object.fromEntries(data.entries()),
+      );
+
+      if (status !== 'authenticated' || !session?.id) {
+        alert('로그인이 필요합니다.');
+        return;
+      }
+
+      // FormData를 일반 객체로 변환
+      const requestBody = {
+        writer: session.user?.name || '학회원',
+        content: data.get('content') as string,
+        title: data.get('title') as string,
+        uuid: session.id,
+        createdAt: data.get('created_at') as string,
+        imageUrl: data.get('imagePath')
+          ? [data.get('imagePath') as string]
+          : [],
+        fileUrl: data.getAll('filePaths') as string[],
+      };
+
+      console.log('[PUT] API 요청 데이터:', requestBody);
+
+      const response = await fetch(API_ROUTES.UPDATE_ARCHIVE(id), {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('서버 오류 응답:', errorData);
+        throw new Error(errorData.message || '게시글 수정 실패');
+      }
+
+      alert('게시글이 성공적으로 수정되었습니다!');
+      router.push(`/secret/${id}`);
+    } catch (error) {
+      console.error('게시글 수정 실패:', error);
+      alert('게시글을 수정하는 중 오류가 발생했습니다.');
+    }
+  };
   if (loading) return <p>로딩 중...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
@@ -131,9 +121,9 @@ export default function ModifyPostEditor({
     <div className="mx-auto mt-[100px] max-w-screen-lg p-4">
       {post && (
         <SecretNoteEditor
+          mode="update"
           initialValues={post}
-          onSubmit={handleUpdatePost}
-          isEdit={true}
+          onSubmit={handleUpdatePost} // FormData를 받도록 수정
         />
       )}
     </div>

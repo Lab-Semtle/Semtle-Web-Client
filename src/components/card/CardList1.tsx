@@ -1,4 +1,5 @@
 'use client';
+
 import Image from 'next/image';
 import { FadeUp } from '@/components/animation/FadeUp';
 import { useRouter } from 'next/navigation';

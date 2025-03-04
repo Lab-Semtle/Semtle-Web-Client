@@ -194,14 +194,14 @@ function RecentActivitySection({ limit = 3 }: RecentActivitySectionProps) {
   const { posts, loading, error } = useFetchRecentActivities(limit);
 
   const cardItems = posts.map((post) => ({
-    id: post.id,
+    id: post.board_id,
     title: post.title,
     description: post.content,
     author: post.writer,
-    date: post.created_at,
+    date: post.createdAt,
     category: post.type,
-    imageUrl: post.image_url,
-    link: `/activities/${post.id}`,
+    imageUrl: post.images?.[0] ?? undefined,
+    link: `/activities/${post.board_id}`,
   }));
 
   return (

@@ -2,14 +2,17 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
-import { ActivityPost, mapActivityList } from '@/types/activity';
+import {
+  ActivityPostResponseSchema,
+  ActivityResponseSchema,
+} from '@/types/activity';
 
 /** 활동 게시물 리스트 조회 함수 */
 const fetchPaginatedActivities = async (
   page: number,
   size: number,
   category?: string,
-): Promise<{ posts: ActivityPost[]; totalPages: number }> => {
+) => {
   console.log(
     `[GET_ACTIVITY_LIST] API 요청: page=${page}, size=${size}, category=${category}`,
   );
@@ -33,15 +36,15 @@ const fetchPaginatedActivities = async (
     throw new Error('API 응답 형식이 올바르지 않습니다.');
   }
 
-  // 백엔드 응답을 프론트에서 사용할 ActivityPost[] 형태로 변환
-  const mappedData = mapActivityList(result.data);
+  // api 응답 zod 스키마 검증
+  const validatedData = ActivityResponseSchema.parse(result.data);
 
-  // NCP Presigned URL 변환 적용
-  const postsData: ActivityPost[] = await Promise.all(
-    mappedData.posts.map(async (post) => {
-      if (post.image_url) {
-        const presignedUrl = await fetchNcpPresignedUrl(post.image_url);
-        return { ...post, image_url: presignedUrl ?? undefined };
+  // NCP Presigned URL 변환
+  const postsData = await Promise.all(
+    validatedData.posts.map(async (post) => {
+      if (post.images?.length && post.images[0]) {
+        const presignedUrl = await fetchNcpPresignedUrl(post.images[0]);
+        return { ...post, images: [presignedUrl ?? null] };
       }
       return post;
     }),
@@ -49,7 +52,7 @@ const fetchPaginatedActivities = async (
 
   return {
     posts: postsData,
-    totalPages: mappedData.total_pages, // API 응답 필드 사용
+    totalPages: validatedData.total_pages, // API 응답 필드 사용
   };
 };
 

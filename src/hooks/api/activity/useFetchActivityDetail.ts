@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
-import { mapActivityDetail, ActivityPost } from '@/types/activity';
+import { ActivityPostDetailSchema, ActivityPost } from '@/types/activity';
 
 /** 활동 게시물 상세 조회 함수 */
 const fetchActivityDetail = async (board_id: number): Promise<ActivityPost> => {
@@ -25,16 +25,22 @@ const fetchActivityDetail = async (board_id: number): Promise<ActivityPost> => {
     throw new Error(result.error ?? 'API 응답이 올바르지 않습니다.');
   }
 
-  // API 데이터를 프론트에서 사용하는 타입으로 변환
-  const mappedData = mapActivityDetail(result);
+  // API 응답을 Zod 스키마로 검증
+  const validatedData = ActivityPostDetailSchema.parse(result);
 
-  // Presigned URL 변환
-  if (mappedData.image_url) {
-    mappedData.image_url =
-      (await fetchNcpPresignedUrl(mappedData.image_url)) || '';
+  if (!validatedData.data) {
+    throw new Error('게시물 상세 정보를 불러올 수 없습니다.');
   }
 
-  return mappedData;
+  // Presigned URL 변환
+  const presignedUrl = validatedData.data.images?.[0]
+    ? await fetchNcpPresignedUrl(validatedData.data.images[0])
+    : null;
+
+  return {
+    ...validatedData.data,
+    images: validatedData.data.images ? [presignedUrl ?? null] : undefined,
+  };
 };
 
 /** 활동 게시물 상세 조회 훅 */

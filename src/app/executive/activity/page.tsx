@@ -10,7 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
@@ -27,7 +26,7 @@ import {
   useUpdateActivity,
   useDeleteActivity,
 } from '@/hooks/api/activity/useManageActivity';
-import { ActivityPost, mapActivityList } from '@/types/activity';
+import { ActivityPost } from '@/types/activity';
 import ActivityEditForm from '@/components/form/ActivityEditForm'; // 활동게시물 수정/작성 폼
 import {
   Select,
@@ -38,7 +37,6 @@ import {
 } from '@/components/ui/select';
 import { useSession } from 'next-auth/react';
 
-// 타입 : '공지' | '세미나' | '행사' | '기타';
 export default function ActivityManagePage() {
   const { data: session } = useSession();
   const [category, setCategory] = useState<'공지' | '세미나' | '행사' | '기타'>(
@@ -71,7 +69,9 @@ export default function ActivityManagePage() {
       content: formData.get('content') as string,
       writer: session?.user?.name || '관리자',
       type: formData.get('category') as string,
-      image_url: (formData.get('imagePath') as string) || undefined,
+      images: formData.get('imagePath')
+        ? [formData.get('imagePath') as string]
+        : [],
     };
 
     console.log(
@@ -82,22 +82,35 @@ export default function ActivityManagePage() {
     try {
       if (dialogMode === 'add') {
         console.log('[handleSubmitForm] createActivity 호출 시작...');
-        await createActivity.mutateAsync(newPost);
-        console.log('[handleSubmitForm] createActivity 성공!');
+        await createActivity
+          .mutateAsync(newPost)
+
+          .then(() => {
+            console.log('[handleSubmitForm] createActivity 성공!');
+            alert('게시물이 추가되었습니다!');
+            setIsDialogOpen(false);
+          })
+          .catch((error) => {
+            console.error('[handleSubmitForm] createActivity 오류:', error);
+            alert('게시물 추가 중 오류가 발생했습니다.');
+          });
       } else {
-        if (!currentPost.id) {
+        if (!currentPost.board_id) {
           throw new Error('게시물 ID가 없습니다.');
         }
 
-        await updateActivity.mutateAsync({
-          post_id: currentPost.id!,
-          ...newPost,
-        });
-        console.log('[handleSubmitForm] updateActivity 성공!');
+        await updateActivity
+          .mutateAsync({ board_id: currentPost.board_id!, ...newPost })
+          .then(() => {
+            console.log('[handleSubmitForm] updateActivity 성공!');
+            alert('게시물이 수정되었습니다!');
+            setIsDialogOpen(false);
+          })
+          .catch((error) => {
+            console.error('[handleSubmitForm] updateActivity 오류:', error);
+            alert('게시물 수정 중 오류가 발생했습니다.');
+          });
       }
-
-      setIsDialogOpen(false);
-      alert(`게시물이 ${dialogMode === 'add' ? '추가' : '수정'}되었습니다!`);
     } catch (error) {
       console.error('[handleSubmitForm] 게시물 저장 오류:', error);
       alert('게시물 저장에 실패했습니다.');
@@ -113,7 +126,7 @@ export default function ActivityManagePage() {
     try {
       await Promise.all(
         selectedPosts.map((post) =>
-          deleteActivity.mutateAsync({ board_id: post.id }),
+          deleteActivity.mutateAsync({ board_id: post.board_id }),
         ),
       );
       alert(`${selectedPosts.length}개의 게시물이 삭제되었습니다!`);
@@ -165,11 +178,26 @@ export default function ActivityManagePage() {
       cell: ({ row }) => <div>{row.getValue('writer')}</div>,
     },
     {
-      accessorKey: 'created_at',
+      accessorKey: 'createdAt',
       header: '작성일자',
-      cell: ({ row }) => (
-        <div>{new Date(row.getValue('created_at')).toLocaleString()}</div>
-      ),
+      cell: ({ row }) => {
+        const rawDate = row.getValue('createdAt') as string;
+
+        // 날짜 형식 변환 (ISO 8601 형식으로 보장)
+        let parsedDate = new Date(rawDate);
+
+        // 변환 실패 시, 수동으로 포맷 보정
+        if (isNaN(parsedDate.getTime())) {
+          parsedDate = new Date(rawDate.replace(' ', 'T')); // "YYYY-MM-DD HH:MM:SS" -> "YYYY-MM-DDTHH:MM:SS"
+        }
+
+        // 여전히 잘못된 날짜라면, 기본값 설정
+        if (isNaN(parsedDate.getTime())) {
+          return <span className="text-red-500">유효하지 않은 날짜</span>;
+        }
+
+        return <div>{parsedDate.toLocaleString()}</div>;
+      },
     },
     {
       accessorKey: 'type',
@@ -215,16 +243,15 @@ export default function ActivityManagePage() {
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <p>ID : {post.id}</p>
-                    <p>제목 : {post.title}</p>
-                    <p>유형 : {post.type}</p>
-                    <p>이미지 : {post.image_url}</p>
-                    <p>내용 : {post.content}</p>
-                    <p>작성자 : {post.writer}</p>
-                    <p>
-                      작성 일자: {new Date(post.created_at).toLocaleString()}
-                    </p>
+                    <DialogTitle>게시물 상세 보기</DialogTitle>
                   </DialogHeader>
+                  <p>ID : {post.board_id}</p>
+                  <p>제목 : {post.title}</p>
+                  <p>유형 : {post.type}</p>
+                  <p>이미지 : {post.images?.[0]}</p>
+                  <p>내용 : {post.content}</p>
+                  <p>작성자 : {post.writer}</p>
+                  <p>작성 일자: {new Date(post.createdAt).toLocaleString()}</p>
                 </DialogContent>
               </Dialog>
 
@@ -267,7 +294,7 @@ export default function ActivityManagePage() {
                         title: currentPost.title || '',
                         category: currentPost.type || '기타',
                         content: currentPost.content || '',
-                        imageUrl: currentPost.image_url || undefined,
+                        imageUrl: currentPost.images?.[0] || undefined,
                       }
                     : undefined
                 }
@@ -304,10 +331,12 @@ export default function ActivityManagePage() {
             onPageChange={setPage}
             onAdd={() => {
               setCurrentPost({
+                board_id: undefined,
                 title: '',
                 content: '',
-                writer: '',
+                writer: session?.user?.name || '관리자',
                 type: '기타',
+                images: [],
               });
               setDialogMode('add');
               setIsDialogOpen(true);

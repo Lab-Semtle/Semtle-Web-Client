@@ -6,7 +6,7 @@ import {
 } from '@tanstack/react-query';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
-import { mapActivityList, ActivityPost } from '@/types/activity';
+import { ActivityResponseSchema, ActivityPost } from '@/types/activity';
 
 // `queryFn`의 매개변수 타입을 `QueryFunctionContext`로 지정
 const fetchActivities = async ({
@@ -37,24 +37,27 @@ const fetchActivities = async ({
     throw new Error('API 응답이 실패했습니다.');
   }
 
-  // API 데이터를 프론트에서 사용하는 타입으로 변환
-  const mappedData = mapActivityList(result.data);
+  // API 응답을 Zod 스키마로 검증
+  const validatedData = ActivityResponseSchema.parse(result.data);
 
   // Presigned URL 변환
   const postsData: ActivityPost[] = await Promise.all(
-    mappedData.posts.map(async (post) => {
-      if (post.image_url) {
-        const presignedUrl = await fetchNcpPresignedUrl(post.image_url);
-        return { ...post, image_url: presignedUrl ?? undefined };
-      }
-      return post;
+    validatedData.posts.map(async (post) => {
+      const presignedUrl = post.images?.[0]
+        ? await fetchNcpPresignedUrl(post.images[0])
+        : null;
+
+      return {
+        ...post,
+        images: post.images ? [presignedUrl ?? null] : undefined,
+      };
     }),
   );
 
   return {
     posts: postsData,
     nextPage:
-      mappedData.current_page < mappedData.total_pages
+      validatedData.current_page < validatedData.total_pages
         ? pageParam + 1
         : undefined, // 다음 페이지 존재 여부
   };

@@ -38,19 +38,19 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   {
-    title: '대시보드',
+    title: '대시보드 (추가 예정)',
     href: '/executive',
     icon: LayoutDashboard,
-  },
-  {
-    title: '배너 관리',
-    href: '/executive/banner',
-    icon: GalleryThumbnails,
   },
   {
     title: '학회원 관리',
     href: '/executive/member',
     icon: UserRoundCheck,
+  },
+  {
+    title: '배너 관리',
+    href: '/executive/banner',
+    icon: GalleryThumbnails,
   },
   {
     title: '활동 게시판',
@@ -68,12 +68,12 @@ const navItems: NavItem[] = [
     icon: DatabaseZapIcon,
   },
   {
-    title: '캘린더',
+    title: '캘린더 (추가 예정)',
     href: '/executive/calendar',
     icon: Calendar1,
   },
   {
-    title: '작업관리',
+    title: '작업관리 (추가 예정)',
     href: '/executive/kanban',
     icon: SquareKanban,
   },

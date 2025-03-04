@@ -85,14 +85,15 @@ export default function ActivityBoardPage() {
         {/* 활동 리스트 렌더링 */}
         <CardList1
           items={activities.map((post) => ({
-            id: post.id,
+            id: post.board_id,
             title: post.title,
             description: post.content,
             author: post.writer,
-            date: new Date(post.created_at).toLocaleDateString(),
+            date: new Date(post.createdAt).toLocaleDateString(),
             category: post.type,
-            imageUrl: post.image_url,
-            link: `/activity/${post.id}`,
+            imageUrl: post.images?.[0] ?? undefined,
+            link: `/activities/${post.board_id}`,
+            key: post.board_id,
           }))}
           loading={isLoading}
           error={!!error}

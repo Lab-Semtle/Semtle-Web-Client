@@ -1,20 +1,28 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 import { useSession } from 'next-auth/react';
-import { ActivityPost, mapActivityPost } from '@/types/activity';
+import { ActivityPostResponseSchema } from '@/types/activity';
 
 /** 게시물 생성 요청 타입 */
 interface CreateActivityPost {
   title: string;
   content: string;
   writer: string;
-  image_url: string;
+  images?: string[];
   type: string;
 }
+//createdAt
+//uuid
 
 /** 게시물 수정 요청 타입 */
-interface UpdateActivityPost extends Partial<CreateActivityPost> {
-  post_id: number;
+interface UpdateActivityPost {
+  board_id: number;
+  title: string;
+  content: string;
+  writer: string;
+  images?: string[];
+  type: string;
+  createdAt?: string;
 }
 
 /** 게시물 삭제 요청 타입 */
@@ -26,11 +34,11 @@ interface DeleteActivityPost {
 interface ActivityMutationResponse {
   success: boolean;
   message: string;
-  data?: ActivityPost | null;
+  data?: unknown;
   error?: string | null;
 }
 
-// 게시물 생성 훅 (CREATE)
+/** 게시물 생성 훅 (CREATE) */
 export function useCreateActivity() {
   const queryClient = useQueryClient();
   const { data: session } = useSession();
@@ -43,18 +51,19 @@ export function useCreateActivity() {
 
       // 토큰 가져오기 (세션에서 가져오고, 없으면 localStorage에서 가져옴)
       const accessToken = session?.accessToken || localStorage.getItem('token');
+      console.log('[CREATE_ACTIVITY] accessToken 확인:', accessToken);
+
       if (!accessToken) {
         console.error('[CREATE_ACTIVITY] 인증 실패: 로그인 필요');
         throw new Error('인증 정보가 없습니다. 다시 로그인해주세요.');
       }
 
-      console.log(postData.image_url);
-      const enrichedPostData = {
-        ...postData,
-        // uuid: session?.id ?? '', // 세션에서 UUID 가져오기
-        createdAt: new Date().toISOString(), // 현재 시간 추가
-        images: [postData.image_url],
-      };
+      // const enrichedPostData = {
+      //   ...postData,
+      //   uuid: session?.id, // 세션에서 UUID 가져오기
+      //   createdAt: new Date().toISOString(), // 현재 시간 추가
+      //   images: [postData.images],
+      // };
 
       const response = await fetch(API_ROUTES.CREATE_ACTIVITY, {
         method: 'POST',
@@ -63,13 +72,13 @@ export function useCreateActivity() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(enrichedPostData),
+        body: JSON.stringify(postData),
       });
 
+      console.log('[CREATE_ACTIVITY] 응답 상태 코드:', response.status);
       if (!response.ok) {
-        console.error(
-          `[CREATE_ACTIVITY] 요청 실패: ${response.status} ${response.statusText}`,
-        );
+        const errorMessage = `Error ${response.status}: ${response.statusText}`;
+        console.error('[CREATE_ACTIVITY] API 요청 실패:', errorMessage);
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
 
@@ -80,10 +89,11 @@ export function useCreateActivity() {
         throw new Error(result.error || '게시물 생성 실패');
       }
 
-      return {
-        ...result,
-        data: result.data ? mapActivityPost(result.data) : null,
-      };
+      // 데이터가 null이면 기본값 할당
+      const validatedData = result.data
+        ? ActivityPostResponseSchema.parse(result.data)
+        : null; // <- null을 허용하도록 수정
+      return { ...result, data: validatedData };
     },
     onSuccess: () => {
       console.log('[CREATE_ACTIVITY] 게시물 생성 성공! 데이터 갱신 중...');
@@ -95,7 +105,7 @@ export function useCreateActivity() {
   });
 }
 
-// 게시물 수정 훅 (UPDATE)
+/** 게시물 수정 훅 (UPDATE) */
 export function useUpdateActivity() {
   const queryClient = useQueryClient();
   const { data: session } = useSession();
@@ -104,7 +114,7 @@ export function useUpdateActivity() {
     mutationFn: async (
       updateData: UpdateActivityPost,
     ): Promise<ActivityMutationResponse> => {
-      if (!updateData.post_id) throw new Error('post_id가 없습니다.');
+      if (!updateData.board_id) throw new Error('board_id가 없습니다.');
 
       console.log('[UPDATE_ACTIVITY] 요청 시작:', updateData);
 
@@ -114,14 +124,22 @@ export function useUpdateActivity() {
         throw new Error('인증 정보가 없습니다. 다시 로그인해주세요.');
       }
 
-      // image_url을 포함하여 업데이트 요청
-      const updatedPostData = {
-        ...updateData,
-        image_url: updateData.images || undefined,
+      console.log('[UPDATE_ACTIVITY] session ID:', session?.id);
+
+      // 자동 생성 필드 제거 후 전송
+      const updatedPostData: Partial<UpdateActivityPost> = {
+        title: updateData.title ?? '',
+        content: updateData.content ?? '',
+        writer: session?.user?.name ?? '관리자',
+        images: updateData.images ?? [],
+        type: updateData.type ?? '기타',
+        createdAt: updateData.createdAt ?? new Date().toISOString(),
       };
 
+      console.log('[UPDATE_ACTIVITY] 최종 전송 데이터:', updatedPostData);
+
       const response = await fetch(
-        API_ROUTES.UPDATE_ACTIVITY(updateData.post_id),
+        API_ROUTES.UPDATE_ACTIVITY(updateData.board_id),
         {
           method: 'PUT',
           headers: {
@@ -143,14 +161,12 @@ export function useUpdateActivity() {
       const result = await response.json();
       console.log('[UPDATE_ACTIVITY] 응답 데이터:', result);
 
+      // success 값이 true면 data가 null이더라도 오류를 던지지 않도록 수정
       if (!result.success) {
         throw new Error(result.error || '게시물 수정 실패');
       }
 
-      return {
-        ...result,
-        data: result.data ? mapActivityPost(result.data) : null,
-      };
+      return { success: true, message: result.message, data: null };
     },
     onSuccess: () => {
       console.log('[UPDATE_ACTIVITY] 게시물 수정 성공! 데이터 갱신 중...');
@@ -162,7 +178,7 @@ export function useUpdateActivity() {
   });
 }
 
-// 게시물 삭제 훅 (DELETE)
+/** 게시물 삭제 훅 (DELETE) */
 export function useDeleteActivity() {
   const queryClient = useQueryClient();
   const { data: session } = useSession();

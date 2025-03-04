@@ -131,7 +131,7 @@ export default function ActivityPostPage() {
 
               <div className="relative aspect-video w-full overflow-hidden rounded-xl">
                 <Image
-                  src={post.imageUrl || '/placeholder.svg'}
+                  src={post.imageUrl || '/logo/semtle-logo-bg-square-v2022.png'}
                   alt="게시물 이미지"
                   fill
                   className="rounded-xl object-cover"

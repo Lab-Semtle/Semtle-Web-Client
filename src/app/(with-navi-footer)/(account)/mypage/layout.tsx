@@ -35,20 +35,17 @@ function MyPageLayoutContent({ content }: { content: React.ReactNode }) {
           <div className="flex items-center gap-4">
             <Avatar className="h-24 w-24">
               <AvatarImage
-                src={
-                  session?.user?.profileImageUrl ||
-                  '/images/default-profile.jpg'
-                }
+                src={session?.user.image || '/images/default-profile.jpg'}
                 alt="User Avatar"
               />
               <AvatarFallback>
-                {session?.user?.username?.charAt(0) || 'U'}
+                {session?.user.name.charAt(4) || 'USER'}
               </AvatarFallback>
             </Avatar>
             <span className="text-2xl font-bold tracking-tight">
               {status === 'loading'
                 ? '로딩 중...'
-                : session?.user?.username || '유저 이름'}
+                : session?.user.name || '유저 이름'}
             </span>
           </div>
         </div>

@@ -5,20 +5,44 @@
 
 import useSWR from 'swr';
 import { useSession } from 'next-auth/react';
-import {
-  ApiResponseWithMessage,
-  ApiResponseWithData,
-  isApiResponseError,
-} from '@/types/api';
+import { API_ROUTES } from '@/constants/ApiRoutes';
 
-export interface UserSetup {
-  name: string;
-  birth: string;
-  phone: string;
+/** 사용자 정보 타입 */
+export interface UserProfile {
+  uuid: string;
+  email: string;
+  studentId?: string;
+  username: string;
+  birth?: string;
+  phone?: string;
+  role: string;
+  manageApprovalStatus: boolean;
   profileImageUrl?: string;
 }
 
-const fetcher = async (url: string, token: string) => {
+/** 사용자 프로필 수정 요청 타입 */
+export interface UserUpdateRequest {
+  studentId?: string;
+  username?: string;
+  birth?: string;
+  phone?: string;
+}
+
+/** API 응답 기본 구조 */
+interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+  error?: {
+    code: string;
+  };
+}
+
+/** Fetcher 함수 (GET 요청) */
+const fetcher = async (
+  url: string,
+  token: string,
+): Promise<ApiResponse<UserProfile>> => {
   const response = await fetch(url, {
     method: 'GET',
     headers: {
@@ -28,30 +52,37 @@ const fetcher = async (url: string, token: string) => {
   });
 
   const data = await response.json();
-  if (!response.ok || isApiResponseError(data)) {
-    throw new Error(data.message || 'API 응답 오류');
+  if (!response.ok) {
+    throw new Error(data.message || 'API 요청 실패');
   }
   return data;
 };
 
+/** 사용자 프로필 관리 훅 */
+/** 사용자 프로필 관리 훅 */
 export const useUserProfile = () => {
   const { data: session } = useSession();
   const userId = session?.id;
   const token = session?.accessToken;
 
-  const {
-    data: user,
-    error,
-    isValidating,
-    mutate,
-  } = useSWR(
-    userId && token ? [`/api/members/${userId}`, token] : null,
+  const { data, error, isValidating, mutate } = useSWR(
+    userId && token ? [API_ROUTES.GET_MEMBER_DETAIL(userId), token] : null,
     ([url, token]) => fetcher(url, token),
   );
 
-  const updateUserProfile = async (formData: Partial<UserSetup>) => {
+  const user = data?.data;
+
+  /** 사용자 프로필 업데이트 */
+  const updateUserProfile = async (
+    formData: UserUpdateRequest,
+  ): Promise<void> => {
+    if (!userId || !token) {
+      console.error('사용자 인증 정보가 없습니다.');
+      return;
+    }
+
     try {
-      const response = await fetch(`/api/members/${userId}`, {
+      const response = await fetch(API_ROUTES.UPDATE_MEMBER(userId), {
         method: 'PATCH',
         headers: {
           Accept: 'application/json',
@@ -61,14 +92,15 @@ export const useUserProfile = () => {
         body: JSON.stringify(formData),
       });
 
-      const data: ApiResponseWithMessage = await response.json();
-      if (!response.ok || isApiResponseError(data)) {
-        console.warn('[updateUserProfile] API 응답 오류:', data);
-        return data;
+      if (!response.ok) {
+        console.warn(
+          '[updateUserProfile] API 응답 오류:',
+          await response.json(),
+        );
+        return;
       }
 
       mutate(); // SWR 캐시 갱신
-      return data;
     } catch (error) {
       console.error('[updateUserProfile] 오류 발생:', error);
     }

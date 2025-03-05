@@ -1,7 +1,8 @@
 import { z } from 'zod';
 
 export const ProfileSchema = z.object({
-  name: z.string().min(2, '이름은 최소 2자 이상 입력해야 합니다.'),
+  studentId: z.string().optional(),
+  username: z.string().min(2, '이름은 최소 2자 이상 입력해야 합니다.'),
   birth: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'YYYY-MM-DD 형식이어야 합니다.'),

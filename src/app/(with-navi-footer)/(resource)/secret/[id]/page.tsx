@@ -139,7 +139,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           <CardContent className="p-0">
             <div className="space-y-6">
               <h1 className="text-left text-4xl font-bold">{post.title}</h1>
-              <div className="flex w-full items-center justify-between border-b pb-4 text-sm text-gray-200">
+              <div className="flex w-full items-center justify-between border-b pb-4 text-sm dark:text-gray-200">
                 <p className="text-lg font-medium">{post.writer}</p>
                 <span className="text-lg font-medium dark:text-gray-200">
                   {formatDate(post.created_at)}

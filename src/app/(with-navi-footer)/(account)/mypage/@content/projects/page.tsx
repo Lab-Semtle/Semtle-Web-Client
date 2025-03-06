@@ -1,62 +1,78 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
 } from '@/components/ui/dialog';
-
-const projects = [
-  {
-    id: 1,
-    title: 'AI 프로젝트',
-    status: '모집중',
-    deadline: '2025-03-01',
-    applicants: 3,
-  },
-  {
-    id: 2,
-    title: '웹 서비스 개발',
-    status: '모집완료',
-    deadline: '2025-02-20',
-    applicants: 5,
-  },
-  {
-    id: 3,
-    title: '모바일 앱 개발',
-    status: '모집중',
-    deadline: '2025-02-28',
-    applicants: 2,
-  },
-];
-
-const applicantsData: Record<
-  number,
-  { id: number; name: string; date: string; status: string }[]
-> = {
-  1: [
-    { id: 101, name: '홍길동', date: '2025-02-24', status: '대기중' },
-    { id: 102, name: '김철수', date: '2025-02-23', status: '대기중' },
-  ],
-  2: [{ id: 103, name: '이영희', date: '2025-02-22', status: '승인됨' }],
-};
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationLink,
+} from '@/components/ui/pagination';
+import { useFetchMyProjects } from '@/hooks/api/project/useFetchMyProjects';
+import { CalendarClock, Tags, User2 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { toast } from 'sonner';
+import { API_ROUTES } from '@/constants/ApiRoutes';
 
 export default function ProjectsTab() {
-  const [selectedProject, setSelectedProject] = useState<number | null>(null);
+  const { data: session } = useSession();
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 10;
+  const router = useRouter();
+  const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { projects, loading, error, totalPages, refetch } = useFetchMyProjects(
+    currentPage - 1,
+    itemsPerPage,
+  );
+
+  // 페이지 변경 함수
+  const handlePageChange = (page: number) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // 프로젝트 삭제 함수
+  const handleDelete = async (projectId: number) => {
+    if (!session?.accessToken) {
+      toast.error('로그인이 필요합니다.');
+      return;
+    }
+
+    if (!window.confirm('정말로 이 프로젝트 공고를 삭제하시겠습니까?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(API_ROUTES.DELETE_PROJECT(projectId), {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+      });
+
+      if (!response.ok) throw new Error('삭제 실패');
+
+      toast.success('프로젝트 공고가 삭제되었습니다.');
+      refetch(); // 목록 갱신
+    } catch (error) {
+      console.error('삭제 오류:', error);
+      toast.error('프로젝트 공고 삭제 중 오류가 발생했습니다.');
+    }
+  };
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -65,112 +81,144 @@ export default function ProjectsTab() {
           내 프로젝트 공고
         </h1>
 
-        {/* 프로젝트 공고 목록 (카드형) */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-          {projects.map((project) => (
-            <Card
-              key={project.id}
-              className="border-gray-200 bg-white p-4 shadow-md dark:border-gray-600 dark:bg-gray-800"
-            >
-              <CardHeader>
-                <CardTitle className="text-gray-900 dark:text-gray-100">
-                  {project.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="text-gray-700 dark:text-gray-300">
-                <p>📌 상태: {project.status}</p>
-                <p>📅 마감일: {project.deadline}</p>
-                <p>👥 지원자: {project.applicants}명</p>
-                <div className="mt-4 flex gap-2">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        size="sm"
-                        className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
-                        onClick={() => setSelectedProject(project.id)}
-                      >
-                        신청자 보기
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="bg-white dark:bg-gray-800">
-                      <DialogHeader>
-                        <DialogTitle className="text-gray-900 dark:text-gray-100">
-                          신청자 목록
-                        </DialogTitle>
-                      </DialogHeader>
+        {/* 데이터 상태 처리 */}
+        {loading ? (
+          <p className="text-center text-lg font-semibold">로딩 중...</p>
+        ) : error ? (
+          <p className="text-center text-lg text-red-500">
+            데이터를 불러오지 못했습니다.
+          </p>
+        ) : projects.length === 0 ? (
+          <p className="text-center text-lg font-semibold text-gray-500">
+            게시물이 없습니다.
+          </p>
+        ) : (
+          <>
+            {/* 프로젝트 카드 목록 */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+              {projects.map((project) => (
+                <Dialog key={project.id}>
+                  <Card
+                    key={project.id}
+                    className="border-gray-200 bg-white p-4 shadow-md dark:border-gray-600 dark:bg-gray-800"
+                  >
+                    <CardHeader>
+                      <CardTitle className="text-gray-900 dark:text-gray-100">
+                        {project.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-gray-700 dark:text-gray-300">
+                      {/* 마감일 */}
+                      <p className="flex items-center gap-2 font-medium">
+                        <CalendarClock className="h-5 w-5 text-gray-500" />
+                        {project.deadline}
+                      </p>
 
-                      <Table className="border border-gray-200 dark:border-gray-700">
-                        <TableHeader className="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
-                          <TableRow>
-                            <TableHead>이름</TableHead>
-                            <TableHead>지원 날짜</TableHead>
-                            <TableHead>상태</TableHead>
-                            <TableHead>승인 관리</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {selectedProject !== null &&
-                            applicantsData[selectedProject]?.map(
-                              (applicant) => (
-                                <TableRow
-                                  key={applicant.id}
-                                  className="text-gray-700 dark:text-gray-300"
-                                >
-                                  <TableCell>{applicant.name}</TableCell>
-                                  <TableCell>{applicant.date}</TableCell>
-                                  <TableCell>{applicant.status}</TableCell>
-                                  <TableCell>
-                                    <Button
-                                      size="sm"
-                                      variant="default"
-                                      className="bg-green-500 text-white hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700"
-                                    >
-                                      승인
-                                    </Button>
-                                    <Button
-                                      size="sm"
-                                      variant="destructive"
-                                      className="ml-2 bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
-                                    >
-                                      반려
-                                    </Button>
-                                  </TableCell>
-                                </TableRow>
-                              ),
-                            )}
-                        </TableBody>
-                      </Table>
+                      {/* 분야 */}
+                      <p className="flex items-center gap-2 font-medium">
+                        <Tags className="h-5 w-5 text-green-500" />
+                        {project.relatedFields.join(', ') || '미정'}
+                      </p>
 
-                      <DialogClose asChild>
+                      {/* 작성자 */}
+                      <p className="flex items-center gap-2 font-medium">
+                        <User2 className="h-5 w-5 text-purple-500" />
+                        {project.writer}
+                      </p>
+
+                      {/* 버튼 (간격 조정: `mt-6`) */}
+                      <div className="mt-6 flex gap-2">
                         <Button
-                          className="mt-4 border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-700"
-                          variant="outline"
+                          size="sm"
+                          className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
+                          onClick={() =>
+                            router.push(`/projects/hire/edit/${project.id}`)
+                          }
                         >
-                          닫기
+                          수정
                         </Button>
-                      </DialogClose>
-                    </DialogContent>
-                  </Dialog>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          className="bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
+                          onClick={() => handleDelete(project.id)}
+                        >
+                          삭제
+                        </Button>
+                        <DialogTrigger asChild>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="border-gray-500 text-gray-700 hover:bg-gray-100 dark:border-gray-400 dark:text-gray-300 dark:hover:bg-gray-700"
+                            onClick={() => {
+                              setSelectedProject(project);
+                              setIsModalOpen(true);
+                            }}
+                          >
+                            자세히 보기
+                          </Button>
+                        </DialogTrigger>
+                      </div>
+                    </CardContent>
+                  </Card>
 
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-700"
-                  >
-                    수정
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    className="bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
-                  >
-                    삭제
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                  {/* 모달 (프로젝트 상세 정보) */}
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>{project.title}</DialogTitle>
+                    </DialogHeader>
+                    <p>마감일: {project.deadline}</p>
+                    <p>카테고리: {project.category}</p>
+                    <p>연관 분야: {project.relatedFields.join(', ')}</p>
+                  </DialogContent>
+                </Dialog>
+              ))}
+            </div>
+
+            {/* 페이지네이션 */}
+            {totalPages > 1 && (
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      className={`${
+                        currentPage === 1
+                          ? 'cursor-not-allowed opacity-50'
+                          : 'cursor-pointer'
+                      }`}
+                    />
+                  </PaginationItem>
+                  {[...Array(totalPages)].map((_, index) => (
+                    <PaginationItem key={index}>
+                      <PaginationLink
+                        isActive={currentPage === index + 1}
+                        className={
+                          currentPage === index + 1
+                            ? 'rounded-full bg-blue-500 text-white'
+                            : 'hover:bg-gray-200 dark:hover:bg-gray-700'
+                        }
+                        onClick={() => handlePageChange(index + 1)}
+                      >
+                        {index + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      className={`${
+                        currentPage === totalPages
+                          ? 'cursor-not-allowed opacity-50'
+                          : 'cursor-pointer'
+                      }`}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            )}
+          </>
+        )}
       </main>
     </div>
   );

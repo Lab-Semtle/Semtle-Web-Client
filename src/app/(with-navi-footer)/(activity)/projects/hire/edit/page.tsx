@@ -1,38 +1,86 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import ProjectHireEditForm from '@/components/form/ProjectHireEditForm';
+import { API_ROUTES } from '@/constants/ApiRoutes';
+import { useSession } from 'next-auth/react';
 
 // 프로젝트 데이터 타입 정의
 interface ProjectData {
   projectTitle: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   contact?: string;
-  projectType: string;
-  categories?: string[];
+  category: string;
+  relatedField?: string[];
   content: string;
   images?: string[];
 }
 
+const PROJECT_TYPE_MAP = {
+  해커톤: { id: 1, name: '해커톤' },
+  경진대회: { id: 2, name: '경진대회' },
+  공모전: { id: 3, name: '공모전' },
+  사이드프로젝트: { id: 4, name: '사이드프로젝트' },
+  기타: { id: 5, name: '기타' },
+} as const;
+
+const RELATION_FIELD_MAP = {
+  Web: { id: 1, name: 'Web' },
+  Mobile: { id: 2, name: 'Mobile' },
+  IOS: { id: 3, name: 'IOS' },
+  DATA: { id: 4, name: 'DATA' },
+  GAME: { id: 5, name: 'GAME' },
+  기타: { id: 6, name: '기타' },
+} as const;
+
 const CreateProjectPage = () => {
   const router = useRouter();
+  const { data: session } = useSession();
 
   const handleSubmit = async (data: ProjectData) => {
     try {
-      // 날짜 데이터를 ISO 문자열로 변환
+      if (!session?.accessToken) {
+        toast.error('로그인이 필요합니다.');
+        router.push('/signin');
+        return;
+      }
+
+      if (!data.relatedField || data.relatedField.length === 0) {
+        toast.error('연관 분야를 최소 1개 이상 선택해야 합니다.');
+        return;
+      }
+
+      // 프로젝트 유형 변환
+      const projectTypeCategory =
+        PROJECT_TYPE_MAP[data.category as keyof typeof PROJECT_TYPE_MAP];
+
+      // 연관 분야 변환
+      const relationFieldCategories = data.relatedField?.map(
+        (field) => RELATION_FIELD_MAP[field as keyof typeof RELATION_FIELD_MAP],
+      );
+
       const formattedData = {
-        ...data,
-        categories: data.categories || [],
-        images: data.images || [],
+        title: data.projectTitle,
+        content: data.content,
         contact: data.contact || '',
-        startDate: data.startDate.toISOString(),
-        endDate: data.endDate.toISOString(),
+        projectTypeCategory,
+        relationFieldCategories,
+        projectStartTime: new Date(data.startDate).toISOString(),
+        projectEndTime: new Date(data.endDate).toISOString(),
+        projectRecruitingEndTime: new Date(data.endDate).toISOString(),
       };
 
-      const response = await fetch('/api/projects', {
+      console.log('프로젝트 생성 요청 데이터:', formattedData);
+
+      const response = await fetch(API_ROUTES.CREATE_PROJECT, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          Authorization: `Bearer ${session.accessToken}`,
+        },
         body: JSON.stringify(formattedData),
       });
 
@@ -41,13 +89,16 @@ const CreateProjectPage = () => {
       }
 
       const result = await response.json();
-      console.log('🚀 프로젝트 생성 성공:', result);
 
-      // 프로젝트 목록 페이지로 이동
-      router.push('/projects');
+      if (result.success) {
+        toast.success('프로젝트가 성공적으로 생성되었습니다.');
+        router.push('/projects');
+      } else {
+        throw new Error(result.message || '프로젝트 생성에 실패했습니다.');
+      }
     } catch (error) {
       console.error('프로젝트 생성 오류:', error);
-      alert('프로젝트 생성 중 오류가 발생했습니다.');
+      toast.error('프로젝트 생성 중 오류가 발생했습니다.');
     }
   };
 

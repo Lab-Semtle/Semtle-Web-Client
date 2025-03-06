@@ -103,17 +103,18 @@ export const API_ROUTES = {
   UPDATE_MY_PROJECT_DETAIL: (postId: number, id: number) =>
     `${baseUrl}/api/v1/own/projects/${postId}/applicants/${id}`, // (본인이 게시한) 프로젝트 공고 신청자 정보 수정
   GET_APPLICATION_PROJECT_LIST: `${baseUrl}/api/v1/own/projects/applications`, // (본인이 신청한) 프로젝트 공고 목록 조회
+
   GET_MY_ARCHIVES: (page: number, size: number, uuid: string) =>
     `${baseUrl}/api/v1/own/archives?page=${page}&size=${size}&uuid=${encodeURIComponent(uuid)}`, // 개인 아카이브 목록 조회
   GET_MY_PROMOTIONS: (page: number, size: number) =>
     `${baseUrl}/api/v1/own/promotions?page=${page}&size=${size}`, // 개인 프로모션 목록 조회
-  // 개인 프로젝트 목록 X
+  GET_MY_PROJECTS: (page: number, size: number) =>
+    `${baseUrl}/api/v1/own/mywritingprojectboard?page=${page}&size=${size}`, // 개인 프로젝트 목록 조회
 
   /** 프로젝트 타입 카테고리 */
   GET_PROJECT_TYPE_CATEGORY: `${baseUrl}/api/v1/projecttypecategory/categorylist`, // 프로젝트 타입 카테고리 조회
 
   /** NCP */
   GET_NCP_SIGNED_URL: '/api/files-id', // NCP Presigned URL 요청 (POST)
-
   UPLOAD_CLOUDFLARE_FILE: `/api/file/upload`,
 } as const;

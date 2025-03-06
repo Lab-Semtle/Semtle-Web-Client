@@ -54,9 +54,9 @@ function MyPageLayoutContent({ content }: { content: React.ReactNode }) {
         <div className="mt-8 flex gap-4 border-b">
           {[
             { name: '프로젝트 공고', path: '/mypage/projects' },
-            { name: '프로젝트 신청 내역', path: '/mypage/applications' },
-            { name: '프로젝트 홍보', path: '/mypage/promotions' },
             { name: '족보', path: '/mypage/secret' },
+            { name: '프로젝트 신청 내역', path: '/mypage/applications' },
+            { name: '프로젝트 성과', path: '/mypage/promotions' },
           ].map((tab) => (
             <Link
               key={tab.path}

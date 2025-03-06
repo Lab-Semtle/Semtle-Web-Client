@@ -2,23 +2,44 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import ProjectHireEditForm from '@/components/form/ProjectHireEditForm';
+import { API_ROUTES } from '@/constants/ApiRoutes';
 
-// ✅ 모든 날짜 타입을 `string`으로 변경
+// 프로젝트 타입 및 연관 분야 매핑
+const PROJECT_TYPE_MAP = {
+  해커톤: { id: 1, name: '해커톤' },
+  경진대회: { id: 2, name: '경진대회' },
+  공모전: { id: 3, name: '공모전' },
+  사이드프로젝트: { id: 4, name: '사이드프로젝트' },
+  기타: { id: 5, name: '기타' },
+} as const;
+
+const RELATION_FIELD_MAP = {
+  Web: { id: 1, name: 'Web' },
+  Mobile: { id: 2, name: 'Mobile' },
+  IOS: { id: 3, name: 'IOS' },
+  DATA: { id: 4, name: 'DATA' },
+  GAME: { id: 5, name: 'GAME' },
+  기타: { id: 6, name: '기타' },
+} as const;
+
+// API 데이터 타입 정의 (날짜는 string 형식 유지)
 interface ProjectData {
   projectTitle: string;
   startDate: string;
   endDate: string;
-  contact: string;
-  projectType: string;
-  categories: string[];
+  contact?: string;
+  category: string;
+  relatedField: string[];
   content: string;
-  images: string[];
+  images?: string[];
 }
 
 const EditProjectPage = () => {
   const { id } = useParams();
   const router = useRouter();
+  const { data: session } = useSession(); // ✅ 인증 정보 가져오기
   const [initialData, setInitialData] = useState<ProjectData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -27,51 +48,91 @@ const EditProjectPage = () => {
 
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/projects/${id}`);
+        const response = await fetch(
+          API_ROUTES.GET_PROJECT_DETAIL(Number(id)),
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${session?.accessToken}`,
+            },
+          },
+        );
+
         if (!response.ok)
           throw new Error('프로젝트 데이터를 불러오는 데 실패했습니다.');
 
-        const data: ProjectData = await response.json();
+        const res = await response.json();
+        console.log('[프로젝트 수정] 불러온 데이터 : ', res);
 
-        // ✅ 기존 데이터를 유지하면서 날짜를 `string`으로 저장
-        const formattedData: ProjectData = {
-          ...data,
-          startDate: data.startDate || new Date().toISOString(),
-          endDate: data.endDate || new Date().toISOString(),
-        };
-
-        setInitialData(formattedData);
+        setInitialData({
+          projectTitle: res.data.title,
+          startDate: res.data.projectStartTime
+            ? new Date(res.data.projectStartTime).toISOString()
+            : new Date().toISOString(),
+          endDate: res.data.projectEndTime
+            ? new Date(res.data.projectEndTime).toISOString()
+            : new Date().toISOString(),
+          contact: res.data.contact || '',
+          category: res.data.projectTypeCategory || '', // 프로젝트 타입 -> 카테고리로 변경
+          relatedField: res.data.relationFieldCategory || [], // 연관 분야 적용
+          content: res.data.content,
+          images: res.data.images || [],
+        });
       } catch (error) {
         console.error('데이터 불러오기 오류:', error);
-        alert('프로젝트 데이터를 불러오는 중 오류가 발생했습니다.');
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [id]);
+  }, [id, session]);
 
   const handleSubmit = async (data: ProjectData) => {
     try {
-      const response = await fetch(`/api/projects/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        throw new Error('프로젝트 수정 실패');
+      if (!session?.accessToken) {
+        throw new Error('로그인이 필요합니다.');
       }
 
-      const result = await response.json();
-      console.log('✏️ 프로젝트 수정 성공:', result);
+      // 카테고리 변환
+      const projectTypeCategory =
+        PROJECT_TYPE_MAP[data.category as keyof typeof PROJECT_TYPE_MAP];
 
-      // 프로젝트 상세 페이지로 이동
-      router.push(`/projects/showcase/${id}`);
+      // 연관 분야 변환
+      const relationFieldCategories = data.relatedField.map(
+        (category) =>
+          RELATION_FIELD_MAP[category as keyof typeof RELATION_FIELD_MAP],
+      );
+
+      // API 요청 데이터 변환
+      const formattedData = {
+        title: data.projectTitle,
+        content: data.content,
+        contact: data.contact,
+        projectTypeCategory,
+        relationFieldCategories,
+        projectStartTime: new Date(data.startDate).toISOString(),
+        projectEndTime: new Date(data.endDate).toISOString(),
+        projectRecruitingEndTime: new Date(data.endDate).toISOString(),
+      };
+
+      console.log('✏️ 프로젝트 수정 요청 데이터:', formattedData);
+
+      const response = await fetch(API_ROUTES.UPDATE_PROJECT(Number(id)), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session?.accessToken}`,
+        },
+        body: JSON.stringify(formattedData),
+      });
+
+      if (!response.ok) throw new Error('프로젝트 수정 실패');
+
+      router.push(`/mypage/projects`);
     } catch (error) {
       console.error('프로젝트 수정 오류:', error);
-      alert('프로젝트 수정 중 오류가 발생했습니다.');
     }
   };
 
@@ -79,7 +140,7 @@ const EditProjectPage = () => {
     <p>로딩 중...</p>
   ) : (
     <ProjectHireEditForm
-      initialData={initialData!} // ✅ string 타입 데이터 전달
+      initialData={initialData!}
       onSubmit={handleSubmit}
       isEdit
     />

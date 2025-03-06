@@ -11,19 +11,38 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-const FilterBar = ({ onFilter }) => {
+interface Filter {
+  projectType: string;
+  category: string;
+  searchTerm: string;
+}
+
+interface FilterBarProps {
+  onFilter: (filter: Filter) => void;
+}
+
+const FilterBar: React.FC<FilterBarProps> = ({ onFilter }) => {
   const [projectType, setProjectType] = useState('전체');
   const [category, setCategory] = useState('전체');
   const [searchTerm, setSearchTerm] = useState('');
 
+  // 필터 적용 버튼 클릭 시 실행
   const handleFilter = () => {
     onFilter({ projectType, category, searchTerm });
   };
 
+  // 엔터 키 입력 시 검색 실행
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleFilter();
+    }
+  };
+
   return (
-    <div className="flex items-center gap-4 p-4">
+    <div className="flex flex-wrap items-center gap-4 p-4">
+      {/* 프로젝트 유형 선택 */}
       <Select value={projectType} onValueChange={setProjectType}>
-        <SelectTrigger className="border p-2">
+        <SelectTrigger className="w-40 border p-2">
           <SelectValue placeholder="프로젝트 유형" />
         </SelectTrigger>
         <SelectContent>
@@ -36,9 +55,10 @@ const FilterBar = ({ onFilter }) => {
         </SelectContent>
       </Select>
 
+      {/* 연관 분야 선택 */}
       <Select value={category} onValueChange={setCategory}>
-        <SelectTrigger className="border p-2">
-          <SelectValue placeholder="연관분야" />
+        <SelectTrigger className="w-40 border p-2">
+          <SelectValue placeholder="연관 분야" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="전체">전체</SelectItem>
@@ -51,18 +71,21 @@ const FilterBar = ({ onFilter }) => {
         </SelectContent>
       </Select>
 
+      {/* 검색 입력창 */}
       <Input
         type="text"
         placeholder="검색어 입력"
-        className="w-48 border p-2" // input 크기를 지정
+        className="w-48 border p-2"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
+        onKeyDown={handleKeyDown}
       />
 
+      {/* 검색 버튼 */}
       <Button
-        variant="primary"
+        variant="default"
         onClick={handleFilter}
-        className="rounded bg-blue-500 px-4 py-2 text-white" // 버튼 스타일
+        className="rounded bg-blue-500 px-4 py-2 text-white"
       >
         검색
       </Button>

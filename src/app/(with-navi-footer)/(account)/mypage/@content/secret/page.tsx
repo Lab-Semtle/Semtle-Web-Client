@@ -183,42 +183,37 @@ export default function SecretTab() {
                     파일 개수 : {secret.fileUrl?.length ?? 0}개
                   </p>
 
-                  <div className="mt-4 flex flex-col gap-2">
-                    {/* 상단 버튼 그룹 (수정 + 삭제) */}
-                    <div className="flex gap-2">
-                      {/* 수정 버튼 (50%) */}
-                      <Link
-                        href={`/mypage/secret/edit/${secret.board_id}`}
-                        className="flex-1"
-                      >
-                        <Button
-                          size="sm"
-                          variant="default"
-                          className="w-full bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
-                        >
-                          <PencilLine className="mr-1 h-4 w-4" />
-                          수정
-                        </Button>
-                      </Link>
-
-                      {/* 삭제 버튼 (50%) */}
+                  <div className="mt-6 flex gap-2">
+                    {/* 수정 버튼 */}
+                    <Link href={`/mypage/secret/edit/${secret.board_id}`}>
                       <Button
                         size="sm"
-                        variant="destructive"
-                        className="flex-1 bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
-                        onClick={() => deleteSecret(secret.board_id)}
+                        variant="default"
+                        className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
                       >
-                        <Trash2 className="mr-1 h-4 w-4" />
-                        삭제
+                        수정
                       </Button>
-                    </div>
+                    </Link>
 
-                    {/* 하단 버튼 (상세보기) */}
-                    <Link href={`/secret/${secret.board_id}`}>
+                    {/* 삭제 버튼 */}
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      className="bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
+                      onClick={() => deleteSecret(secret.board_id)}
+                    >
+                      삭제
+                    </Button>
+
+                    {/* 상세 보기 버튼 */}
+                    <Link
+                      href={`/secret/${secret.board_id}`}
+                      className="flex-1"
+                    >
                       <Button
                         size="sm"
                         variant="outline"
-                        className="w-full bg-gray-100 text-gray-900 hover:bg-gray-200 dark:border-gray-500 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
+                        className="border-gray-500 text-gray-700 hover:bg-gray-100 dark:border-gray-400 dark:text-gray-300 dark:hover:bg-gray-700"
                       >
                         <Eye className="mr-1 h-4 w-4" />
                         상세 보기

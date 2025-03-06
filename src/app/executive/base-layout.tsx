@@ -12,6 +12,7 @@ import {
   SquareKanban,
   UserRoundCheck,
   GalleryThumbnails,
+  UserPlus,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -43,6 +44,11 @@ const navItems: NavItem[] = [
     icon: LayoutDashboard,
   },
   {
+    title: '학회원 등록',
+    href: '/executive/signup',
+    icon: UserPlus,
+  },
+  {
     title: '학회원 관리',
     href: '/executive/member',
     icon: UserRoundCheck,
@@ -58,7 +64,7 @@ const navItems: NavItem[] = [
     icon: Table2,
   },
   {
-    title: '학회 성과',
+    title: '학회 성과 (추가 예정)',
     href: '/executive/promotion',
     icon: TrophyIcon,
   },

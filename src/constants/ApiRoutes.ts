@@ -85,7 +85,7 @@ export const API_ROUTES = {
 
   /** 유저 */
   CREATE_MEMBER: `${baseUrl}/api/v1/members`, // 임시 멤버 추가
-  SIGNUP_MEMBER: `${baseUrl}/api/v1/members/signup`, // 회원가입
+  SIGNUP_MEMBERS: `${baseUrl}/api/v1/members/signup`, // 회원가입
   UPDATE_MEMBER: (uuid: string) => `${baseUrl}/api/v1/members/${uuid}`, // 멤버 정보 수정
   UPDATE_MEMBER_ACTIVE: (uuid: string) =>
     `${baseUrl}/api/v1/members/${uuid}/deactivate`, // 멤버 비활성화(정지)

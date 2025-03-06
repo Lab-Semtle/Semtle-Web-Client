@@ -164,6 +164,8 @@ export default function BannerManagePage() {
 
   return (
     <div>
+      <h2 className="mb-4 text-2xl font-bold">배너 관리</h2>
+
       {/* 로딩 상태 표시 */}
       {loading && (
         <p className="text-center text-gray-500">데이터 불러오는 중...</p>

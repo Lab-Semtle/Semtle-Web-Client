@@ -59,7 +59,6 @@ const fetcher = async (
 };
 
 /** 사용자 프로필 관리 훅 */
-/** 사용자 프로필 관리 훅 */
 export const useUserProfile = () => {
   const { data: session } = useSession();
   const userId = session?.id;
@@ -81,6 +80,16 @@ export const useUserProfile = () => {
       return;
     }
 
+    // birth 값을 ISO 8601 형식으로 변환 (UTC)
+    const formattedData = {
+      ...formData,
+      birth: formData.birth
+        ? new Date(formData.birth).toISOString()
+        : undefined,
+    };
+
+    console.log(formattedData);
+
     try {
       const response = await fetch(API_ROUTES.UPDATE_MEMBER(userId), {
         method: 'PATCH',
@@ -89,15 +98,15 @@ export const useUserProfile = () => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formattedData),
       });
 
-      if (!response.ok) {
-        console.warn(
-          '[updateUserProfile] API 응답 오류:',
-          await response.json(),
-        );
-        return;
+      const result = await response.json();
+      console.log(result);
+
+      if (!response.ok || !result.success) {
+        console.warn('[updateUserProfile] API 응답 오류:', result);
+        throw new Error(result.message || '개인정보 수정 실패');
       }
 
       mutate(); // SWR 캐시 갱신

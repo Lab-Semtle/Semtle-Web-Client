@@ -267,6 +267,8 @@ export default function ActivityManagePage() {
 
   return (
     <div>
+      <h2 className="mb-4 text-2xl font-bold">활동 게시판 관리</h2>
+
       {/* 데이터 로딩 중 메시지 */}
       {isLoading && (
         <p className="text-center text-gray-500">데이터 불러오는 중...</p>

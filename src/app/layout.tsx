@@ -11,6 +11,10 @@ import { Metadata, Viewport } from 'next';
 export const metadata: Metadata = {
   title: '아치셈틀',
   description: '국립한국해양대학교 인공지능공학부 아치셈틀 공식 홈페이지',
+  other: {
+    'http-equiv': 'Content-Security-Policy',
+    content: 'upgrade-insecure-requests',
+  },
   openGraph: {
     title: '아치셈틀',
     description: '국립한국해양대학교 인공지능공학부 아치셈틀 공식 홈페이지',

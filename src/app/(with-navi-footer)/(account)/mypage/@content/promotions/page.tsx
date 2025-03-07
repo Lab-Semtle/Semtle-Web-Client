@@ -21,14 +21,14 @@ export default function PromotionsTab() {
           내 프로젝트 성과
         </h1>
 
-        {/* 오버레이: 기능 준비중 문구 */}
+        {/* 기능 준비중 문구 */}
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-75">
           <p className="text-3xl font-semibold text-white">
             🚧 기능 준비중입니다...
           </p>
         </div>
 
-        {/* 프로젝트 목록 (오버레이 뒤로 보내기) */}
+        {/* 프로젝트 목록 */}
         <div className="relative z-10 mt-10">
           <ProjectCard2
             cards={promotions}

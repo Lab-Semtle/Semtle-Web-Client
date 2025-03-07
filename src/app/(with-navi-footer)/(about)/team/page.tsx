@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { boardMembers, boardDevelopers } from '@/constants/TeamData';
 import PageHeading from '@/components/common/PageHeading';
 
-/** 조직도 페이지 */
 export default function TeamPage() {
   return (
     <main className="flex flex-col items-center px-6 pb-32 pt-24">
@@ -22,7 +21,7 @@ export default function TeamPage() {
             <div key={member.id} className="flex flex-col items-center">
               <Image
                 className="aspect-[4/3] rounded-xl object-cover"
-                src={member.profile_image || '/images/default-profile.jpg'} // 기본 이미지 설정
+                src={member.profile_image || '/images/default-profile.jpg'}
                 alt={member.name}
                 width={320}
                 height={320}

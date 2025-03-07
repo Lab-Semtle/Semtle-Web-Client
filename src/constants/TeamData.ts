@@ -1,5 +1,3 @@
-/** 조직도 및 개발팀 데이터 */
-
 export const boardMembers = [
   {
     id: 1,

@@ -79,7 +79,7 @@ export function useManageBanner() {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['banners'],
-      }); // 배너 목록 갱신
+      });
     },
   });
 

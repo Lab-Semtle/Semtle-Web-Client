@@ -3,10 +3,24 @@
 import { useRouter } from 'next/navigation';
 import ProjectShowcaseEditForm from '@/components/form/ProjectShowcaseEditForm';
 
+interface ProjectData {
+  title: string;
+  subtitle?: string;
+  writer: string;
+  result_link: string;
+  image_url?: string[];
+  create_date: string;
+  due_date: string;
+  recruiting_end_time?: string;
+  project_type: string;
+  relate_field: string[];
+  member: string;
+  contents: string;
+}
 const CreateProjectPage = () => {
   const router = useRouter();
 
-  const handleSubmit = async (data) => {
+  const handleSubmit = async (data: ProjectData) => {
     try {
       const response = await fetch('/api/promotions', {
         method: 'POST',
@@ -18,6 +32,7 @@ const CreateProjectPage = () => {
 
       router.push('/projects/showcase');
     } catch (error) {
+      console.error('프로젝트 등록 오류:', error);
       alert('등록 중 오류 발생');
     }
   };

@@ -215,16 +215,27 @@ export function DataTable<TData, TValue>({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
+              onClick={() => {
+                if (onPageChange && page > 1) {
+                  onPageChange(page - 1);
+                }
+              }}
+              disabled={page <= 1}
             >
               이전
             </Button>
+            <span>
+              {page} / {totalPages}
+            </span>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
+              onClick={() => {
+                if (onPageChange && page < totalPages) {
+                  onPageChange(page + 1);
+                }
+              }}
+              disabled={page >= totalPages}
             >
               다음
             </Button>

@@ -23,7 +23,7 @@ export const SHOWCASE_DATA: ShowcaseDetail[] = [
       '전이학습된 LLM과 Langchain을 활용한 부산 관광정보 제공 AI 챗봇 서비스',
     duration: '2024/02/01 ~ 2024/06/01',
     participants: 5,
-    members: ['김철수', '이민호', '박지수', '정윤아', '최동혁'], // 참여 인원 추가
+    members: ['김철수', '이민호', '박지수', '정윤아', '최동혁'],
     result_url: 'https://github.com/example/project1',
     contents: '이 프로젝트는 AI 기반 관광 챗봇을 개발하는 것입니다...',
   },
@@ -58,7 +58,7 @@ export const SHOWCASE_DATA: ShowcaseDetail[] = [
     summary: '2025년 개발된 아치셈틀 신규 웹페이지 Ver 1.0',
     duration: '2024/09/20 ~ 2025/03/07',
     participants: 3,
-    members: ['박민수', '김나영', '정석훈'], // 기존 author 값을 members 배열로 변경
+    members: ['박민수', '김나영', '정석훈'],
     result_url: 'https://github.com/example/project3',
     contents: '아치셈틀 웹페이지를 구축하여 학회 운영을 도울 것입니다...',
   },

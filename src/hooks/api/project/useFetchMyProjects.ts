@@ -2,7 +2,6 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState, useCallback } from 'react';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 
-// API 응답 데이터 타입 정의
 interface ApiProject {
   projectBoardId: number;
   title: string;
@@ -12,7 +11,6 @@ interface ApiProject {
   projectRecruitingEndTime: string;
 }
 
-// 변환된 프로젝트 데이터 타입
 interface Project {
   id: number;
   title: string;
@@ -30,12 +28,11 @@ export const useFetchMyProjects = (page: number, size: number) => {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [retry, setRetry] = useState<boolean>(false); // 임시 조차(첫 방문시 토큰 X 이슈
 
-  // 프로젝트 목록 불러오기
   const fetchProjects = useCallback(async () => {
     if (status === 'loading') return;
     if (!session?.accessToken) {
       if (!retry) {
-        setTimeout(() => setRetry(true), 500); // 세션이 늦게 로딩되는 경우 대비
+        setTimeout(() => setRetry(true), 500);
         return;
       }
       setError(true);
@@ -54,7 +51,6 @@ export const useFetchMyProjects = (page: number, size: number) => {
       });
 
       const json = await response.json();
-
       if (json.success && json.data?.content) {
         const transformedProjects = json.data.content.map(
           (item: ApiProject) => ({

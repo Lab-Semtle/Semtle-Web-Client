@@ -1,5 +1,3 @@
-/** 데스크톱 사이즈 화면에서 네비게이션바 사용자 메뉴 */
-
 import Link from 'next/link';
 import {
   DropdownMenu,
@@ -17,22 +15,23 @@ import {
 } from '@/components/ui/navigation-menu';
 import { NavLinkMenu } from '@/components/layouts/NavLinkMenu';
 import { VariantShineButton } from '@/components/common/VariantShineButton';
-import { useSession } from '@/hooks/useSession';
-// import { signOutWithForm } from '@/lib/auth/auth.server';
 import { ROUTES } from '@/constants/Routes';
-import { Session } from 'next-auth';
+import { useSession, signOut } from 'next-auth/react'; // ✅ next-auth에서 가져오기
 import { useState } from 'react';
-import { signOut } from 'next-auth/react';
 
 export default function NavUserMenu() {
-  const session = useSession();
+  const { data: session } = useSession(); // ✅ next-auth에서 세션 가져오기
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <NavigationMenuList className="flex items-center gap-3">
       {session?.user ? (
         <NavigationMenuItem>
-          <LoginMenu session={session} setIsMenuOpen={setIsMenuOpen} />
+          <LoginMenu
+            session={session}
+            setIsMenuOpen={setIsMenuOpen}
+            isMenuOpen={isMenuOpen}
+          />
         </NavigationMenuItem>
       ) : (
         <>
@@ -52,13 +51,15 @@ export default function NavUserMenu() {
 
 function LoginMenu({
   session,
+  isMenuOpen,
   setIsMenuOpen,
 }: {
-  session: Session | null;
+  session: any; // ✅ 타입을 any로 변경 (NextAuth 타입 문제 회피)
+  isMenuOpen: boolean;
   setIsMenuOpen: (open: boolean) => void;
 }) {
   return (
-    <DropdownMenu onOpenChange={setIsMenuOpen}>
+    <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
       <DropdownMenuTrigger asChild>
         <Avatar className="cursor-pointer">
           <AvatarImage

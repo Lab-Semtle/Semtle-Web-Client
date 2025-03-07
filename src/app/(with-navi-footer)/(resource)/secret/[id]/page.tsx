@@ -1,4 +1,5 @@
 'use client';
+
 import { useState, useEffect } from 'react';
 import * as React from 'react';
 import { useSession } from 'next-auth/react';
@@ -36,8 +37,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const [post, setPost] = useState<PostDetail | null>(null);
   const [loading, setLoading] = useState(true);
-
-  // `params`를 언래핑
   const { id } = React.use(params);
 
   useEffect(() => {
@@ -68,36 +67,30 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         if (!response.ok) {
           throw new Error('데이터를 가져오는 데 실패했습니다.');
         }
-
         const res = await response.json();
-        console.log(`[족보 게시물] API :`, res);
-
         if (!res.success || !res.data) {
           throw new Error('유효한 데이터를 받지 못했습니다.');
         }
 
-        console.log('[secret/id]--------');
-        // Presigned URL 변환 적용 (이미지 + 파일)
+        // Presigned URL 변환
         const transformedImages = await Promise.all(
           (res.data.imageUrl ?? []).map(async (url: string, index: number) => ({
             image_id: `img-${index}`,
-            image_url: await fetchNcpPresignedUrl(url), // Presigned URL 변환
+            image_url: await fetchNcpPresignedUrl(url),
             image_name: `이미지-${index + 1}`,
           })),
         );
 
-        console.log('[secret/id]--------');
         const transformedAttachments = await Promise.all(
           (res.data.fileUrl ?? []).map(async (url: string, index: number) => ({
             file_id: index,
-            file_url: await fetchNcpPresignedUrl(url), // Presigned URL 변환
+            file_url: await fetchNcpPresignedUrl(url),
             file_name: `첨부파일-${index + 1}`,
             file_type: url.split('.').pop() ?? 'unknown',
             file_size: '알 수 없음',
           })),
         );
 
-        // API 응답을 PostDetail 타입으로 변환
         const mappedPost: PostDetail = {
           post_id: res.data.board_id,
           title: res.data.title,

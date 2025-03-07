@@ -1,6 +1,5 @@
-/** 관리자 전용 레이아웃 컴포넌트 */
-
 'use client';
+
 import {
   Calendar1,
   Home,

@@ -14,7 +14,6 @@ export function useFetchRecentActivities(limit = 3) {
       setError(null);
 
       try {
-        console.log('[GET_ACTIVITY_RECENT] API 요청');
         const response = await fetch(API_ROUTES.GET_ACTIVITY_RECENT(limit), {
           headers: { Accept: 'application/json' },
           method: 'GET',
@@ -24,9 +23,7 @@ export function useFetchRecentActivities(limit = 3) {
         if (!response.ok) {
           throw new Error(`Error ${response.status}: ${response.statusText}`);
         }
-
         const result = await response.json();
-        console.log('[GET_ACTIVITY_RECENT] API 응답 데이터:', result);
 
         if (!result.success) {
           throw new Error(result.error || 'API 응답 형식이 올바르지 않습니다.');
@@ -44,7 +41,7 @@ export function useFetchRecentActivities(limit = 3) {
 
             return {
               ...post,
-              images: post.images ? [presignedUrl ?? null] : undefined, // undefined 대신 null 유지
+              images: post.images ? [presignedUrl ?? null] : undefined,
             };
           }),
         );

@@ -1,12 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  useForm,
-  SubmitHandler,
-  FormProvider,
-  useFormContext,
-} from 'react-hook-form';
+import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -50,8 +45,6 @@ export default function SecretNoteEditor({
     register,
     handleSubmit,
     reset,
-    setValue,
-    watch,
     formState: { errors },
   } = methods;
 
@@ -75,9 +68,6 @@ export default function SecretNoteEditor({
 
   /** 폼 제출 핸들러 */
   const handleFormSubmit: SubmitHandler<FormValues> = async (data) => {
-    console.log('📌 현재 업로드된 이미지 경로:', imagePath);
-    console.log('📌 현재 업로드된 파일 경로 리스트:', filePaths);
-
     const formDataToSend = new FormData();
     formDataToSend.append('title', data.title);
     formDataToSend.append('content', data.content || '');
@@ -85,17 +75,11 @@ export default function SecretNoteEditor({
     if (imagePath) {
       formDataToSend.append('imagePath', imagePath);
     } else {
-      console.warn('⚠️ imagePath가 존재하지 않음');
+      console.warn('imagePath가 존재하지 않음');
     }
-    filePaths.forEach((filePath, index) => {
-      console.log(`📌 추가되는 파일 경로 [${index}]:`, filePath);
+    filePaths.forEach((filePath, _) => {
       formDataToSend.append('filePaths', filePath);
     });
-
-    console.log(
-      '📌 최종 FormData 데이터:',
-      Object.fromEntries(formDataToSend.entries()),
-    );
 
     setSubmitLoading(true);
     try {

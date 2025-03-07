@@ -17,7 +17,7 @@ export const eventData = [
       'MT는 학회원 간의 친목을 다지는 활동입니다. 셈틀에서 준비한 레크레이션과 프로그램을 통해 어색했던 선후배와 교류하며 한걸음 더 가까워질 수 있습니다.',
   },
   {
-    imageSrc: '/images/semtle2022/MT-2022-5.jpeg',
+    imageSrc: '/images/semtle2022/MT-2022-21.jpeg',
     altText: '체육 대회',
     newsTitle: '체육 대회 & E-Sport',
     newsContent:

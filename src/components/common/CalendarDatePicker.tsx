@@ -306,7 +306,7 @@ export const CalendarDatePicker = React.forwardRef<
       setHighlightedPart(null);
     };
 
-    const handleWheel = (event: React.WheelEvent, part: string) => {
+    const handleWheel = (event: React.WheelEvent, _part: string) => {
       event.preventDefault();
       setSelectedRange(null);
       if (highlightedPart === 'firstDay') {
@@ -388,7 +388,7 @@ export const CalendarDatePicker = React.forwardRef<
           }
         });
       };
-    }, [highlightedPart, date]);
+    }, [highlightedPart, date, id, handleWheel]);
 
     const formatWithTz = (date: Date, fmt: string) =>
       formatInTimeZone(date, timeZone, fmt);

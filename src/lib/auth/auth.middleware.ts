@@ -1,11 +1,8 @@
-/** 유저 인증 여부에 따른 URL 경로 매칭 미들웨어 */
-
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { match } from 'path-to-regexp';
 import { getSession } from '@/lib/auth/auth.server';
 
-// 보호할 경로 설정, 배포 전 확인 필요
 const matchersForAuth = [
   '/setup/*',
   '/mypage/*',

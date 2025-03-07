@@ -1,4 +1,5 @@
 'use client';
+
 import { Button } from '@/components/ui/button';
 import { dummyEvents } from '@/constants/calendar-data';
 import { MyEvent } from '@/types/calendar';

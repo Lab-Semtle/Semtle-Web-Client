@@ -16,19 +16,28 @@ export async function GET(request: NextRequest) {
     const files = await listFiles(postId);
     return NextResponse.json(files);
   } catch (error) {
-    return NextResponse.json({ error: 'Error listing files' }, { status: 500 });
+    console.error('파일 목록 불러오기 오류:', error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Error listing files' },
+      { status: 500 },
+    );
   }
 }
 
 export async function POST(request: NextRequest) {
-  const { key } = await request.json();
-
   try {
+    const { key } = await request.json();
     const signedUrl = await getSignedUrlForDownload(key);
     return NextResponse.json({ signedUrl });
   } catch (error) {
+    console.error('다운로드 URL 생성 오류:', error);
     return NextResponse.json(
-      { error: 'Error generating download URL' },
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Error generating download URL',
+      },
       { status: 500 },
     );
   }

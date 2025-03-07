@@ -1,6 +1,5 @@
-/** 학회 일정 페이지 */
-
 'use client';
+
 import * as React from 'react';
 import { useState } from 'react';
 import 'react-day-picker/style.css';
@@ -23,7 +22,7 @@ export default function SchedulePage() {
     );
     if (clickedEvent) {
       setSelectedEvent(clickedEvent);
-      setIsPopupOpen(true); // 팝업 열기
+      setIsPopupOpen(true);
     }
   };
 
@@ -42,7 +41,7 @@ export default function SchedulePage() {
           initialView="dayGridMonth"
           height="1100px"
           events={ScheduleEvent}
-          eventClick={handleEventClick} // 일정 클릭 시 팝업 열기
+          eventClick={handleEventClick}
           eventClassNames="cursor-pointer text-base rounded-lg px-2 py-1"
           dayCellClassNames="text-xl font-bold"
           dayHeaderContent={(arg) => (

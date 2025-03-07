@@ -1,8 +1,3 @@
-/** 사용자 개인정보 관련 API 호출
- * - 개인정보 조회
- * - 개인정보 수정
- */
-
 import useSWR from 'swr';
 import { useSession } from 'next-auth/react';
 import { API_ROUTES } from '@/constants/ApiRoutes';
@@ -80,15 +75,12 @@ export const useUserProfile = () => {
       return;
     }
 
-    // birth 값을 ISO 8601 형식으로 변환 (UTC)
     const formattedData = {
       ...formData,
       birth: formData.birth
-        ? new Date(formData.birth).toISOString()
+        ? new Date(formData.birth).toISOString() // ISO 8601
         : undefined,
     };
-
-    console.log(formattedData);
 
     try {
       const response = await fetch(API_ROUTES.UPDATE_MEMBER(userId), {
@@ -100,9 +92,7 @@ export const useUserProfile = () => {
         },
         body: JSON.stringify(formattedData),
       });
-
       const result = await response.json();
-      console.log(result);
 
       if (!response.ok || !result.success) {
         console.warn('[updateUserProfile] API 응답 오류:', result);

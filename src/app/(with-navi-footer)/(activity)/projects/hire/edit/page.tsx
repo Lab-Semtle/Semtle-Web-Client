@@ -6,7 +6,6 @@ import ProjectHireEditForm from '@/components/form/ProjectHireEditForm';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 import { useSession } from 'next-auth/react';
 
-// 프로젝트 데이터 타입 정의
 interface ProjectData {
   projectTitle: string;
   startDate: string;
@@ -52,11 +51,11 @@ const CreateProjectPage = () => {
         return;
       }
 
-      // 프로젝트 유형 변환
+      // 프로젝트 유형
       const projectTypeCategory =
         PROJECT_TYPE_MAP[data.category as keyof typeof PROJECT_TYPE_MAP];
 
-      // 연관 분야 변환
+      // 연관 분야
       const relationFieldCategories = data.relatedField?.map(
         (field) => RELATION_FIELD_MAP[field as keyof typeof RELATION_FIELD_MAP],
       );
@@ -71,8 +70,6 @@ const CreateProjectPage = () => {
         projectEndTime: new Date(data.endDate).toISOString(),
         projectRecruitingEndTime: new Date(data.endDate).toISOString(),
       };
-
-      console.log('프로젝트 생성 요청 데이터:', formattedData);
 
       const response = await fetch(API_ROUTES.CREATE_PROJECT, {
         method: 'POST',

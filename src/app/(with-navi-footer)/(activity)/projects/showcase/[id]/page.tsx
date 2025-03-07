@@ -8,13 +8,13 @@ import { Calendar, Users, ImageOff } from 'lucide-react';
 import { SHOWCASE_DATA, ShowcaseDetail } from '@/constants/showcaseData';
 
 const PostDetail = () => {
-  const { id } = useParams(); // URL에서 id 가져오기
+  const { id } = useParams();
   const [post, setPost] = useState<ShowcaseDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (id) {
-      const projectId = Number(id); // id를 숫자로 변환
+      const projectId = Number(id);
       const foundPost = SHOWCASE_DATA.find((item) => item.id === projectId);
 
       if (foundPost) {

@@ -41,8 +41,6 @@ export default function SecretEditPage() {
         fileUrl: formData.getAll('filePaths') as string[],
       };
 
-      console.log('[POST] API 요청 데이터:', requestBody);
-
       const response = await fetch(API_ROUTES.CREATE_ARCHIVE, {
         method: 'POST',
         headers: {
@@ -51,8 +49,6 @@ export default function SecretEditPage() {
         },
         body: JSON.stringify(requestBody),
       });
-
-      console.log('서버 응답 상태:', response.status);
 
       if (!response.ok) {
         const errorData = await response.json();

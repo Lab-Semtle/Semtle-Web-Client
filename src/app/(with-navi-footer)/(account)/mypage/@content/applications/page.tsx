@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
-// 신청한 프로젝트 데이터 (예제)
+// 신청한 프로젝트 목업 데이터
 const appliedProjects = [
   {
     id: 1,

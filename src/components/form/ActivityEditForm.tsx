@@ -16,7 +16,7 @@ import { Textarea } from '@/components/ui/textarea';
 import PostFileUploader from '@/components/file/PostFileUploader';
 
 interface PostFormProps {
-  mode: 'create' | 'update'; // create: 생성, update: 수정
+  mode: 'create' | 'update';
   initialData?: {
     postId?: string;
     title: string;
@@ -38,7 +38,7 @@ export default function ActivityEditForm({
     content: initialData?.content || '',
   });
 
-  const [imagePath, setImagePath] = useState(initialData?.imageUrl || ''); // 업로드된 이미지 경로
+  const [imagePath, setImagePath] = useState(initialData?.imageUrl || '');
 
   /** 파일 업로드 후 경로 설정 */
   const handleImageUpload = (uploadedImagePath: string) => {

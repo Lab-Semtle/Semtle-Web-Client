@@ -1,5 +1,3 @@
-/** 관리자 대시보드 */
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Activity, CreditCard, CreditCardIcon, Users } from 'lucide-react';

@@ -27,7 +27,7 @@ import {
   useDeleteActivity,
 } from '@/hooks/api/activity/useManageActivity';
 import { ActivityPost } from '@/types/activity';
-import ActivityEditForm from '@/components/form/ActivityEditForm'; // 활동게시물 수정/작성 폼
+import ActivityEditForm from '@/components/form/ActivityEditForm';
 import {
   Select,
   SelectContent,
@@ -59,11 +59,6 @@ export default function ActivityManagePage() {
 
   /** 게시물 추가/수정 핸들러 */
   const handleSubmitForm = async (formData: FormData) => {
-    console.log(
-      '[handleSubmitForm] 요청 시작 - FormData:',
-      Object.fromEntries(formData.entries()),
-    );
-
     const newPost = {
       title: formData.get('title') as string,
       content: formData.get('content') as string,
@@ -73,11 +68,6 @@ export default function ActivityManagePage() {
         ? [formData.get('imagePath') as string]
         : [],
     };
-
-    console.log(
-      `[handleSubmitForm] ${dialogMode === 'add' ? '게시물 추가' : '게시물 수정'} 요청 데이터:`,
-      newPost,
-    );
 
     try {
       if (dialogMode === 'add') {
@@ -102,7 +92,6 @@ export default function ActivityManagePage() {
         await updateActivity
           .mutateAsync({ board_id: currentPost.board_id!, ...newPost })
           .then(() => {
-            console.log('[handleSubmitForm] updateActivity 성공!');
             alert('게시물이 수정되었습니다!');
             setIsDialogOpen(false);
           })
@@ -183,7 +172,7 @@ export default function ActivityManagePage() {
       cell: ({ row }) => {
         const rawDate = row.getValue('createdAt') as string;
 
-        // 날짜 형식 변환 (ISO 8601 형식으로 보장)
+        // ISO 8601
         let parsedDate = new Date(rawDate);
 
         // 변환 실패 시, 수동으로 포맷 보정
@@ -191,7 +180,7 @@ export default function ActivityManagePage() {
           parsedDate = new Date(rawDate.replace(' ', 'T')); // "YYYY-MM-DD HH:MM:SS" -> "YYYY-MM-DDTHH:MM:SS"
         }
 
-        // 여전히 잘못된 날짜라면, 기본값 설정
+        // 기본값 설정
         if (isNaN(parsedDate.getTime())) {
           return <span className="text-red-500">유효하지 않은 날짜</span>;
         }

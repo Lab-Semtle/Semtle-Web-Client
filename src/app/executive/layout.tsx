@@ -1,5 +1,3 @@
-/** 관리자 페이지 레이아웃 */
-// import localFont from 'next/font/local';
 import '@/app/global.css';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { BaseLayout } from './base-layout';

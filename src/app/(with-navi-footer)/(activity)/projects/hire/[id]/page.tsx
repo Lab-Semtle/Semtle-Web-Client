@@ -15,7 +15,6 @@ import {
 } from '@/components/ui/dialog';
 import ProjectApplyForm from '@/components/form/ProjectApplyForm';
 
-// API 응답 데이터 타입
 type PostData = {
   title: string;
   content: string;

@@ -7,7 +7,6 @@ import { Textarea } from '@/components/ui/textarea';
 import PostFileUploader from '@/components/file/PostFileUploader';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 import { useSession } from 'next-auth/react';
-import { toast } from 'sonner';
 
 interface FileData {
   fileName: string;
@@ -28,7 +27,9 @@ const ProjectApplyForm: React.FC<Props> = ({ postId, onClose }) => {
   const [applicantId, setApplicantId] = useState<number | null>(null); // 신청 순번 (초기값 null)
   const [answers, setAnswers] = useState<string>(''); // 답변 입력
   const [urls, setUrls] = useState<string[]>(['']); // 참고 URL 목록
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [files, setFiles] = useState<FileData[]>([]); // 업로드된 파일 목록
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState<boolean>(false); // 로딩 상태
 
   // 파일 업로드 성공 시 처리
@@ -178,14 +179,23 @@ const ProjectApplyForm: React.FC<Props> = ({ postId, onClose }) => {
         />
       </div>
 
-      {/* 신청 버튼 */}
-      <Button
-        className="w-full bg-semtle-lite p-3 text-lg hover:bg-semtle-dark dark:bg-semtle-dark dark:hover:bg-semtle-lite"
-        onClick={handleSubmit}
-        disabled={loading || applicantId === null}
-      >
-        {loading ? '신청 중...' : '신청 제출'}
-      </Button>
+      {/* 버튼 */}
+      <div className="flex justify-between gap-4">
+        <Button
+          className="w-full bg-semtle-lite p-3 text-lg hover:bg-semtle-dark dark:bg-semtle-dark dark:hover:bg-semtle-lite"
+          onClick={handleSubmit}
+          disabled={loading || applicantId === null}
+        >
+          {loading ? '신청 중...' : '신청 제출'}
+        </Button>
+        <Button
+          variant="outline"
+          onClick={onClose}
+          className="w-full p-3 text-lg"
+        >
+          닫기
+        </Button>
+      </div>
     </div>
   );
 };

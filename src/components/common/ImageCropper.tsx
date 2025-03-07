@@ -97,6 +97,7 @@ export function ImageCropper({
       setCroppedImage(croppedImageUrl);
       setDialogOpen(false);
     } catch (error) {
+      console.error('Image cropping error:', error);
       alert('Something went wrong!');
     }
   }

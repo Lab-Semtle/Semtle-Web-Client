@@ -1,4 +1,3 @@
-/** 개별 활동 카드 컴포넌트 */
 import { format } from 'date-fns';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';

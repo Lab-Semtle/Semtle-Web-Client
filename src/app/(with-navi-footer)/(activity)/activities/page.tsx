@@ -11,17 +11,14 @@ import {
 import GoUp from '@/components/common/GoUp';
 import PageHeading from '@/components/common/PageHeading';
 import CardList1 from '@/components/card/CardList1';
-import { useRouter } from 'next/navigation';
 import { useFetchInfiniteActivity } from '@/hooks/api/activity/useFetchInfiniteActivities';
 
-/** 활동 게시판 페이지 */
 export default function ActivityBoardPage() {
-  const router = useRouter();
   const [category, setCategory] = useState('공지');
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // React Query 기반 API 호출
-  const { data, fetchNextPage, hasNextPage, isFetching, isLoading, error } =
+  // React Query 기반
+  const { data, fetchNextPage, hasNextPage, isLoading, error } =
     useFetchInfiniteActivity(category);
 
   // 무한 스크롤 감지

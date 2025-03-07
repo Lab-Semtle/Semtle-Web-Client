@@ -1,5 +1,3 @@
-/** 모바일 사이즈 화면에서 네비게이션 메뉴(사용자 메뉴 포함됨) */
-
 import Link from 'next/link';
 import {
   Sheet,

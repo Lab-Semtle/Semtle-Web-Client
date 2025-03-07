@@ -4,19 +4,15 @@ import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
 import { Banner } from '@/types/banner';
 
 async function fetchBanners(): Promise<Banner[]> {
-  console.log('[GET_BANNERS] API 요청');
   const response = await fetch(API_ROUTES.GET_BANNERS, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
     mode: 'cors',
   });
-  console.log('[GET_BANNERS] API 응답 : ', response);
   if (!response.ok) {
     throw new Error(`Error ${response.status}: ${response.statusText}`);
   }
-
   const responseData = await response.json();
-  console.log('[GET_BANNERS] API 응답 데이터:', responseData);
 
   if (!responseData.success) {
     throw new Error(`API 요청 실패: ${responseData.message}`);
@@ -38,7 +34,7 @@ async function fetchBanners(): Promise<Banner[]> {
     bannersData.map(async (banner) => ({
       ...banner,
       altText: banner.altText || '이미지 설명 없음',
-      imageUrl: (await fetchNcpPresignedUrl(banner.imagePath)) || undefined, // null → undefined 변환
+      imageUrl: (await fetchNcpPresignedUrl(banner.imagePath)) || undefined,
     })),
   );
 }

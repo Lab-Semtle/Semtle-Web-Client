@@ -35,7 +35,6 @@ import { faqData } from '@/constants/RecruitData';
 import { RECRUIT_OVERVIEW } from '@/constants/RecruitData';
 import { ROUTES } from '@/constants/Routes';
 
-/** Hero 섹션 (소개글 + 캐러쉘) */
 function HeroSection() {
   const { banners, loading, error } = useFetchBanners();
 

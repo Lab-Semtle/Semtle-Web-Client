@@ -38,7 +38,6 @@ import { useToast } from '@/hooks/useToast';
 import { useCreateMember } from '@/hooks/api/member/useCreateMember';
 import { useDeactivateMember } from '@/hooks/api/member/useDeactivateMember';
 
-// 유저 타입 정의
 export type User = {
   uuid: string;
   username: string;
@@ -52,16 +51,12 @@ export type User = {
 
 export default function AdminUsersPage() {
   const { toast } = useToast();
-  // 페이지 상태 관리 , 초기값 페칭 훅
   const [page, setPage] = useState(0);
-  const [searchName, setSearchName] = useState('');
   const { members, totalPages, isLoading, error, refetch } = useFetchMembers(
     page,
     10,
-    searchName,
   );
 
-  // 팝업
   const [isDialogOpen, setIsDialogOpen] = useState(false); // 팝업 상태
   const [dialogMode, setDialogMode] = useState<'add' | 'edit'>('add'); // 팝업 모드
   const [showPassword, setShowPassword] = useState(false);
@@ -70,16 +65,15 @@ export default function AdminUsersPage() {
   const [currentUser, setCurrentUser] = useState<Partial<UserDetail>>({
     uuid: '',
     email: '',
-    studentId: null, // 학번 (없을 수도 있음)
+    studentId: null, // 학번
     username: '',
-    birth: '', // 생년월일 (ISO 8601 형식)
+    birth: '', // 생년월일 (ISO 8601)
     phone: '',
     role: 'USER', // 기본값을 일반 사용자(USER)로 설정
-    manageApprovalStatus: false, // 기본값은 미승인 상태
+    manageApprovalStatus: false, // 기본값은 미승인
   });
-  const { createMember, loading } = useCreateMember(); // 회원 1명 생성
-  const { deactivateMember, loading: deactivateLoading } =
-    useDeactivateMember(); // 회원 정지
+  const { createMember } = useCreateMember(); // 회원 1명 생성
+  const { deactivateMember } = useDeactivateMember(); // 회원 정지
 
   /**
    * 데이터 추가 또는 수정 함수
@@ -293,15 +287,10 @@ export default function AdminUsersPage() {
   return (
     <div>
       <h2 className="mb-4 text-2xl font-bold">전체 학회원 관리</h2>
-
-      {/* 데이터 로딩 중 메시지 */}
       {isLoading && (
         <p className="text-center text-gray-500">데이터 불러오는 중...</p>
       )}
-
-      {/* API 호출 실패 메시지 */}
       {error && <p className="text-center text-red-500">{error}</p>}
-
       {!isLoading && !error && (
         <>
           {/* 사용자 추가/편집 다이얼로그 */}

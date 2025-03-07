@@ -1,5 +1,3 @@
-/** 단순한 링크로 구성된 네비게이션 항목 */
-
 import Link from 'next/link';
 import {
   NavigationMenuItem,

@@ -1,9 +1,10 @@
 'use client';
+
 import { useState } from 'react';
-import { startTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react'; // ✅ 클라이언트에서 NextAuth.js `signIn()` 사용
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useToast } from '@/hooks/useToast';
@@ -19,7 +20,6 @@ import {
   CardFooter,
 } from '@/components/ui/card';
 import { ArrowLeft, LucideEye, LucideEyeOff } from 'lucide-react';
-import { signInWithCredentials } from '@/lib/auth/auth.server';
 import { useTheme } from 'next-themes';
 
 const ERROR_MESSAGES: Record<string, string> = {
@@ -30,7 +30,6 @@ const ERROR_MESSAGES: Record<string, string> = {
   '500': '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
 };
 
-/**  로그인 페이지 */
 export default function SignInPage() {
   const { register, handleSubmit, formState } = useForm<
     z.infer<typeof loginSchema>
@@ -51,45 +50,43 @@ export default function SignInPage() {
 
   const onSubmit = async (signinData: z.infer<typeof loginSchema>) => {
     setLoading(true);
+    try {
+      const result = await signIn('credentials', {
+        email: signinData.email,
+        password: signinData.password,
+        redirect: false,
+      });
 
-    startTransition(async () => {
-      try {
-        const result = await signInWithCredentials(signinData);
-
-        if (result?.error) {
-          const errorMessage =
-            ERROR_MESSAGES[result.error] ||
-            '로그인 요청 중 알 수 없는 오류가 발생했습니다.';
-
-          toast({
-            variant: 'destructive',
-            title: '로그인 실패',
-            description: errorMessage,
-            duration: 2000,
-          });
-
-          setLoading(false);
-          return;
-        }
-
-        toast({
-          title: '로그인 성공',
-          description: '홈 화면으로 이동합니다.',
-          duration: 1000,
-        });
-
-        router.push('/');
-      } catch (error) {
+      if (!result || result.error) {
+        const errorMessage =
+          ERROR_MESSAGES[result?.error || '500'] ||
+          '로그인 중 오류가 발생했습니다.';
         toast({
           variant: 'destructive',
           title: '로그인 실패',
-          description: '예기치 않은 오류가 발생했습니다.',
+          description: errorMessage,
           duration: 2000,
         });
-      } finally {
-        setLoading(false);
+        return;
       }
-    });
+
+      toast({
+        title: '로그인 성공',
+        description: '홈 화면으로 이동합니다.',
+        duration: 1000,
+      });
+      router.push('/');
+    } catch (error) {
+      console.error('[signInWithCredentials] 로그인 중 오류 발생:', error);
+      toast({
+        variant: 'destructive',
+        title: '로그인 실패',
+        description: '예기치 않은 오류가 발생했습니다.',
+        duration: 2000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -97,7 +94,7 @@ export default function SignInPage() {
       {/* 배경 이미지 */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/kmou_2022.jpg" // 배경 이미지 경로
+          src="/images/kmou_2022.jpg"
           alt="background"
           fill
           style={{ objectFit: 'cover' }}
@@ -108,7 +105,6 @@ export default function SignInPage() {
       </div>
 
       <div className="relative z-10 w-full max-w-xs space-y-6 sm:max-w-md lg:max-w-lg">
-        {/* 홈으로 돌아가기 버튼 */}
         <div className="text-left">
           <Button
             onClick={() => router.push('/')}
@@ -120,10 +116,8 @@ export default function SignInPage() {
           </Button>
         </div>
 
-        {/* 로그인 카드 섹션 */}
         <Card className="bg-white/90 shadow-lg backdrop-blur-md dark:bg-gray-800/80 dark:shadow-gray-700/50">
           <CardHeader className="text-center">
-            {/* 로고*/}
             <div className="flex flex-col items-center">
               <Image
                 src={
@@ -146,7 +140,6 @@ export default function SignInPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              {/* 이메일 입력 */}
               <div className="flex flex-col space-y-1">
                 <Input
                   id="email"
@@ -161,7 +154,6 @@ export default function SignInPage() {
                 )}
               </div>
 
-              {/* 비밀번호 입력 */}
               <div className="flex flex-col space-y-1">
                 <div className="flex items-center rounded-md border bg-gray-100 dark:border-gray-600 dark:bg-gray-700">
                   <Input
@@ -191,28 +183,14 @@ export default function SignInPage() {
                 )}
               </div>
 
-              {/* 버튼 섹션 */}
-              <div className="space-y-2">
-                <Button
-                  type="submit"
-                  className="w-full bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-400"
-                >
-                  {loading ? '로그인 중...' : '로그인'}
-                </Button>
-              </div>
+              <Button
+                type="submit"
+                className="w-full bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-400"
+              >
+                {loading ? '로그인 중...' : '로그인'}
+              </Button>
             </form>
           </CardContent>
-          <CardFooter className="flex flex-col space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
-            <Button variant="secondary" className="w-full sm:w-1/3">
-              가입하기
-            </Button>
-            <Button
-              variant="link"
-              className="w-full text-gray-600 dark:text-gray-300 sm:w-1/3"
-            >
-              비밀번호를 잊으셨나요?
-            </Button>
-          </CardFooter>
         </Card>
       </div>
     </div>

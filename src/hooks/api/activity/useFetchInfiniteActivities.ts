@@ -8,14 +8,11 @@ import { API_ROUTES } from '@/constants/ApiRoutes';
 import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
 import { ActivityResponseSchema, ActivityPost } from '@/types/activity';
 
-// `queryFn`의 매개변수 타입을 `QueryFunctionContext`로 지정
 const fetchActivities = async ({
   pageParam = 1,
   queryKey,
 }: QueryFunctionContext<string[], number>) => {
-  const [, type] = queryKey; // _key 생략
-
-  console.log(`[GET_ACTIVITY_LIST] API 요청: page=${pageParam}, type=${type}`);
+  const [, type] = queryKey;
 
   const response = await fetch(
     API_ROUTES.GET_ACTIVITY_LIST(pageParam, 8, type),
@@ -37,10 +34,8 @@ const fetchActivities = async ({
     throw new Error('API 응답이 실패했습니다.');
   }
 
-  // API 응답을 Zod 스키마로 검증
   const validatedData = ActivityResponseSchema.parse(result.data);
 
-  // Presigned URL 변환
   const postsData: ActivityPost[] = await Promise.all(
     validatedData.posts.map(async (post) => {
       const presignedUrl = post.images?.[0]
@@ -59,13 +54,13 @@ const fetchActivities = async ({
     nextPage:
       validatedData.current_page < validatedData.total_pages
         ? pageParam + 1
-        : undefined, // 다음 페이지 존재 여부
+        : undefined,
   };
 };
 
 /** React Query 기반 무한 스크롤 API 훅 */
 export function useFetchInfiniteActivity(category: string) {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient(); // 캐싱에 활용
 
   const query = useInfiniteQuery({
     queryKey: ['activities', category],
@@ -73,6 +68,17 @@ export function useFetchInfiniteActivity(category: string) {
     getNextPageParam: (lastPage) => lastPage.nextPage ?? undefined,
     initialPageParam: 1,
   });
+
+  // queryClient를 사용하여 특정 데이터 캐싱
+  useEffect(() => {
+    if (query.data?.pages) {
+      query.data.pages.forEach((page) => {
+        page.posts.forEach((post) => {
+          queryClient.setQueryData(['activity', post.board_id], post);
+        });
+      });
+    }
+  }, [query.data, queryClient]);
 
   useEffect(() => {
     if (query.error) {

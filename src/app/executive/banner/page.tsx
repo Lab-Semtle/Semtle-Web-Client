@@ -18,16 +18,12 @@ import Image from 'next/image';
 import { useFetchBanners } from '@/hooks/api/banner/useFetchBanners';
 import { useManageBanner } from '@/hooks/api/banner/useManageBanner';
 import PostFileUploader from '@/components/file/PostFileUploader';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { Banner } from '@/types/banner';
 
 export default function BannerManagePage() {
-  const { data: session } = useSession();
   const { banners, loading, error } = useFetchBanners(); // 초기값 페칭 훅
   const { createBanner, deleteBanners } = useManageBanner(); // 생성, 삭제 훅
   const [isDialogOpen, setIsDialogOpen] = useState(false); // 다이얼로그(팝업) 상태 관리
-  const router = useRouter();
   const [currentBanner, setCurrentBanner] = useState<Partial<Banner>>({
     postTitle: '',
     targetPath: '',
@@ -165,14 +161,12 @@ export default function BannerManagePage() {
   return (
     <div>
       <h2 className="mb-4 text-2xl font-bold">배너 관리</h2>
-
-      {/* 로딩 상태 표시 */}
       {loading && (
         <p className="text-center text-gray-500">데이터 불러오는 중...</p>
       )}
-      {/* 오류 메시지 표시 */}
-      {error && <p className="text-center text-red-500">오류 발생: {error}</p>}
-
+      {error && (
+        <p className="text-center text-red-500">오류 발생: {error.message}</p>
+      )}
       {!loading && !error && (
         <>
           {/* 배너 추가/편집 다이얼로그 */}
@@ -254,7 +248,7 @@ export default function BannerManagePage() {
               <PostFileUploader
                 postId=""
                 uploadPath="banner"
-                onUploadSuccess={handleImageUpload} // 업로드 성공 시 imagePath 저장
+                onUploadSuccess={handleImageUpload}
                 className="dark:border-neutral-800 dark:bg-neutral-800"
               />
 

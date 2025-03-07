@@ -26,18 +26,24 @@ const PostContent = ({ content }: { content: string }) => {
             );
           },
           ul({ node, ...props }) {
-            if (!node || !Array.isArray(node.children) || node.children.length === 0) {
-              return null; // node.children가 배열이 아니거나 비어있으면 렌더링하지 않음
+            if (
+              !node ||
+              !Array.isArray(node.children) ||
+              node.children.length === 0
+            ) {
+              return null;
             }
             return (
               <ul className="list-disc pl-6">
                 {node.children.map((child: any, index: number) => {
-                  // child.children이 배열이 아닌 경우 또는 값이 없으면 처리하지 않음
-                  const listItemValue = child.children && Array.isArray(child.children) && child.children[0]?.value;
+                  const listItemValue =
+                    child.children &&
+                    Array.isArray(child.children) &&
+                    child.children[0]?.value;
                   return (
                     listItemValue && (
                       <li key={index} className="flex items-center gap-2">
-                        <span className="h-2 w-2 bg-gray-500 rounded-full inline-block mr-2"></span> 
+                        <span className="mr-2 inline-block h-2 w-2 rounded-full bg-gray-500"></span>
                         {listItemValue}
                       </li>
                     )

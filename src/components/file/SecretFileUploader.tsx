@@ -1,8 +1,8 @@
 'use client';
+
 import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Upload, Trash } from 'lucide-react';
-import { Label } from '@/components/ui/label';
 import { useFormContext } from 'react-hook-form';
 
 const MAX_TOTAL_FILE_SIZE = 100 * 1024 * 1024;
@@ -10,7 +10,7 @@ const MAX_TOTAL_FILE_SIZE = 100 * 1024 * 1024;
 type FileItem = {
   id?: string;
   name: string;
-  size: number | string; // 수정: size는 number 또는 string
+  size: number | string;
   url?: string;
   file?: File;
 };
@@ -90,7 +90,7 @@ export default function SecretFileUploader({
         (!file.file || file.file === targetFile.file),
     );
     if (removedFile?.id && onRemoveFile) {
-      onRemoveFile(removedFile.id); // 삭제된 파일의 id를 부모 컴포넌트로 전달
+      onRemoveFile(removedFile.id);
     }
     setFiles(files.filter((file) => file !== removedFile));
   };

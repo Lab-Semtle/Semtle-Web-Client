@@ -7,7 +7,7 @@ import React, {
   FormEvent,
   useRef,
 } from 'react';
-import { FileObject } from '@/lib/utils/ncp-storage'; // 기존 r2.ts 대신 ncpStorage.ts 사용
+import { FileObject } from '@/lib/utils/ncp-storage';
 
 /** NCP 파일 업로드 및 삭제, 다운로드 컴포넌트 */
 export default function NCPFileManager() {

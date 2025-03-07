@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 import { useSession } from 'next-auth/react';
 
-/** 회원 생성 API 요청 데이터 타입 */
 type CreateMemberRequest = {
   email: string;
   password: string;
@@ -12,7 +11,6 @@ type CreateMemberRequest = {
   manageApprovalStatus: boolean;
 };
 
-/** API 응답 타입 */
 type CreateMemberResponse = {
   success: boolean;
   message: string;

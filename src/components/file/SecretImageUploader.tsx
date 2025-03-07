@@ -1,4 +1,5 @@
 'use client';
+
 import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Upload, Trash } from 'lucide-react';
@@ -84,7 +85,7 @@ export default function SecretImageUploader({
   const handleRemoveImage = (index: number) => {
     const removedImage = images[index];
     if (removedImage.id && onRemoveImage) {
-      onRemoveImage(removedImage.id); // 삭제된 파일의 id를 부모 컴포넌트로 전달
+      onRemoveImage(removedImage.id);
     }
     setImages(images.filter((_, i) => i !== index));
   };
@@ -136,7 +137,7 @@ export default function SecretImageUploader({
 
 const formatFileSize = (size: number | string): string => {
   if (typeof size === 'string') {
-    size = parseImageSize(size); // 문자열일 경우 숫자로 변환
+    size = parseImageSize(size);
   }
 
   if (size < 1024) return `${size} B`;

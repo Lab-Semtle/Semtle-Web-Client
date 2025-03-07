@@ -1,6 +1,5 @@
-/** 텍스트가 위쪽으로 슬라이딩 되는 효과 */
-
 'use client';
+
 import { motion, useInView } from 'framer-motion';
 import * as React from 'react';
 

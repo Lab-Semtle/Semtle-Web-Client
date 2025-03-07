@@ -10,31 +10,43 @@ export async function GET() {
     const files = await listFiles();
     return NextResponse.json(files);
   } catch (error) {
-    return NextResponse.json({ error: 'Error listing files' }, { status: 500 });
+    console.error('파일 목록 불러오기 오류:', error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Error listing files' },
+      { status: 500 },
+    );
   }
 }
 
 export async function POST(request: NextRequest) {
-  const { key } = await request.json();
-
   try {
+    const { key } = await request.json();
     const signedUrl = await getSignedUrlForDownload(key);
     return NextResponse.json({ signedUrl });
   } catch (error) {
+    console.error('다운로드 URL 생성 오류:', error);
     return NextResponse.json(
-      { error: 'Error generating download URL' },
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Error generating download URL',
+      },
       { status: 500 },
     );
   }
 }
 
 export async function DELETE(request: NextRequest) {
-  const { key } = await request.json();
-
   try {
+    const { key } = await request.json();
     await deleteFile(key);
     return NextResponse.json({ message: 'File deleted successfully' });
   } catch (error) {
-    return NextResponse.json({ error: 'Error deleting file' }, { status: 500 });
+    console.error('파일 삭제 오류:', error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Error deleting file' },
+      { status: 500 },
+    );
   }
 }

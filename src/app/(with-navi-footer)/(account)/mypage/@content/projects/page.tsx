@@ -24,26 +24,26 @@ import { CalendarClock, Tags, User2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import { API_ROUTES } from '@/constants/ApiRoutes';
+type Project = {
+  id: number;
+  title: string;
+  deadline: string;
+  category: string;
+  relatedFields: string[];
+  writer: string;
+};
 
 export default function ProjectsTab() {
   const { data: session } = useSession();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 10;
   const router = useRouter();
-  const [selectedProject, setSelectedProject] = useState<any>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   const { projects, loading, error, totalPages, refetch } = useFetchMyProjects(
     currentPage - 1,
     itemsPerPage,
   );
-
-  // 페이지 변경 함수
-  const handlePageChange = (page: number) => {
-    if (page < 1 || page > totalPages) return;
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   // 프로젝트 삭제 함수
   const handleDelete = async (projectId: number) => {
@@ -67,7 +67,7 @@ export default function ProjectsTab() {
       if (!response.ok) throw new Error('삭제 실패');
 
       toast.success('프로젝트 공고가 삭제되었습니다.');
-      refetch(); // 목록 갱신
+      refetch();
     } catch (error) {
       console.error('삭제 오류:', error);
       toast.error('프로젝트 공고 삭제 중 오류가 발생했습니다.');
@@ -81,7 +81,6 @@ export default function ProjectsTab() {
           내 프로젝트 공고
         </h1>
 
-        {/* 데이터 상태 처리 */}
         {loading ? (
           <p className="text-center text-lg font-semibold">로딩 중...</p>
         ) : error ? (
@@ -94,7 +93,6 @@ export default function ProjectsTab() {
           </p>
         ) : (
           <>
-            {/* 프로젝트 카드 목록 */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
               {projects.map((project) => (
                 <Dialog key={project.id}>
@@ -108,25 +106,18 @@ export default function ProjectsTab() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2 text-gray-700 dark:text-gray-300">
-                      {/* 마감일 */}
                       <p className="flex items-center gap-2 font-medium">
                         <CalendarClock className="h-5 w-5 text-gray-500" />
                         {project.deadline}
                       </p>
-
-                      {/* 분야 */}
                       <p className="flex items-center gap-2 font-medium">
                         <Tags className="h-5 w-5 text-green-500" />
                         {project.relatedFields.join(', ') || '미정'}
                       </p>
-
-                      {/* 작성자 */}
                       <p className="flex items-center gap-2 font-medium">
                         <User2 className="h-5 w-5 text-purple-500" />
                         {project.writer}
                       </p>
-
-                      {/* 버튼 (간격 조정: `mt-6`) */}
                       <div className="mt-6 flex gap-2">
                         <Button
                           size="sm"
@@ -150,10 +141,7 @@ export default function ProjectsTab() {
                             size="sm"
                             variant="outline"
                             className="border-gray-500 text-gray-700 hover:bg-gray-100 dark:border-gray-400 dark:text-gray-300 dark:hover:bg-gray-700"
-                            onClick={() => {
-                              setSelectedProject(project);
-                              setIsModalOpen(true);
-                            }}
+                            onClick={() => setSelectedProject(project)}
                           >
                             자세히 보기
                           </Button>
@@ -162,43 +150,36 @@ export default function ProjectsTab() {
                     </CardContent>
                   </Card>
 
-                  {/* 모달 (프로젝트 상세 정보) */}
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>{project.title}</DialogTitle>
+                      <DialogTitle>{selectedProject?.title}</DialogTitle>
                     </DialogHeader>
-                    <p>마감일: {project.deadline}</p>
-                    <p>카테고리: {project.category}</p>
-                    <p>연관 분야: {project.relatedFields.join(', ')}</p>
+                    <p>마감일: {selectedProject?.deadline}</p>
+                    <p>카테고리: {selectedProject?.category}</p>
+                    <p>
+                      연관 분야: {selectedProject?.relatedFields.join(', ')}
+                    </p>
                   </DialogContent>
                 </Dialog>
               ))}
             </div>
 
-            {/* 페이지네이션 */}
             {totalPages > 1 && (
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
                     <PaginationPrevious
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      className={`${
-                        currentPage === 1
-                          ? 'cursor-not-allowed opacity-50'
-                          : 'cursor-pointer'
-                      }`}
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(1, prev - 1))
+                      }
+                      className={`${currentPage === 1 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                     />
                   </PaginationItem>
                   {[...Array(totalPages)].map((_, index) => (
                     <PaginationItem key={index}>
                       <PaginationLink
                         isActive={currentPage === index + 1}
-                        className={
-                          currentPage === index + 1
-                            ? 'rounded-full bg-blue-500 text-white'
-                            : 'hover:bg-gray-200 dark:hover:bg-gray-700'
-                        }
-                        onClick={() => handlePageChange(index + 1)}
+                        onClick={() => setCurrentPage(index + 1)}
                       >
                         {index + 1}
                       </PaginationLink>
@@ -206,12 +187,10 @@ export default function ProjectsTab() {
                   ))}
                   <PaginationItem>
                     <PaginationNext
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      className={`${
-                        currentPage === totalPages
-                          ? 'cursor-not-allowed opacity-50'
-                          : 'cursor-pointer'
-                      }`}
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                      }
+                      className={`${currentPage === totalPages ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                     />
                   </PaginationItem>
                 </PaginationContent>

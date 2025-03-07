@@ -25,7 +25,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 
-// 프로젝트 유형 및 관련 분야 맵
 const PROJECT_TYPE_MAP = {
   해커톤: { id: 1, name: '해커톤' },
   경진대회: { id: 2, name: '경진대회' },
@@ -43,7 +42,6 @@ const RELATION_FIELD_MAP = {
   기타: { id: 6, name: '기타' },
 } as const;
 
-// Form 스키마
 const formSchema = z.object({
   projectTitle: z.string().min(1, '프로젝트 제목을 입력해주세요.'),
   startDate: z.string().min(1, '시작 날짜를 선택해주세요.'),
@@ -89,7 +87,6 @@ const ProjectHireEditForm: React.FC<Props> = ({
     },
   });
 
-  // 초기 데이터 설정
   useEffect(() => {
     if (initialData) {
       form.reset({

@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 
 export const useBulkSignup = () => {
-  const { data: session } = useSession(); // 세션에서 토큰 가져오기
+  const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
 
   const bulkSignup = async (file: File) => {
@@ -23,7 +23,6 @@ export const useBulkSignup = () => {
         },
         body: formData,
       });
-
       const result = await response.json();
 
       if (!response.ok) {

@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 import { useSession } from 'next-auth/react';
 
-/** 유저 목록 데이터 타입 */
 export type UserListResponse = {
   success: boolean;
   message: string;
@@ -15,7 +14,6 @@ export type UserListResponse = {
   error: null | string;
 };
 
-/** UUID 기반 개별 회원 정보 타입 */
 export type UserDetail = {
   uuid: string;
   email: string;
@@ -43,8 +41,8 @@ export function useFetchMembers(
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // 데이터를 새로 불러오는 refetch 함수 추가
-  const fetchMembers = async () => {
+  // ✅ useCallback을 사용하여 fetchMembers를 메모이제이션
+  const fetchMembers = useCallback(async () => {
     if (!accessToken) {
       setIsLoading(false);
       return;
@@ -71,9 +69,8 @@ export function useFetchMembers(
 
       const userList: UserListResponse = await response.json();
       console.log(userList);
-      console.log(userList.data);
 
-      // Step 2: 개별 회원 정보 조회 (UUID 기반)
+      // 개별 회원 정보 조회
       const memberDetails = await Promise.all(
         userList.data.members.map(async (uuid) => {
           const detailUrl = API_ROUTES.GET_MEMBER_DETAIL(uuid);
@@ -99,12 +96,11 @@ export function useFetchMembers(
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [accessToken, page, size, searchName]);
 
-  // `useEffect`에서 `fetchMembers` 실행
   useEffect(() => {
     fetchMembers();
-  }, [accessToken, page, size, searchName]);
+  }, [fetchMembers]);
 
   return { members, totalPages, isLoading, error, refetch: fetchMembers };
 }

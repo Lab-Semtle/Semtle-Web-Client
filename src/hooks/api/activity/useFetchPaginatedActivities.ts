@@ -2,10 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
-import {
-  ActivityPostResponseSchema,
-  ActivityResponseSchema,
-} from '@/types/activity';
+import { ActivityResponseSchema } from '@/types/activity';
 
 /** 활동 게시물 리스트 조회 함수 */
 const fetchPaginatedActivities = async (

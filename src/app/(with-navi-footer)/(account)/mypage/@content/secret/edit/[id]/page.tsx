@@ -1,17 +1,15 @@
 'use client';
 
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import SecretNoteEditor, { FormValues } from '@/components/form/SecretEditForm';
 import { API_ROUTES } from '@/constants/ApiRoutes';
+import { useParams } from 'next/navigation';
 
-export default function ModifyPostEditor({
-  params,
-}: {
-  params: Promise<{ id: number }>;
-}) {
-  const { id } = use(params); // use()로 언래핑
+export default function ModifyPostEditor() {
+  const params = useParams<{ id: string }>();
+  const id = Number(params.id);
   const router = useRouter();
   const { data: session, status } = useSession();
   const [post, setPost] = useState<FormValues | null>(null);
@@ -25,13 +23,9 @@ export default function ModifyPostEditor({
     }
   }, [status, router]);
 
-  useEffect(() => {
-    if (status === 'authenticated') {
-      fetchPost();
-    }
-  }, [id, status]);
+  const fetchPost = useCallback(async () => {
+    if (!id || status !== 'authenticated') return;
 
-  const fetchPost = async () => {
     try {
       setLoading(true);
       const response = await fetch(API_ROUTES.GET_ARCHIVE_DETAIL(id), {
@@ -44,11 +38,8 @@ export default function ModifyPostEditor({
       if (!response.ok) {
         throw new Error('게시글을 불러오는 데 실패했습니다.');
       }
-
       const result = await response.json();
       const postData = result.data;
-
-      console.log('불러온 게시글 데이터:', postData);
 
       setPost({
         title: postData.title,
@@ -63,21 +54,19 @@ export default function ModifyPostEditor({
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, session?.accessToken, status]);
+
+  useEffect(() => {
+    fetchPost();
+  }, [fetchPost]);
 
   const handleUpdatePost = async (data: FormData) => {
     try {
-      console.log(
-        '게시글 수정 요청 데이터:',
-        Object.fromEntries(data.entries()),
-      );
-
       if (status !== 'authenticated' || !session?.id) {
         alert('로그인이 필요합니다.');
         return;
       }
 
-      // FormData를 일반 객체로 변환
       const requestBody = {
         writer: session.user?.name || '학회원',
         content: data.get('content') as string,
@@ -89,8 +78,6 @@ export default function ModifyPostEditor({
           : [],
         fileUrl: data.getAll('filePaths') as string[],
       };
-
-      console.log('[PUT] API 요청 데이터:', requestBody);
 
       const response = await fetch(API_ROUTES.UPDATE_ARCHIVE(id), {
         method: 'PUT',
@@ -114,6 +101,7 @@ export default function ModifyPostEditor({
       alert('게시글을 수정하는 중 오류가 발생했습니다.');
     }
   };
+
   if (loading) return <p>로딩 중...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
@@ -123,7 +111,7 @@ export default function ModifyPostEditor({
         <SecretNoteEditor
           mode="update"
           initialValues={post}
-          onSubmit={handleUpdatePost} // FormData를 받도록 수정
+          onSubmit={handleUpdatePost}
         />
       )}
     </div>

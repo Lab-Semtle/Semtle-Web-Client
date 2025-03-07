@@ -19,7 +19,7 @@ type ProjectCard2 = {
 // Props 타입 정의
 interface CardListCProps {
   cards: ProjectCard2[];
-  renderActions?: (id: number) => JSX.Element; // 삭제 버튼 추가를 위한 콜백
+  renderActions?: (id: number) => React.ReactElement; // 삭제 버튼 추가를 위한 콜백
 }
 
 const ProjectCard2: React.FC<CardListCProps> = ({ cards, renderActions }) => {

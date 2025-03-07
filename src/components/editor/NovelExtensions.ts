@@ -41,12 +41,6 @@ const tiptapImage = TiptapImage.extend({
     return [
       UploadImagesPlugin({
         imageClass: cx('opacity-40 rounded-lg border border-stone-200'), // 업로드된 이미지 스타일 지정
-        onUploadSuccess: (node) => {
-          node.setAttribute(
-            'class',
-            cx('rounded-lg border border-stone-200 opacity-100'),
-          ); // 업로드 성공 시 opacity-100 적용
-        },
       }),
     ];
   },

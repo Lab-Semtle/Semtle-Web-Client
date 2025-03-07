@@ -95,7 +95,7 @@ export default function NCPPathDownloader({
       )}
     >
       <h2 className="mb-3 text-lg font-semibold text-gray-800 dark:text-gray-200">
-        "{directory}" 폴더의 파일 목록
+        파일 목록
       </h2>
 
       {files.length === 0 ? (

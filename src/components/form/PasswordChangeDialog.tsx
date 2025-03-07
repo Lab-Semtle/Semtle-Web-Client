@@ -81,12 +81,6 @@ export default function PasswordChangeDialog({
   const sendVerificationCode = async () => {
     setIsSendingCode(true);
     try {
-      console.log(
-        '🔹 인증번호 요청 시작:',
-        API_ROUTES.AUTH_USER_PASSWORD_EMAIL,
-      );
-      console.log('요청 이메일:', userEmail);
-
       const response = await fetch(API_ROUTES.AUTH_USER_PASSWORD_EMAIL, {
         method: 'POST',
         headers: {
@@ -96,12 +90,8 @@ export default function PasswordChangeDialog({
         body: JSON.stringify({ email: userEmail }),
       });
 
-      console.log('서버 응답 상태 코드:', response.status);
-
       const responseText = await response.text();
       const result = responseText ? JSON.parse(responseText) : {};
-
-      console.log('파싱된 응답:', result);
 
       if (!response.ok || !result.success) {
         console.error('인증번호 발송 실패:', result);
@@ -114,9 +104,14 @@ export default function PasswordChangeDialog({
       });
     } catch (error) {
       console.error('인증번호 요청 실패:', error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : '비밀번호 변경 중 문제가 발생했습니다.';
+
       toast({
         title: '오류',
-        description: error.message || '인증번호 요청 중 문제가 발생했습니다.',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
@@ -128,11 +123,6 @@ export default function PasswordChangeDialog({
   const onSubmit = async (data: z.infer<typeof PasswordSchema>) => {
     setIsSubmitting(true);
     try {
-      console.log(
-        '비밀번호 변경 요청 시작:',
-        API_ROUTES.AUTH_USER_PASSWORD_RESET,
-      );
-
       const response = await fetch(API_ROUTES.AUTH_USER_PASSWORD_RESET, {
         method: 'POST',
         headers: {
@@ -147,12 +137,8 @@ export default function PasswordChangeDialog({
         }),
       });
 
-      console.log('서버 응답 상태 코드:', response.status);
-
       const responseText = await response.text();
       const result = responseText ? JSON.parse(responseText) : {};
-
-      console.log('파싱된 응답:', result);
 
       if (!response.ok || !result.success) {
         console.error('비밀번호 변경 실패:', result);
@@ -164,12 +150,18 @@ export default function PasswordChangeDialog({
         description: '비밀번호가 성공적으로 변경되었습니다!',
       });
 
-      onClose(); // 모달 닫기
+      onClose();
     } catch (error) {
       console.error('비밀번호 변경 실패:', error);
+
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : '비밀번호 변경 중 문제가 발생했습니다.';
+
       toast({
         title: '오류',
-        description: error.message || '비밀번호 변경 중 문제가 발생했습니다.',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {

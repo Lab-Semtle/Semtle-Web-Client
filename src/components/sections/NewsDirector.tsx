@@ -24,14 +24,15 @@ const NewsDirector: React.FC<NewsDirectorProps> = ({
   link_url,
   index = 0,
 }) => {
-  const isReversed = index % 2 !== 0; // 짝수/홀수에 따라 정렬 변경
+  const isReversed = index % 2 !== 0;
   const truncatedContent = truncateNewsContent(newsContent, 140);
 
   return (
     <div
+      key={id}
+      data-news-id={id}
       className={`grid gap-6 overflow-hidden rounded-xl border border-border md:grid-cols-2 lg:gap-8`}
     >
-      {/* 이미지 영역 (짝수: 왼쪽, 홀수: 오른쪽) */}
       <div
         className={`md:min-h-[24rem] lg:min-h-[28rem] xl:min-h-[32rem] ${
           isReversed ? 'md:order-last' : ''

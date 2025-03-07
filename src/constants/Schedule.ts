@@ -1,10 +1,8 @@
-/** 학회 일정 데이터 */
-
 export interface ScheduleEventType {
   date: string;
   title: string;
   start: string;
-  end: string; // end는 선택적 속성
+  end: string;
   location: string;
   description: string;
 }

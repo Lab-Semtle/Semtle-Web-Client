@@ -20,20 +20,15 @@ function ProfileSettingsPageContent() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  // 로그인 여부 체크
   useEffect(() => {
-    if (status === 'loading') return; // 세션 로딩 중이면 대기
-
-    console.log('session : ', session);
+    if (status === 'loading') return;
     if (!session?.accessToken) {
       alert('로그인이 필요합니다.');
-      router.push('/signin'); // 로그인 안 되어 있으면 리다이렉트
+      router.push('/signin');
     }
   }, [status, session, router]);
 
-  // 인증된 경우에만 사용자 프로필 API 호출
   const { user, isLoading, updateUserProfile } = useUserProfile();
-
   const [isPasswordDialogOpen, setPasswordDialogOpen] = useState(
     typeof window !== 'undefined' &&
       localStorage.getItem('passwordModalOpen') === 'true',
@@ -50,13 +45,13 @@ function ProfileSettingsPageContent() {
   // 모달 열기
   const handlePasswordDialogOpen = () => {
     setPasswordDialogOpen(true);
-    localStorage.setItem('passwordModalOpen', 'true'); // 상태 저장
+    localStorage.setItem('passwordModalOpen', 'true');
   };
 
   // 모달 닫기
   const handlePasswordDialogClose = () => {
     setPasswordDialogOpen(false);
-    localStorage.removeItem('passwordModalOpen'); // 상태 제거
+    localStorage.removeItem('passwordModalOpen');
   };
 
   // 모든 데이터가 준비되었을 때 렌더링
@@ -82,7 +77,7 @@ function ProfileSettingsPageContent() {
         <ProfileForm
           user={user}
           updateUserProfile={updateUserProfile}
-          onPasswordChange={handlePasswordDialogOpen} // 모달 열기
+          onPasswordChange={handlePasswordDialogOpen}
         />
       </section>
     </main>

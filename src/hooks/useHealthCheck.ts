@@ -11,15 +11,12 @@ export function useHealthCheck() {
     setError(null);
 
     try {
-      console.log('api 요청 : ', API_ROUTES.GET_BANNERS);
       const response = await fetch(API_ROUTES.GET_BANNERS, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
-      console.log('api 응답 : ', response);
 
       if (!response.ok) {
         throw new Error(`HTTP Error: ${response.status}`);

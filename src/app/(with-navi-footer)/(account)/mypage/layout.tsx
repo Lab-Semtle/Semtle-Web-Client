@@ -22,7 +22,6 @@ export default function MyPageLayout({
 function MyPageLayoutContent({ content }: { content: React.ReactNode }) {
   const pathname = usePathname();
   const { data: session, status } = useSession();
-  console.log('session : ', session);
 
   if (!content) {
     redirect('/mypage/projects');

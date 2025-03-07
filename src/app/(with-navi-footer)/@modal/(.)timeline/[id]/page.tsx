@@ -36,7 +36,7 @@ export default function ModalTimelinePage() {
           <Image
             src={event.imageUrl || '/images/semtle_logo_sqare_white.jpg'}
             alt={event.title}
-            width={900} // ✅ width, height로 변경 (layout="fill" 제거)
+            width={900}
             height={500}
             className="rounded-md object-cover"
             priority

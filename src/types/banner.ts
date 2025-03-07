@@ -1,4 +1,3 @@
-/** 배너 타입 정의 */
 export interface Banner {
   bannerId: number;
   imagePath: string;

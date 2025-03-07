@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { ArrowLeft, ArrowRight, ListFilter } from 'lucide-react';
@@ -22,59 +22,60 @@ interface PostData {
   imageUrl?: string;
 }
 
-/** 활동 게시물 페이지 */
 export default function ActivityPostPage() {
   const [post, setPost] = useState<PostData | null>(null);
   const [loading, setLoading] = useState(true);
   const params = useParams();
   const router = useRouter();
 
-  // 게시물 데이터 가져오기 (id가 변경될 때마다 실행)
-  const fetchPost = async (id: number) => {
-    try {
-      const response = await fetch(API_ROUTES.GET_ACTIVITY_DETAIL(id));
-      if (!response.ok) {
-        if (response.status === 404) {
-          alert('해당 게시물이 존재하지 않습니다.');
-        } else {
-          alert('게시물을 불러오는 중 오류가 발생했습니다.');
+  /**
+   * ✅ `fetchPost`를 `useCallback`으로 감싸서 의존성 문제 해결
+   */
+  const fetchPost = useCallback(
+    async (id: number) => {
+      try {
+        const response = await fetch(API_ROUTES.GET_ACTIVITY_DETAIL(id));
+        if (!response.ok) {
+          if (response.status === 404) {
+            alert('해당 게시물이 존재하지 않습니다.');
+          } else {
+            alert('게시물을 불러오는 중 오류가 발생했습니다.');
+          }
+          router.push('/activities');
+          return;
         }
+
+        const { success, data } = await response.json();
+        if (success) {
+          const imageUrl = data.images?.[0]
+            ? await fetchNcpPresignedUrl(data.images[0])
+            : '/placeholder.svg';
+
+          setPost({
+            ...data,
+            imageUrl,
+          });
+        } else {
+          alert('게시물을 불러오는 데 실패했습니다.');
+          router.push('/activities');
+        }
+      } catch (error) {
+        console.error(error);
+        alert('서버 오류가 발생했습니다.');
         router.push('/activities');
-        return;
+      } finally {
+        setLoading(false);
       }
+    },
+    [router], // ✅ 의존성 배열에 router 추가
+  );
 
-      const { success, data } = await response.json();
-      if (success) {
-        // 이미지 Presigned URL 변환
-        console.log('[activities/id]===============');
-        const imageUrl = data.images?.[0]
-          ? await fetchNcpPresignedUrl(data.images[0])
-          : '/placeholder.svg';
-
-        setPost({
-          ...data,
-          imageUrl,
-        });
-      } else {
-        alert('게시물을 불러오는 데 실패했습니다.');
-        router.push('/activities');
-      }
-    } catch (error) {
-      console.error(error);
-      alert('서버 오류가 발생했습니다.');
-      router.push('/activities');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 페이지 처음 로딩될 때 게시물 가져오기
   useEffect(() => {
     if (params.id) {
       setLoading(true);
       fetchPost(Number(params.id));
     }
-  }, [params.id, router]);
+  }, [params.id, fetchPost]); // ✅ `fetchPost`를 의존성 배열에 추가
 
   if (loading) {
     return <div className="text-center text-lg">로딩 중...</div>;
@@ -86,15 +87,17 @@ export default function ActivityPostPage() {
     );
   }
 
+  // ✅ 사용하지 않는 `handleModify` 삭제 또는 주석 처리
+  /*
   const handleModify = () => {
     router.push(`/activities/edit/${post.board_id}`);
   };
+  */
 
   const handleList = () => {
     router.push('/activities');
   };
 
-  // 이전 게시물 가져오기 (id - 1)
   const handlePrevious = () => {
     const prevId = post.board_id - 1;
     if (prevId < 1) {
@@ -104,7 +107,6 @@ export default function ActivityPostPage() {
     router.push(`/activities/${prevId}`);
   };
 
-  // 다음 게시물 가져오기 (id + 1)
   const handleNext = () => {
     const nextId = post.board_id + 1;
     router.push(`/activities/${nextId}`);

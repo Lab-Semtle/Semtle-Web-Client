@@ -1,19 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
-  Trash2,
   Eye,
   CalendarDays,
   FileText,
   ChevronLeft,
   ChevronRight,
   List,
-  PencilLine,
 } from 'lucide-react';
 import Link from 'next/link';
 import { API_ROUTES } from '@/constants/ApiRoutes';
@@ -34,10 +32,51 @@ export default function SecretTab() {
   const [totalPosts, setTotalPosts] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
   const pageSize = 9; // 한 페이지당 표시할 게시물 개수
 
-  /** 로그인 여부 체크 및 데이터 페칭 */
+  const fetchSecrets = useCallback(
+    async (page: number) => {
+      if (!session?.id || !session?.accessToken) {
+        console.error('사용자 세션이 없습니다.');
+        alert('로그인이 만료되었습니다. 다시 로그인해주세요.');
+        router.push('/signin');
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const response = await fetch(
+          API_ROUTES.GET_MY_ARCHIVES(page, pageSize, session.id),
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${session?.accessToken}`,
+            },
+          },
+        );
+
+        if (response.status === 401) {
+          alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+          router.push('/signin');
+          return;
+        }
+
+        if (!response.ok) throw new Error('족보 목록을 불러오지 못했습니다.');
+
+        const result = await response.json();
+        setSecrets(result.data.posts || []);
+        setTotalPages(result.data.total_pages || 1);
+        setTotalPosts(result.data.total_post || 0);
+      } catch (err) {
+        console.error('족보 불러오기 오류:', err);
+        setError('족보 목록을 불러오는 중 오류가 발생했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [session?.id, session?.accessToken, router],
+  );
+
   useEffect(() => {
     if (status === 'unauthenticated') {
       alert('로그인이 필요합니다.');
@@ -48,48 +87,7 @@ export default function SecretTab() {
     if (session?.user && session?.accessToken) {
       fetchSecrets(currentPage);
     }
-  }, [session, status, router, currentPage]);
-
-  /** 족보 목록 불러오기 */
-  const fetchSecrets = async (page: number) => {
-    if (!session?.id || !session?.accessToken) {
-      console.error('사용자 세션이 없습니다.');
-      alert('로그인이 만료되었습니다. 다시 로그인해주세요.');
-      router.push('/signin');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const response = await fetch(
-        API_ROUTES.GET_MY_ARCHIVES(page, pageSize, session.id),
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${session?.accessToken}`,
-          },
-        },
-      );
-
-      if (response.status === 401) {
-        alert('세션이 만료되었습니다. 다시 로그인해주세요.');
-        router.push('/signin');
-        return;
-      }
-
-      if (!response.ok) throw new Error('족보 목록을 불러오지 못했습니다.');
-
-      const result = await response.json();
-      setSecrets(result.data.posts || []);
-      setTotalPages(result.data.total_pages || 1);
-      setTotalPosts(result.data.total_post || 0);
-    } catch (err) {
-      console.error('족보 불러오기 오류:', err);
-      setError('족보 목록을 불러오는 중 오류가 발생했습니다.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [session, status, currentPage, fetchSecrets]);
 
   /** 족보 삭제 */
   const deleteSecret = async (id: number) => {

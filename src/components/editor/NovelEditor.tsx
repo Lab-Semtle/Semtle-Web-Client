@@ -1,4 +1,5 @@
 'use client';
+
 import { defaultEditorContent } from '@/constants/DefaultEditorContent'; // 기본 에디터 초기값 (저장된 내용이 없을 때 사용)
 import {
   EditorCommand,
@@ -28,8 +29,7 @@ import {
   slashCommand,
   suggestionItems,
 } from '@/components/editor/SlashCommand'; // 슬래시 명령어 확장
-
-const hljs = require('highlight.js'); // 코드 블록 하이라이트 라이브러리
+import hljs from 'highlight.js'; // 코드 블록 하이라이트 라이브러리
 
 // 에디터 확장 기능을 포함한 배열
 const extensions = [...defaultExtensions, slashCommand];
@@ -51,7 +51,7 @@ const NovelEditor = () => {
   const highlightCodeblocks = (content: string) => {
     const doc = new DOMParser().parseFromString(content, 'text/html');
     doc.querySelectorAll('pre code').forEach((el) => {
-      // @ts-ignore
+      // @ts-expect-error
       // https://highlightjs.readthedocs.io/en/latest/api.html?highlight=highlightElement#highlightelement
       hljs.highlightElement(el); // 코드 블록 하이라이트 적용
     });

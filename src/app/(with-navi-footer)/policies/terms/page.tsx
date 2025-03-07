@@ -6,7 +6,6 @@ import ReactMarkdown from 'react-markdown';
 export default function TermsPage() {
   const [content, setContent] = useState('');
 
-  // Markdown 파일 불러오기
   useEffect(() => {
     fetch('/docs/terms.md')
       .then((res) => res.text())
@@ -16,7 +15,7 @@ export default function TermsPage() {
   return (
     <div className="relative flex justify-center">
       {/* 이용약관 본문 */}
-      <main className="prose dark:prose-invert max-w-4xl flex-1 px-6 pb-28 pt-24">
+      <main className="prose max-w-4xl flex-1 px-6 pb-28 pt-24 dark:prose-invert">
         <ReactMarkdown
           components={{
             h1: ({ children }) => (

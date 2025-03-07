@@ -13,11 +13,9 @@ import {
   recruitApplyDescription,
 } from '@/constants/RecruitData';
 
-/** 리크루잇*(가입안내) 페이지 */
 export default function RecruitPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-6 pb-60 pt-24">
-      {/* 페이지 헤딩 */}
       <PageHeading
         title="아치셈틀 리크루팅"
         description="아치셈틀과 함께 배우고 성장하세요. 

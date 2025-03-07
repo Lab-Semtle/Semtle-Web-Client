@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -21,7 +21,6 @@ import { toast } from '@/hooks/useToast';
 
 import { UserProfile, UserUpdateRequest } from '@/hooks/api/useUserProfile';
 import { ProfileSchema } from '@/lib/validation/profile-schema';
-import PasswordChangeDialog from '@/components/form/PasswordChangeDialog';
 
 /** Form 타입 설정 */
 type ProfileFormValues = z.infer<typeof ProfileSchema>;
@@ -45,14 +44,27 @@ export default function ProfileForm({
     },
   });
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   form.reset({
+  //     studentId: user?.studentId ?? '',
+  //     username: user?.username ?? '',
+  //     birth: user?.birth ? user.birth.split('T')[0] : '',
+  //     phone: user?.phone ?? '',
+  //   });
+  // }, [user, form]);
+
+  const resetForm = useCallback(() => {
     form.reset({
       studentId: user?.studentId ?? '',
       username: user?.username ?? '',
       birth: user?.birth ? user.birth.split('T')[0] : '',
       phone: user?.phone ?? '',
     });
-  }, [user, form.reset]);
+  }, [form, user]);
+
+  useEffect(() => {
+    resetForm();
+  }, [resetForm]);
 
   async function onSubmit(data: ProfileFormValues) {
     try {

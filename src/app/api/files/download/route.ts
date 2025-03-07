@@ -17,8 +17,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ signedUrl });
   } catch (error) {
-    console.error('파일 다운로드 오류:', error);
-
     let errorMessage = '파일 다운로드 중 오류 발생';
     if (error instanceof Error) {
       errorMessage = error.message;

@@ -1,4 +1,5 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useFetchSecretPosts } from '@/hooks/api/secret/useFetchSecretPosts';
@@ -23,23 +24,19 @@ export default function SecretPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const { secretPost, loading, fetchPosts, status } = useFetchSecretPosts();
 
-  // 디바운스: 입력 후 300ms 후 `debouncedSearchTerm` 업데이트
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
-    }, 300); // 300ms 후 API 요청 실행
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
-    return () => clearTimeout(timer); // 이전 요청 취소
-  }, [searchTerm]); // searchTerm 변경 시 실행됨
-
-  // 검색어 변경될 때만 fetch 실행
   useEffect(() => {
     if (status === 'authenticated') {
       fetchPosts(currentPage, debouncedSearchTerm);
     }
-  }, [fetchPosts, currentPage, debouncedSearchTerm, status]); // `debouncedSearchTerm`이 바뀔 때만 실행됨
+  }, [fetchPosts, currentPage, debouncedSearchTerm, status]);
 
-  // 로그인되지 않은 경우 로그인 페이지로 리디렉트
   useEffect(() => {
     if (status === 'unauthenticated') {
       alert('로그인이 필요합니다.');

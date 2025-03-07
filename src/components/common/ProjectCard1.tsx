@@ -1,7 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { CalendarClock, User } from 'lucide-react';
 
 // ProjectCard1 타입 정의

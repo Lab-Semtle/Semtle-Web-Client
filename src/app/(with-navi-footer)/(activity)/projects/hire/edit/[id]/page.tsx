@@ -6,7 +6,6 @@ import { useSession } from 'next-auth/react';
 import ProjectHireEditForm from '@/components/form/ProjectHireEditForm';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 
-// 프로젝트 타입 및 연관 분야 매핑
 const PROJECT_TYPE_MAP = {
   해커톤: { id: 1, name: '해커톤' },
   경진대회: { id: 2, name: '경진대회' },
@@ -24,7 +23,7 @@ const RELATION_FIELD_MAP = {
   기타: { id: 6, name: '기타' },
 } as const;
 
-// API 데이터 타입 정의 (날짜는 string 형식 유지)
+// API 데이터 타입
 interface ProjectData {
   projectTitle: string;
   startDate: string;
@@ -39,7 +38,7 @@ interface ProjectData {
 const EditProjectPage = () => {
   const { id } = useParams();
   const router = useRouter();
-  const { data: session } = useSession(); // ✅ 인증 정보 가져오기
+  const { data: session } = useSession();
   const [initialData, setInitialData] = useState<ProjectData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -61,9 +60,7 @@ const EditProjectPage = () => {
 
         if (!response.ok)
           throw new Error('프로젝트 데이터를 불러오는 데 실패했습니다.');
-
         const res = await response.json();
-        console.log('[프로젝트 수정] 불러온 데이터 : ', res);
 
         setInitialData({
           projectTitle: res.data.title,
@@ -74,8 +71,8 @@ const EditProjectPage = () => {
             ? new Date(res.data.projectEndTime).toISOString()
             : new Date().toISOString(),
           contact: res.data.contact || '',
-          category: res.data.projectTypeCategory || '', // 프로젝트 타입 -> 카테고리로 변경
-          relatedField: res.data.relationFieldCategory || [], // 연관 분야 적용
+          category: res.data.projectTypeCategory || '',
+          relatedField: res.data.relationFieldCategory || [],
           content: res.data.content,
           images: res.data.images || [],
         });
@@ -95,17 +92,14 @@ const EditProjectPage = () => {
         throw new Error('로그인이 필요합니다.');
       }
 
-      // 카테고리 변환
       const projectTypeCategory =
         PROJECT_TYPE_MAP[data.category as keyof typeof PROJECT_TYPE_MAP];
 
-      // 연관 분야 변환
       const relationFieldCategories = data.relatedField.map(
         (category) =>
           RELATION_FIELD_MAP[category as keyof typeof RELATION_FIELD_MAP],
       );
 
-      // API 요청 데이터 변환
       const formattedData = {
         title: data.projectTitle,
         content: data.content,
@@ -116,8 +110,6 @@ const EditProjectPage = () => {
         projectEndTime: new Date(data.endDate).toISOString(),
         projectRecruitingEndTime: new Date(data.endDate).toISOString(),
       };
-
-      console.log('✏️ 프로젝트 수정 요청 데이터:', formattedData);
 
       const response = await fetch(API_ROUTES.UPDATE_PROJECT(Number(id)), {
         method: 'POST',

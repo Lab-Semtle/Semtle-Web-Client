@@ -1,35 +1,36 @@
 'use client';
-import { Button } from "@/components/ui/button";
+
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { MyEvent } from "@/types/calendar";
-import { format } from "date-fns";
-import { useEffect, useState } from "react";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { MyEvent } from '@/types/calendar';
+import { format } from 'date-fns';
+import { useEffect, useState } from 'react';
 
 interface EventFormProps {
   event?: MyEvent | null;
   open: boolean;
   onClose: () => void;
-  onSave: (event: Omit<MyEvent, "id">) => void;
+  onSave: (event: Omit<MyEvent, 'id'>) => void;
   selectedDate?: Date;
   selectedEndDate?: Date; // Add this prop for multiple date selection
 }
 
 const defaultFormData = {
-  title: "",
-  description: "",
-  location: "",
-  startDate: "",
-  startTime: "00:00",
-  endDate: "",
-  endTime: "23:59",
+  title: '',
+  description: '',
+  location: '',
+  startDate: '',
+  startTime: '00:00',
+  endDate: '',
+  endTime: '23:59',
 };
 
 export function EventForm({
@@ -53,33 +54,33 @@ export function EventForm({
       // Set form data for existing event
       setFormData({
         title: event.title,
-        description: event.description || "",
-        location: event.location || "",
-        startDate: format(event.start, "yyyy-MM-dd"),
-        startTime: format(event.start, "HH:mm"),
-        endDate: format(event.end, "yyyy-MM-dd"),
-        endTime: format(event.end, "HH:mm"),
+        description: event.description || '',
+        location: event.location || '',
+        startDate: format(event.start, 'yyyy-MM-dd'),
+        startTime: format(event.start, 'HH:mm'),
+        endDate: format(event.end, 'yyyy-MM-dd'),
+        endTime: format(event.end, 'HH:mm'),
       });
     } else if (selectedDate) {
       // Set form data for new event
-      const startDate = format(selectedDate, "yyyy-MM-dd");
-      const endDate = selectedEndDate 
-        ? format(selectedEndDate, "yyyy-MM-dd")
+      const startDate = format(selectedDate, 'yyyy-MM-dd');
+      const endDate = selectedEndDate
+        ? format(selectedEndDate, 'yyyy-MM-dd')
         : startDate;
 
       setFormData({
         ...defaultFormData,
         startDate,
         endDate,
-        startTime: "00:00",
-        endTime: selectedEndDate ? "23:59" : "23:59",
+        startTime: '00:00',
+        endTime: selectedEndDate ? '23:59' : '23:59',
       });
     }
   }, [event, selectedDate, selectedEndDate, open]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const start = new Date(`${formData.startDate}T${formData.startTime}`);
     const end = new Date(`${formData.endDate}T${formData.endTime}`);
 
@@ -98,16 +99,18 @@ export function EventForm({
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="text-xl">
-            {event ? "Edit Event" : "Create New Event"}
+            {event ? 'Edit Event' : 'Create New Event'}
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+        <form onSubmit={handleSubmit} className="mt-4 space-y-6">
           <div className="space-y-2">
             <Label htmlFor="title">Event Title</Label>
             <Input
               id="title"
               value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
               className="w-full"
               placeholder="Enter event title"
               required
@@ -121,13 +124,17 @@ export function EventForm({
                 <Input
                   type="date"
                   value={formData.startDate}
-                  onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, startDate: e.target.value })
+                  }
                   required
                 />
                 <Input
                   type="time"
                   value={formData.startTime}
-                  onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, startTime: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -138,13 +145,17 @@ export function EventForm({
                 <Input
                   type="date"
                   value={formData.endDate}
-                  onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, endDate: e.target.value })
+                  }
                   required
                 />
                 <Input
                   type="time"
                   value={formData.endTime}
-                  onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, endTime: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -156,7 +167,9 @@ export function EventForm({
             <Input
               id="location"
               value={formData.location}
-              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, location: e.target.value })
+              }
               placeholder="Enter location"
             />
           </div>
@@ -166,7 +179,9 @@ export function EventForm({
             <Textarea
               id="description"
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
               rows={3}
               placeholder="Add description"
             />
@@ -177,7 +192,7 @@ export function EventForm({
               Cancel
             </Button>
             <Button type="submit">
-              {event ? "Update Event" : "Create Event"}
+              {event ? 'Update Event' : 'Create Event'}
             </Button>
           </div>
         </form>

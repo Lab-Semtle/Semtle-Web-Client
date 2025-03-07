@@ -12,14 +12,12 @@ export default function RulesPage() {
   const [activeSection, setActiveSection] = useState('');
   const sectionsRef = useRef<Record<string, HTMLHeadingElement | null>>({});
 
-  // Markdown 파일 불러오기
   useEffect(() => {
     fetch('/docs/rules.md')
       .then((res) => res.text())
       .then((data) => setContent(data));
   }, []);
 
-  // 현재 보고 있는 섹션 감지
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
@@ -87,7 +85,7 @@ export default function RulesPage() {
         </div>
 
         {/* 회칙 본문 */}
-        <main className="prose dark:prose-invert flex-1">
+        <main className="prose flex-1 dark:prose-invert">
           <ReactMarkdown
             components={{
               h1: ({ children }) => (

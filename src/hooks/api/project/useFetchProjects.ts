@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 
-// API에서 받아올 프로젝트 데이터 타입 정의
 interface ApiProject {
   projectBoardId: number;
   title: string;
@@ -11,7 +10,6 @@ interface ApiProject {
   projectRecruitingEndTime: string;
 }
 
-// 변환된 프로젝트 데이터 타입 정의 (UI에서 사용)
 interface ProjectCard1 {
   id: number;
   title: string;
@@ -22,7 +20,6 @@ interface ProjectCard1 {
   image?: string;
 }
 
-// API 호출 및 데이터 변환
 export function useFetchProjects(
   page: number = 0,
   size: number = 10,
@@ -38,14 +35,12 @@ export function useFetchProjects(
       try {
         setLoading(true);
 
-        // API 엔드포인트 가져오기 (쿼리 파라미터 포함)
         const apiUrl = API_ROUTES.GET_PROJECT_LIST(
           page,
           size,
           projectType,
           relationType,
         );
-
         const response = await fetch(apiUrl);
         const json = await response.json();
 
@@ -84,7 +79,7 @@ export function useFetchProjects(
     };
 
     fetchProjects();
-  }, [page, size, projectType, relationType]); // 필터 값이 변경될 때 다시 요청
+  }, [page, size, projectType, relationType]);
 
   return { projects, loading, error };
 }

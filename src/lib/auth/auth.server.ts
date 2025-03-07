@@ -1,29 +1,57 @@
 'use server';
 
-import { auth, signIn, signOut, update } from '@/lib/auth/auth.config';
+import { getServerSession } from 'next-auth';
+import { signIn, signOut } from 'next-auth/react';
+import authOptions from '@/lib/auth/auth.config';
 import { loginSchema } from '@/lib/validation/login-schema';
 import { revalidatePath } from 'next/cache';
 import type { z } from 'zod';
 
-/** 로그인 */
+/** 세션 가져오기 */
+export const getSession = async () => {
+  try {
+    const session = await getServerSession(authOptions);
+    return session;
+  } catch (error) {
+    console.error('[getSession] 세션 가져오기 실패:', error);
+    return null;
+  }
+};
+
+/** 세션 업데이트 */
+export const updateSession = async () => {
+  await revalidatePath('/');
+};
+
+/** 로그인 수행 (Zod 검증 추가) */
 export const signInWithCredentials = async (
   formData: z.infer<typeof loginSchema>,
 ) => {
   try {
-    const result = await signIn('credentials', {
-      email: formData.email,
-      password: formData.password,
-      redirect: false, // 리디렉트 방지 (서버에서 직접 핸들링)
-    });
-
-    if (result?.error) {
-      console.error('[signInWithCredentials] 로그인 실패:', result.error);
-      throw new Error(result.error);
+    // 입력 데이터 검증
+    const validationResult = await loginSchema.safeParseAsync(formData);
+    if (!validationResult.success) {
+      console.error(
+        '[signInWithCredentials] 유효성 검사 실패:',
+        validationResult.error,
+      );
+      throw new Error('입력한 이메일 또는 비밀번호가 올바르지 않습니다.');
     }
 
-    // await update();
+    // 로그인 요청
+    const { email, password } = validationResult.data;
 
-    console.log('[signInWithCredentials] 로그인 성공');
+    const result = await signIn('credentials', {
+      email,
+      password,
+      redirect: false, // 리디렉트 방지
+    });
+
+    if (!result || result.error) {
+      console.error('[signInWithCredentials] 로그인 실패:', result?.error);
+      throw new Error(result?.error || '로그인 실패');
+    }
+
     return result;
   } catch (error) {
     console.error('[signInWithCredentials] 로그인 중 오류 발생:', error);
@@ -34,20 +62,5 @@ export const signInWithCredentials = async (
 /** 로그아웃 */
 export const signOutWithForm = async () => {
   await signOut();
-
-  revalidatePath('/'); // 캐시 갱신
+  await revalidatePath('/');
 };
-
-export { auth as getSession, update as updateSession };
-
-// 구글 로그인
-// export const signInWithGoogle = async () => {
-//   await signIn('google', { /* 옵션 */ })
-//   // ...
-// }
-
-// 깃헙 로그인
-// export const signInWithGitHub = async () => {
-//   await signIn('github', { /* 옵션 */ })
-//   // ...
-// }

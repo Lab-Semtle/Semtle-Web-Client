@@ -1,5 +1,3 @@
-/** Introduction 섹션 */
-
 export const INTRO_HEADING = 'About "아치셈틀"';
 export const INTRO_DESCRIPTION = `
 아치 셈틀은 한국해양대학교 인공지능공학부에 소속된 컴퓨터공학전공 학술연구회입니다.

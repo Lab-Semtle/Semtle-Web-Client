@@ -4,7 +4,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
 interface PostCarouselProps {
-  imageUrls: string[]; // 이미지 URL 배열을 받아올 프로퍼티
+  imageUrls: string[];
 }
 
 function PostCarousel({ imageUrls }: PostCarouselProps) {
@@ -13,7 +13,7 @@ function PostCarousel({ imageUrls }: PostCarouselProps) {
       return (
         <a>
           <Image
-            src={imageUrls[i]} // 올바른 이미지 경로를 확인해주세요.
+            src={imageUrls[i]}
             alt={`Thumbnail ${i + 1}`}
             fill
             style={{ objectFit: 'cover' }}
@@ -30,7 +30,7 @@ function PostCarousel({ imageUrls }: PostCarouselProps) {
   };
 
   return (
-    <div className="flex justify-center items-center w-full">
+    <div className="flex w-full items-center justify-center">
       <Slider {...settings} className="h-[500px] w-[500px]">
         {imageUrls.map((imageUrl, index) => (
           <div key={index}>

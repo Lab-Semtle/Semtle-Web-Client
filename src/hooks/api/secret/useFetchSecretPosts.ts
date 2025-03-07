@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
@@ -33,7 +33,6 @@ export function useFetchSecretPosts() {
   // 캐싱을 위한 useRef 추가
   const cacheRef = useRef<{ [key: string]: SecretPost }>({});
 
-  /** 게시글 데이터 Fetch 함수 */
   const fetchPosts = useCallback(
     async (page = 1, searchKeyword = '') => {
       try {
@@ -53,10 +52,6 @@ export function useFetchSecretPosts() {
           return;
         }
 
-        console.log(
-          `[API 요청 시작] 검색어: "${searchKeyword}", 페이지: ${page}`,
-        );
-
         const response = await fetch(
           API_ROUTES.GET_ARCHIVE_LIST(page, 8, searchKeyword),
           {
@@ -68,28 +63,19 @@ export function useFetchSecretPosts() {
           },
         );
 
-        console.log(`[API 응답] 상태 코드: ${response.status}`);
-
-        // 응답이 없거나 204 No Content이면 빈 데이터 설정
         if (!response.ok || response.status === 204) {
           console.warn('[API 응답] 서버에서 게시물이 없습니다.');
           setSecretPost({ total_posts: 0, total_pages: 1, posts: [] });
           return;
         }
-
-        // 응답이 빈 문자열이면 예외 처리
         const responseText = await response.text();
-        console.log('[API 응답] 원본 데이터:', responseText);
 
         if (!responseText.trim()) {
           console.warn('[API 응답] 응답이 비어 있습니다.');
           setSecretPost({ total_posts: 0, total_pages: 1, posts: [] });
           return;
         }
-
-        // JSON 파싱 후 데이터 체크
         const json = JSON.parse(responseText);
-        console.log('[API 응답] JSON 파싱 완료:', json);
 
         if (json.success && json.data) {
           const postsData = json.data?.posts ?? [];
@@ -114,8 +100,6 @@ export function useFetchSecretPosts() {
             total_pages: json.data.total_pages ?? 1,
             posts: updatedPosts,
           };
-
-          console.log('[API 응답] 최종 데이터:', processedData);
 
           setSecretPost(processedData);
           cacheRef.current[cacheKey] = processedData; // 캐싱 저장

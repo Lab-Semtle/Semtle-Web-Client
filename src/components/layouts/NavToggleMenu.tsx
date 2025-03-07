@@ -1,5 +1,3 @@
-/** 데스크톱 사이즈 화면에서 네비게이션 바 중앙 메뉴 */
-
 import {
   NavigationMenu,
   NavigationMenuList,

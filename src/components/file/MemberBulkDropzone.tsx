@@ -1,4 +1,5 @@
 'use client';
+
 import {
   Dropzone,
   DropZoneArea,
@@ -15,7 +16,7 @@ import { useToast } from '@/hooks/useToast';
 import { useBulkSignup } from '@/hooks/api/member/useBulkSignup';
 
 export function MemberBulkDropzone() {
-  const { bulkSignup, loading } = useBulkSignup();
+  const { bulkSignup } = useBulkSignup();
   const { toast } = useToast();
 
   const dropzone = useDropzone({

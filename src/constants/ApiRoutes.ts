@@ -1,16 +1,6 @@
 /** API 엔드포인트 경로 관리 */
 
-const apiMode = process.env.NEXT_PUBLIC_API_BASE_URL_USE;
-const baseUrl = (() => {
-  switch (apiMode) {
-    case 'next':
-      return process.env.NEXT_PUBLIC_API_BASE_URL_NEXT;
-    case 'prod':
-      return process.env.NEXT_PUBLIC_API_BASE_URL_PROD;
-    default:
-      return process.env.NEXT_PUBLIC_API_BASE_URL_NEXT;
-  }
-})();
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const API_ROUTES = {
   HEALTH: `${baseUrl}/health`, // 서버 상태 테스트

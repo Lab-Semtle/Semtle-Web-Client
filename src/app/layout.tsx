@@ -11,10 +11,6 @@ import { Metadata, Viewport } from 'next';
 export const metadata: Metadata = {
   title: '아치셈틀',
   description: '국립한국해양대학교 인공지능공학부 아치셈틀 공식 홈페이지',
-  other: {
-    'http-equiv': 'Content-Security-Policy',
-    content: 'upgrade-insecure-requests',
-  },
   openGraph: {
     title: '아치셈틀',
     description: '국립한국해양대학교 인공지능공학부 아치셈틀 공식 홈페이지',
@@ -58,6 +54,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" suppressHydrationWarning>
+      <head>
+        {/* Mixed Content 방지 설정 */}
+        <meta
+          httpEquiv="Content-Security-Policy"
+          content="upgrade-insecure-requests"
+        />
+      </head>
       <body
         className={`${moneygraphy.variable} ${pretendard.variable} ${yclover.variable} ${suit.variable} font-pretendard antialiased`}
       >

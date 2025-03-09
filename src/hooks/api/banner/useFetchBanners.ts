@@ -8,6 +8,7 @@ async function fetchBanners(): Promise<Banner[]> {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
     mode: 'cors',
+    credentials: 'include',
   });
   if (!response.ok) {
     throw new Error(`Error ${response.status}: ${response.statusText}`);

@@ -16,11 +16,19 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)', // 모든 요청에 적용
+        source: '/(.*)',
         headers: [
           {
-            key: 'Content-Security-Policy',
-            value: 'upgrade-insecure-requests', // HTTP 요청을 자동으로 HTTPS로 업그레이드
+            key: 'Access-Control-Allow-Origin',
+            value: 'https://semtle-web-client-1-0.vercel.app', // CORS 허용
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, POST, OPTIONS',
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Content-Type, Authorization',
           },
         ],
       },

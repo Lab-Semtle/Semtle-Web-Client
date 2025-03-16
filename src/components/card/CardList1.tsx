@@ -23,6 +23,14 @@ interface CardList1Props {
   onItemClick?: (id: number) => void;
 }
 
+// 글자수를 일정 길이 이상이면 '...'으로 표시
+const truncateText = (text: string, maxLength: number) => {
+  if (text.length > maxLength) {
+    return text.slice(0, maxLength) + '...';
+  }
+  return text;
+};
+
 const CardList1 = ({
   items = [],
   loading,
@@ -96,7 +104,7 @@ const CardList1 = ({
                       </h3>
 
                       <p className="text-base font-medium lg:text-lg lg:leading-normal">
-                        {item.description}
+                        {truncateText(item.description, 100)}
                       </p>
 
                       <footer className="mt-6 text-sm text-muted-foreground">

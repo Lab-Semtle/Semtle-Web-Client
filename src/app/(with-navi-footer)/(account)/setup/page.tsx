@@ -2,19 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession, SessionProvider } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 
 import { useUserProfile } from '@/hooks/api/useUserProfile';
 import ProfileForm from '@/components/form/ProfileForm';
 import PasswordChangeDialog from '@/components/form/PasswordChangeDialog';
-
-// export default function ProfileSettingsPage() {
-//   return (
-//     <SessionProvider>
-//       <ProfileSettingsPageContent />
-//     </SessionProvider>
-//   );
-// }
 
 export default function ProfileSettingsPage() {
   const { data: session, status } = useSession();

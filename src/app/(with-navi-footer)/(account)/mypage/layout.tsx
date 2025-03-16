@@ -5,19 +5,6 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { SessionProvider } from 'next-auth/react';
-
-// export default function MyPageLayout({
-//   content,
-// }: {
-//   content: React.ReactNode;
-// }) {
-//   return (
-//     <SessionProvider>
-//       <MyPageLayoutContent content={content} />
-//     </SessionProvider>
-//   );
-// }
 
 export default function MyPageLayout({
   content,

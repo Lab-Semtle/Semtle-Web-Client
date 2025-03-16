@@ -1,14 +1,10 @@
 'use client';
 
-import {
-  Map,
-  MapMarker,
-  useKakaoLoader,
-} from 'react-kakao-maps-sdk';
+import { Map, MapMarker, useKakaoLoader } from 'react-kakao-maps-sdk';
 
 export default function KakaoMap() {
   const [loading, error] = useKakaoLoader({
-    appkey: process.env.NEXT_PUBLIC_APPKEY!, // 발급 받은 APPKEY
+    appkey: process.env.NEXT_PUBLIC_APPKEY!,
   });
   if (loading) return <div>Loading</div>;
   if (error) return <div>Error</div>;

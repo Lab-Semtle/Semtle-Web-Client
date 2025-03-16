@@ -2,7 +2,7 @@ import { SiInstagram, SiFacebook, SiGithub, SiThreads } from 'react-icons/si';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
-import { boardMembers, boardDevelopers } from '@/constants/TeamData';
+import { boardMembers } from '@/constants/TeamData';
 import PageHeading from '@/components/common/PageHeading';
 
 export default function TeamPage() {
@@ -31,7 +31,7 @@ export default function TeamPage() {
                   {member.role}
                 </p>
                 <p className="mt-3 text-sm text-muted-foreground">
-                  {member.bio || '학회의 운영을 위해 최선을 다하고 있습니다.'}
+                  {member.bio || ''}
                 </p>
               </div>
               <div className="mt-3 flex gap-2">

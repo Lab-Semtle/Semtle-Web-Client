@@ -40,7 +40,7 @@ export default function ProjectBoardPage() {
   }, [status, session]);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return; // ✅ 서버 실행 방지
+    if (typeof window === 'undefined') return;
 
     const searchParams = new URLSearchParams(window.location.search);
     const tab = searchParams.get('tab') === 'showcase' ? 'completed' : 'active';

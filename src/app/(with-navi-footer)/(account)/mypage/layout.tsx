@@ -7,19 +7,23 @@ import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { SessionProvider } from 'next-auth/react';
 
+// export default function MyPageLayout({
+//   content,
+// }: {
+//   content: React.ReactNode;
+// }) {
+//   return (
+//     <SessionProvider>
+//       <MyPageLayoutContent content={content} />
+//     </SessionProvider>
+//   );
+// }
+
 export default function MyPageLayout({
   content,
 }: {
   content: React.ReactNode;
 }) {
-  return (
-    <SessionProvider>
-      <MyPageLayoutContent content={content} />
-    </SessionProvider>
-  );
-}
-
-function MyPageLayoutContent({ content }: { content: React.ReactNode }) {
   const pathname = usePathname();
   const { data: session, status } = useSession();
 

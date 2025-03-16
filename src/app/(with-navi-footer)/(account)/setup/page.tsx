@@ -8,15 +8,15 @@ import { useUserProfile } from '@/hooks/api/useUserProfile';
 import ProfileForm from '@/components/form/ProfileForm';
 import PasswordChangeDialog from '@/components/form/PasswordChangeDialog';
 
-export default function ProfileSettingsPage() {
-  return (
-    <SessionProvider>
-      <ProfileSettingsPageContent />
-    </SessionProvider>
-  );
-}
+// export default function ProfileSettingsPage() {
+//   return (
+//     <SessionProvider>
+//       <ProfileSettingsPageContent />
+//     </SessionProvider>
+//   );
+// }
 
-function ProfileSettingsPageContent() {
+export default function ProfileSettingsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
 

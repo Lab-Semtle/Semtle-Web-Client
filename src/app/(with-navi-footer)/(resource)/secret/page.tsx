@@ -66,7 +66,7 @@ export default function SecretPage() {
     <main className="flex flex-col items-center px-6 pb-32 pt-24">
       <PageHeading
         title="Secret Note"
-        description={`${String.fromCodePoint(0x1f4dd)} 학업, 학습과 관련된 자료를 자유롭게 공유하는 공간입니다.`}
+        description={`${String.fromCodePoint(0x1f4dd)} 학업, 학습과 관련된 자료를 자유롭게 공유하는 공간입니다. (전공 족보 지속적으로 업로드 중입니다...!)`}
       />
 
       {/* 상단 바 (새글 작성, 검색 바) */}

@@ -36,7 +36,7 @@ const PostCard: React.FC<PostCardProps> = ({
                     ? imageUrl.startsWith('/') || imageUrl.startsWith('http')
                       ? imageUrl
                       : `/${imageUrl}`
-                    : '/temp-server/sample-1.jpg'
+                    : '/images/kmou_2023_spring.jpg'
                 }
                 alt={title}
                 width={400}

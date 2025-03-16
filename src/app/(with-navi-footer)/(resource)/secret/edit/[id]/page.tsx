@@ -45,7 +45,7 @@ export default function ModifyPostEditor() {
         title: postData.title,
         content: postData.content,
         created_at: postData.createdAt,
-        imagePath: postData.imageUrl?.[0] || '',
+        imagePath: postData.imageUrl || [],
         filePaths: postData.fileUrl || [],
       });
     } catch (err) {
@@ -73,9 +73,7 @@ export default function ModifyPostEditor() {
         title: data.get('title') as string,
         uuid: session.id,
         createdAt: data.get('created_at') as string,
-        imageUrl: data.get('imagePath')
-          ? [data.get('imagePath') as string]
-          : [],
+        imageUrl: data.getAll('imagePath') as string[],
         fileUrl: data.getAll('filePaths') as string[],
       };
 

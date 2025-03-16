@@ -14,7 +14,7 @@ export type FormValues = {
   title: string;
   content?: string;
   created_at: string;
-  imagePath?: string;
+  imagePath?: string[];
   filePaths?: string[];
 };
 
@@ -30,7 +30,7 @@ export default function SecretNoteEditor({
   onSubmit,
 }: SecretNoteEditorProps) {
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
-  const [imagePath, setImagePath] = useState<string | undefined>(undefined);
+  const [imagePath, setImagePath] = useState<string[]>([]);
   const [filePaths, setFilePaths] = useState<string[]>([]);
 
   const methods = useForm<FormValues>({
@@ -55,13 +55,13 @@ export default function SecretNoteEditor({
 
   /** 이미지 업로드 성공 시 이미지 경로 저장 */
   const handleImageUploadSuccess = (uploadedImagePath: string) => {
-    setImagePath(uploadedImagePath);
+    setImagePath((prev) => [...prev, uploadedImagePath]);
   };
 
   /** 취소 버튼 클릭 시 초기화 */
   const handleCancel = () => {
     reset();
-    setImagePath(undefined);
+    setImagePath([]);
     setFilePaths([]);
     window.history.back();
   };
@@ -72,11 +72,7 @@ export default function SecretNoteEditor({
     formDataToSend.append('title', data.title);
     formDataToSend.append('content', data.content || '');
     formDataToSend.append('created_at', data.created_at);
-    if (imagePath) {
-      formDataToSend.append('imagePath', imagePath);
-    } else {
-      console.warn('imagePath가 존재하지 않음');
-    }
+    imagePath.forEach((path) => formDataToSend.append('imagePath', path));
     filePaths.forEach((filePath, _) => {
       formDataToSend.append('filePaths', filePath);
     });

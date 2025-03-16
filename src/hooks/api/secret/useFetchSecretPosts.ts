@@ -46,7 +46,6 @@ export function useFetchSecretPosts() {
         // 캐시 확인: 동일한 검색어 & 페이지가 있다면 API 호출 없이 사용
         const cacheKey = `${searchKeyword}_${page}`;
         if (cacheRef.current[cacheKey]) {
-          console.log(`[CACHE HIT] ${cacheKey}`);
           setSecretPost(cacheRef.current[cacheKey]);
           setLoading(false);
           return;
@@ -79,19 +78,19 @@ export function useFetchSecretPosts() {
 
         if (json.success && json.data) {
           const postsData = json.data?.posts ?? [];
-          console.log(`[API 응답] 게시물 개수: ${postsData.length}`);
 
           // NCP Presigned URL 변환
           const updatedPosts = await Promise.all(
             postsData.map(async (post: Post) => {
               const imagePath = post.images?.[0] ?? undefined;
-              const imageUrl = imagePath
-                ? await fetchNcpPresignedUrl(imagePath).then(
-                    (url) => url ?? undefined,
-                  )
+              const presignedUrl = imagePath
+                ? await fetchNcpPresignedUrl(imagePath)
                 : undefined;
 
-              return { ...post, imageUrl };
+              return {
+                ...post,
+                imageUrl: presignedUrl ?? '/images/kmou_2022.jpg',
+              };
             }),
           );
 

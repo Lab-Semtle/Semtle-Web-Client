@@ -7,7 +7,7 @@ type PostCardProps = {
   id: number;
   title: string;
   writer: string;
-  image_url?: string | string[];
+  image_url?: string;
   created_at: string;
   summary?: string;
 };
@@ -21,7 +21,8 @@ const PostCard: React.FC<PostCardProps> = ({
   summary,
 }) => {
   // 이미지가 배열일 경우 첫 번째 이미지를 사용
-  const imageUrl = Array.isArray(image_url) ? image_url[0] : image_url;
+  // const imageUrl = Array.isArray(image_url) ? image_url[0] : image_url;
+  const imageUrl = image_url || '/images/kmou_2022.jpg';
 
   return (
     <Link href={`/secret/${id}`} className="group block w-[220px]">
@@ -31,13 +32,7 @@ const PostCard: React.FC<PostCardProps> = ({
           <div className="flex-1">
             <div className="relative h-full w-full origin-bottom transition duration-300 group-hover:scale-105">
               <Image
-                src={
-                  imageUrl && imageUrl !== ''
-                    ? imageUrl.startsWith('/') || imageUrl.startsWith('http')
-                      ? imageUrl
-                      : `/${imageUrl}`
-                    : '/images/kmou_2023_spring.jpg'
-                }
+                src={imageUrl}
                 alt={title}
                 width={400}
                 height={266}

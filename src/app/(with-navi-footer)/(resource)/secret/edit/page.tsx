@@ -19,11 +19,6 @@ export default function SecretEditPage() {
 
   const handleCreatePost = async (formData: FormData) => {
     try {
-      console.log(
-        '게시글 작성 요청 데이터:',
-        Object.fromEntries(formData.entries()),
-      );
-
       if (status !== 'authenticated' || !session?.id) {
         alert('로그인이 필요합니다.');
         return;
@@ -35,9 +30,7 @@ export default function SecretEditPage() {
         title: formData.get('title') as string,
         uuid: session.id,
         createdAt: formData.get('created_at') as string,
-        imageUrl: formData.get('imagePath')
-          ? [formData.get('imagePath') as string]
-          : [],
+        imageUrl: formData.getAll('imagePath') as string[],
         fileUrl: formData.getAll('filePaths') as string[],
       };
 
@@ -73,7 +66,7 @@ export default function SecretEditPage() {
           title: '',
           content: '',
           created_at: new Date().toISOString(),
-          imagePath: '',
+          imagePath: [],
           filePaths: [],
         }}
       />

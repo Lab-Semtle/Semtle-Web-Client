@@ -28,10 +28,10 @@ export default function TeamPage() {
               <div className="mt-4 text-center">
                 <h3 className="text-lg font-medium">{member.name}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {member.role}
+                  {member.bio || ''}
                 </p>
                 <p className="mt-3 text-sm text-muted-foreground">
-                  {member.bio || ''}
+                  {member.role}
                 </p>
               </div>
               <div className="mt-3 flex gap-2">

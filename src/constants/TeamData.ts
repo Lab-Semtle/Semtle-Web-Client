@@ -5,7 +5,7 @@ export const boardMembers = [
     name: '이상영 (18학번)',
     student_id: '00000000',
     profile_image: '',
-    bio: '',
+    bio: '컴퓨터공학전공',
   },
   {
     id: 2,
@@ -13,7 +13,7 @@ export const boardMembers = [
     name: '박유민 (21학번)',
     student_id: '00000000',
     profile_image: '',
-    bio: '',
+    bio: '컴퓨터공학전공',
   },
   {
     id: 3,
@@ -21,7 +21,7 @@ export const boardMembers = [
     name: '박상빈 (20학번)',
     student_id: '00000000',
     profile_image: '',
-    bio: '',
+    bio: '컴퓨터공학전공',
   },
   {
     id: 4,
@@ -29,7 +29,7 @@ export const boardMembers = [
     name: '조은진 (23학번)',
     student_id: '00000000',
     profile_image: '',
-    bio: '',
+    bio: '컴퓨터공학전공',
   },
   {
     id: 5,
@@ -37,7 +37,7 @@ export const boardMembers = [
     name: '김예원 (23학번)',
     student_id: '00000000',
     profile_image: '',
-    bio: '',
+    bio: '컴퓨터공학전공',
   },
   {
     id: 6,
@@ -45,14 +45,14 @@ export const boardMembers = [
     name: '이승빈 (24학번)',
     student_id: '00000000',
     profile_image: '',
-    bio: '',
+    bio: '컴퓨터공학전공',
   },
   {
     id: 7,
     role: '홍보부',
-    name: '000 (25학번)',
+    name: '정다은 (25학번)',
     student_id: '00000000',
     profile_image: '',
-    bio: '',
+    bio: '컴퓨터공학전공',
   },
 ];

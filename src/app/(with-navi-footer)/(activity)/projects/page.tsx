@@ -79,11 +79,13 @@ export default function ProjectBoardPage() {
     }
   }, [activeTab, activeProjects, filter]);
 
-  // 페이지 변경 (빌드 오류 방지)
+  // 페이지 변경 (빌드 오류 방지) - 수정함(문제점 2,2-1 번)
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      if (typeof window !== 'undefined') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
   };
 
@@ -202,9 +204,11 @@ export default function ProjectBoardPage() {
               <Pagination>
                 <PaginationContent>
                   <PaginationPrevious
+                    className={`hover:cursor-pointer ${currentPage === 1 ? 'pointer-events-none opacity-50' : ''}`}
                     onClick={() => handlePageChange(currentPage - 1)}
                   />
                   <PaginationNext
+                    className={`hover:cursor-pointer ${currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}`}
                     onClick={() => handlePageChange(currentPage + 1)}
                   />
                 </PaginationContent>

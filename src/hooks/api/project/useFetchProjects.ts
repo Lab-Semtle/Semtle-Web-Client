@@ -1,3 +1,5 @@
+// /hooks/api/project/useFetchProjects.ts
+
 import { useEffect, useState } from 'react';
 import { API_ROUTES } from '@/constants/ApiRoutes';
 
@@ -23,8 +25,8 @@ interface ProjectCard1 {
 export function useFetchProjects(
   page: number = 0,
   size: number = 10,
-  projectType?: string, // 프로젝트 타입(카테고리) 필터 추가
-  relationType?: string, // 관련 분야 필터 추가
+  projectType?: string,
+  relationType?: string,
 ) {
   const [projects, setProjects] = useState<ProjectCard1[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -35,6 +37,27 @@ export function useFetchProjects(
       try {
         setLoading(true);
 
+        // ✅ 로컬 개발환경: 목데이터 12개
+        if (process.env.NODE_ENV === 'development') {
+          const mockProjects: ProjectCard1[] = Array.from(
+            { length: 24 },
+            (_, i) => ({
+              id: i + 1,
+              title: `예시 프로젝트 ${i + 1}`,
+              author: `작성자 ${i + 1}`,
+              category: i % 2 === 0 ? '프론트엔드' : '백엔드',
+              relatedFields:
+                i % 3 === 0 ? ['React', 'Next.js'] : ['Node.js', 'Express'],
+              deadline: '2025-04-01',
+              image: '/logo/semtle-logo-bg-square-v2022.png',
+            }),
+          );
+
+          setProjects(mockProjects);
+          return;
+        }
+
+        // 🔁 실제 API 호출
         const apiUrl = API_ROUTES.GET_PROJECT_LIST(
           page,
           size,

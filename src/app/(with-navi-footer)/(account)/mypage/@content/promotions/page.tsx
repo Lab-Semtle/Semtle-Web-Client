@@ -17,10 +17,6 @@ export default function PromotionsTab() {
   return (
     <div className="relative flex min-h-screen flex-col">
       <main className="container relative mx-auto flex-grow p-6">
-        <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
-          내 프로젝트 성과
-        </h1>
-
         {/* 기능 준비중 문구 */}
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-75">
           <p className="text-3xl font-semibold text-white">

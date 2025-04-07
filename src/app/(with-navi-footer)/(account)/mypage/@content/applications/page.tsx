@@ -54,10 +54,6 @@ export default function ApplicationsTab() {
 
       {/* 메인 컨텐츠 영역 */}
       <main className="container relative mx-auto flex-grow p-6">
-        <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
-          프로젝트 신청 내역
-        </h1>
-
         {/* 신청 내역 테이블 (오버레이 뒤로 보내기) */}
         <div className="relative z-10">
           <Table className="border border-gray-200 dark:border-gray-700">

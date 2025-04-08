@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { API_ROUTES } from '@/constants/ApiRoutes';
+import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
 
 interface ApiProject {
   projectBoardId: number;
@@ -8,6 +9,7 @@ interface ApiProject {
   projectTypeCategoryName: string;
   relationFieldCategoryName: string[];
   projectRecruitingEndTime: string;
+  projectBoardImage?: string; // 문자열로 변경
 }
 
 interface ProjectCard1 {
@@ -17,7 +19,7 @@ interface ProjectCard1 {
   category: string;
   relatedFields?: string[];
   deadline: string;
-  image?: string;
+  image?: string | null;
 }
 
 export function useFetchProjects(
@@ -45,23 +47,68 @@ export function useFetchProjects(
         const json = await response.json();
 
         if (json.success && json.data?.content) {
-          const transformedProjects = json.data.content.map(
-            (item: ApiProject) => ({
-              id: item.projectBoardId,
-              title: item.title,
-              author: item.writerName,
-              category: item.projectTypeCategoryName,
-              relatedFields:
-                item.relationFieldCategoryName.length > 0
-                  ? item.relationFieldCategoryName
-                  : undefined,
-              deadline: new Date(item.projectRecruitingEndTime)
-                .toISOString()
-                .split('T')[0],
-              image: '/logo/semtle-logo-bg-square-v2022.png',
-            }),
+          // 각 프로젝트에 대해 이미지 URL을 가져오는 Promise 배열 생성
+          const projectPromises = json.data.content.map(
+            async (item: ApiProject) => {
+              try {
+                const image = item.projectBoardImage;
+
+                if (image) {
+                  const presignedUrl = await fetchNcpPresignedUrl(image);
+                  console.log('Presigned URL:', presignedUrl);
+                  return {
+                    id: item.projectBoardId,
+                    title: item.title,
+                    author: item.writerName,
+                    category: item.projectTypeCategoryName,
+                    relatedFields:
+                      item.relationFieldCategoryName.length > 0
+                        ? item.relationFieldCategoryName
+                        : undefined,
+                    deadline: new Date(item.projectRecruitingEndTime)
+                      .toISOString()
+                      .split('T')[0],
+                    image:
+                      presignedUrl || '/logo/semtle-logo-bg-square-v2022.png',
+                  };
+                }
+                return {
+                  id: item.projectBoardId,
+                  title: item.title,
+                  author: item.writerName,
+                  category: item.projectTypeCategoryName,
+                  relatedFields:
+                    item.relationFieldCategoryName.length > 0
+                      ? item.relationFieldCategoryName
+                      : undefined,
+                  deadline: new Date(item.projectRecruitingEndTime)
+                    .toISOString()
+                    .split('T')[0],
+                  image: '/logo/semtle-logo-bg-square-v2022.png',
+                };
+              } catch (error) {
+                console.error('이미지 URL 가져오기 실패:', error);
+                return {
+                  id: item.projectBoardId,
+                  title: item.title,
+                  author: item.writerName,
+                  category: item.projectTypeCategoryName,
+                  relatedFields:
+                    item.relationFieldCategoryName.length > 0
+                      ? item.relationFieldCategoryName
+                      : undefined,
+                  deadline: new Date(item.projectRecruitingEndTime)
+                    .toISOString()
+                    .split('T')[0],
+                  image: '/logo/semtle-logo-bg-square-v2022.png',
+                };
+              }
+            },
           );
 
+          // 모든 프로젝트의 이미지 URL을 동시에 가져오기
+          const transformedProjects = await Promise.all(projectPromises);
+          console.log('처리된 프로젝트 데이터:', transformedProjects);
           setProjects(transformedProjects);
         } else {
           setError(true);

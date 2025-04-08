@@ -70,8 +70,8 @@ export const API_ROUTES = {
     `${baseUrl}/api/v1/projectboard?page=${page}&size=${size}${
       projectType ? `&project_type=${encodeURIComponent(projectType)}` : ''
     }${relationType ? `&relation_type=${encodeURIComponent(relationType)}` : ''}`, // 프로젝트 목록 조회
-  APPLY_PROJECT: (postId: number, id: number) =>
-    `${baseUrl}/api/v1/projects/${postId}/apply/${id}`, // 프로젝트 지원
+  APPLY_PROJECT: (postId: number, id: string) =>
+    `${baseUrl}/api/v1/projects/${postId}/apply/${id}`, // 프로젝트 신청
 
   /** 유저 */
   CREATE_MEMBER: `${baseUrl}/api/v1/members`, // 임시 멤버 추가

@@ -15,6 +15,9 @@ import {
 import { formatDate } from '@/lib/utils/format-date';
 import { useProjectDetail } from '@/hooks/api/project/useProjectDetail';
 import ProjectApplyForm from '@/components/form/ProjectApplyForm';
+import { useProjectApply } from '@/hooks/api/project/useProjectApply';
+import { useToast } from '@/hooks/useToast';
+import { ProjectApplyRequest } from '@/types/project';
 
 const ProjectHirePage = () => {
   const router = useRouter();
@@ -22,6 +25,12 @@ const ProjectHirePage = () => {
   const id = params?.id as string | undefined;
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const { postData, loading, error } = useProjectDetail(id);
+  const {
+    applyProject,
+    loading: applyLoading,
+    error: applyError,
+  } = useProjectApply();
+  const { toast } = useToast();
 
   if (loading)
     return <p className="text-center text-gray-500">게시물을 불러오는 중...</p>;
@@ -35,6 +44,29 @@ const ProjectHirePage = () => {
     return (
       <p className="text-center text-gray-500">게시물을 찾을 수 없습니다.</p>
     );
+
+  const handleProjectApply = async (formData: ProjectApplyRequest) => {
+    if (!id) return;
+
+    try {
+      const result = await applyProject(Number(id), formData);
+      if (result.success) {
+        toast({
+          title: '신청 완료',
+          description:
+            result.data?.message || '프로젝트 신청이 완료되었습니다.',
+          variant: 'default',
+        });
+        setIsDialogOpen(false);
+      }
+    } catch {
+      toast({
+        title: '신청 실패',
+        description: applyError || '프로젝트 신청 중 오류가 발생했습니다.',
+        variant: 'destructive',
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -120,8 +152,11 @@ const ProjectHirePage = () => {
               <div className="mt-10 flex justify-center gap-5">
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button className="w-1/2 bg-semtle-dark text-black hover:bg-semtle-lite dark:bg-semtle-dark dark:hover:bg-semtle-lite">
-                      참여 신청하기
+                    <Button
+                      className="w-1/2 bg-semtle-dark text-black hover:bg-semtle-lite dark:bg-semtle-dark dark:hover:bg-semtle-lite"
+                      disabled={applyLoading}
+                    >
+                      {applyLoading ? '신청 중...' : '참여 신청하기'}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
@@ -132,6 +167,8 @@ const ProjectHirePage = () => {
                       <ProjectApplyForm
                         postId={id}
                         onClose={() => setIsDialogOpen(false)}
+                        onSubmit={handleProjectApply}
+                        isLoading={applyLoading}
                       />
                     ) : (
                       <p className="text-red-500">

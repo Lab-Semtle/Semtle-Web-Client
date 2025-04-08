@@ -80,6 +80,7 @@ const CreateProjectPage = () => {
         },
         body: JSON.stringify(formattedData),
       });
+      console.log('response', response);
 
       if (!response.ok) {
         throw new Error('프로젝트 생성 실패');

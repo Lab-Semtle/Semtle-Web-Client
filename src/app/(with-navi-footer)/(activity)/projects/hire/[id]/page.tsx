@@ -1,11 +1,10 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { API_ROUTES } from '@/constants/ApiRoutes';
 import {
   Dialog,
   DialogContent,
@@ -13,57 +12,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { formatDate } from '@/lib/utils/format-date';
+import { useProjectDetail } from '@/hooks/api/project/useProjectDetail';
 import ProjectApplyForm from '@/components/form/ProjectApplyForm';
-
-type PostData = {
-  title: string;
-  content: string;
-  writerName: string;
-  contact?: string;
-  projectTypeCategory: string;
-  relationFieldCategory: string[];
-  projectStartTime?: string;
-  projectEndTime?: string;
-  projectRecruitingEndTime?: string;
-  projectStatus: string;
-};
 
 const ProjectHirePage = () => {
   const router = useRouter();
   const params = useParams();
   const id = params?.id as string | undefined;
-
-  const [postData, setPostData] = useState<PostData | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (!id) return;
-
-    const fetchPostData = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(API_ROUTES.GET_PROJECT_DETAIL(Number(id)));
-
-        if (!response.ok) throw new Error('게시물을 불러오는 데 실패했습니다.');
-
-        const json = await response.json();
-        if (json.success && json.data) {
-          setPostData(json.data);
-        } else {
-          throw new Error(json.message || '데이터를 가져오는 중 오류 발생');
-        }
-      } catch (error) {
-        console.error('Failed to fetch post data:', error);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPostData();
-  }, [id]);
+  const { postData, loading, error } = useProjectDetail(id);
 
   if (loading)
     return <p className="text-center text-gray-500">게시물을 불러오는 중...</p>;
@@ -78,21 +36,14 @@ const ProjectHirePage = () => {
       <p className="text-center text-gray-500">게시물을 찾을 수 없습니다.</p>
     );
 
-  // 날짜 변환 함수
-  const formatDate = (dateStr?: string) => {
-    return dateStr ? new Date(dateStr).toISOString().split('T')[0] : '미정';
-  };
-
   return (
     <div className="min-h-screen">
       <div className="container mx-auto mb-36 mt-40 max-w-4xl p-4">
         <Card className="border-none bg-transparent shadow-none">
           <CardContent className="p-0">
             <div className="space-y-6">
-              {/* 제목 */}
+              {/* 프로젝트 헤더 영역 */}
               <h1 className="text-left text-4xl font-bold">{postData.title}</h1>
-
-              {/* 프로젝트 유형 & 관련 분야 */}
               <div className="mt-2 flex flex-wrap items-center gap-2">
                 <Badge className="bg-blue-500 text-base text-white">
                   {postData.projectTypeCategory}
@@ -106,8 +57,6 @@ const ProjectHirePage = () => {
                   </Badge>
                 ))}
               </div>
-
-              {/* 작성자 & 날짜 */}
               <div className="flex w-full items-center justify-between border-b pb-4 text-sm dark:text-gray-200">
                 <p className="text-lg font-medium">{postData.writerName}</p>
                 <Badge
@@ -123,7 +72,6 @@ const ProjectHirePage = () => {
                 </Badge>
               </div>
 
-              {/* 프로젝트 기간 */}
               <div className="grid grid-cols-2 gap-6 text-lg font-medium">
                 <p>
                   <strong>진행 기간 :</strong>{' '}
@@ -132,7 +80,6 @@ const ProjectHirePage = () => {
                 </p>
               </div>
 
-              {/* 프로젝트 상태 */}
               <div className="flex items-center gap-2">
                 <span className="text-lg font-medium dark:text-gray-200">
                   <strong>모집 마감 :</strong>{' '}
@@ -160,7 +107,7 @@ const ProjectHirePage = () => {
                 </p>
               </div>
 
-              {/* 프로젝트 설명 */}
+              {/* 프로젝트 정보 영역 */}
               <div>
                 <label className="text-lg font-bold text-gray-700 dark:text-gray-200">
                   프로젝트 소개 :
@@ -170,7 +117,6 @@ const ProjectHirePage = () => {
                 </p>
               </div>
 
-              {/* 버튼 영역 */}
               <div className="mt-10 flex justify-center gap-5">
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                   <DialogTrigger asChild>

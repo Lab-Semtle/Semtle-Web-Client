@@ -14,6 +14,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import ProjectApplyForm from '@/components/form/ProjectApplyForm';
+import Image from 'next/image';
+import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
 
 type PostData = {
   title: string;
@@ -26,6 +28,10 @@ type PostData = {
   projectEndTime?: string;
   projectRecruitingEndTime?: string;
   projectStatus: string;
+  projectBoardImages?: {
+    id: number;
+    projectBoardImageUrl: string;
+  }[];
 };
 
 const ProjectHirePage = () => {
@@ -37,6 +43,7 @@ const ProjectHirePage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -49,8 +56,32 @@ const ProjectHirePage = () => {
         if (!response.ok) throw new Error('게시물을 불러오는 데 실패했습니다.');
 
         const json = await response.json();
+        console.log('프로젝트 상세 정보:', json);
         if (json.success && json.data) {
           setPostData(json.data);
+
+          // 대표 이미지가 있는 경우 presigned URL 가져오기
+          if (
+            json.data.projectBoardImages &&
+            json.data.projectBoardImages.length > 0
+          ) {
+            try {
+              console.log(json.data.projectBoardImages);
+              console.log(json.data.projectBoardImages[0].projectBoardImageUrl);
+              const presignedUrl = await fetchNcpPresignedUrl(
+                json.data.projectBoardImages[0],
+              );
+              if (presignedUrl) {
+                setImageUrl(presignedUrl);
+              } else {
+                console.warn('Presigned URL을 가져오지 못했습니다.');
+              }
+            } catch (error) {
+              console.error('Presigned URL 가져오기 실패:', error);
+              // presigned URL 가져오기 실패 시 기본 이미지 사용
+              setImageUrl('/images/default-project.png');
+            }
+          }
         } else {
           throw new Error(json.message || '데이터를 가져오는 중 오류 발생');
         }
@@ -165,6 +196,17 @@ const ProjectHirePage = () => {
                 <label className="text-lg font-bold text-gray-700 dark:text-gray-200">
                   프로젝트 소개 :
                 </label>
+                {imageUrl && (
+                  <div className="my-4">
+                    <Image
+                      src={imageUrl}
+                      alt="프로젝트 대표 이미지"
+                      width={800}
+                      height={400}
+                      className="rounded-lg object-cover"
+                    />
+                  </div>
+                )}
                 <p className="mt-2 text-lg font-medium">
                   {postData.content || '설명 없음'}
                 </p>

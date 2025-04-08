@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { CalendarClock, User } from 'lucide-react';
+import Image from 'next/image';
 
 // ProjectCard1 타입 정의
 type ProjectCard1 = {
@@ -11,6 +12,7 @@ type ProjectCard1 = {
   category: string;
   relatedFields?: string[];
   deadline: string; // 모집마감일
+  image?: string;
 };
 
 interface ProjectCard1Props {
@@ -41,6 +43,17 @@ const ProjectCard1: React.FC<ProjectCard1Props> = ({ cards }) => {
           className="flex cursor-pointer flex-col rounded-lg border p-4 shadow-lg dark:border-gray-800 dark:bg-gray-800 dark:text-white"
           onClick={() => handleCardClick(card.id)}
         >
+          {/* 이미지 영역 */}
+          <div className="relative mb-4 aspect-video w-full overflow-hidden rounded-lg">
+            <Image
+              src={card.image || '/logo/semtle-logo-bg-square-v2022.png'}
+              alt={card.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          </div>
+
           {/* 텍스트 영역 */}
           <div className="flex flex-grow flex-col justify-between">
             <div>
@@ -48,7 +61,7 @@ const ProjectCard1: React.FC<ProjectCard1Props> = ({ cards }) => {
               <h3 className="text-xl font-bold">{card.title}</h3>
 
               {/* 프로젝트 카테고리 + 관련 분야  */}
-              <div className="mb-2 mt-2 flex items-center gap-2">
+              <div className="mb-2 mt-2 flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-blue-500 px-3 py-1 text-sm text-white">
                   {card.category}
                 </span>

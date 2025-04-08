@@ -14,7 +14,7 @@ interface ProjectData {
   category: string;
   relatedField?: string[];
   content: string;
-  images?: string[];
+  images?: string[]; // 이미지 URL 배열
 }
 
 const PROJECT_TYPE_MAP = {
@@ -66,9 +66,12 @@ const CreateProjectPage = () => {
         contact: data.contact || '',
         projectTypeCategory,
         relationFieldCategories,
-        projectStartTime: new Date(data.startDate).toISOString(),
-        projectEndTime: new Date(data.endDate).toISOString(),
-        projectRecruitingEndTime: new Date(data.endDate).toISOString(),
+        projectStartTime: new Date(data.startDate).toISOString().split('T')[0], // YYYY-MM-DD 형식으로 변환
+        projectEndTime: new Date(data.endDate).toISOString().split('T')[0],
+        projectRecruitingEndTime: new Date(data.endDate)
+          .toISOString()
+          .split('T')[0],
+        projectBoardImages: data.images || [], // 이미지 URL 배열 추가
       };
 
       const response = await fetch(API_ROUTES.CREATE_PROJECT, {

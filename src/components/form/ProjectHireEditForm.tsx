@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { format, parseISO } from 'date-fns';
+import PostFileUploader from '@/components/file/PostFileUploader';
 import {
   Select,
   SelectItem,
@@ -69,6 +70,8 @@ const ProjectHireEditForm: React.FC<Props> = ({
   isEdit = false,
 }) => {
   const router = useRouter();
+  const [projectBoardImages, setProjectBoardImages] = useState<string[]>([]);
+
   const form = useForm<ProjectData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -83,7 +86,7 @@ const ProjectHireEditForm: React.FC<Props> = ({
       category: initialData?.category || '',
       relatedField: initialData?.relatedField || [],
       content: initialData?.content || '',
-      images: initialData?.images,
+      images: initialData?.images || [],
     },
   });
 
@@ -94,15 +97,48 @@ const ProjectHireEditForm: React.FC<Props> = ({
         startDate: format(parseISO(initialData.startDate), 'yyyy-MM-dd'),
         endDate: format(parseISO(initialData.endDate), 'yyyy-MM-dd'),
       });
+      if (initialData.images) {
+        setProjectBoardImages(initialData.images);
+      }
     }
   }, [initialData, form]);
+
+  const handleImageUploadSuccess = (uploadedImagePath: string) => {
+    setProjectBoardImages((prev) => [...prev, uploadedImagePath]);
+  };
+
+  const handleFormSubmit = async (data: ProjectData) => {
+    const formDataWithImages = {
+      ...data,
+      images: projectBoardImages,
+    };
+    await onSubmit(formDataWithImages);
+  };
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(handleFormSubmit)}
         className="mx-auto mb-32 mt-32 max-w-4xl space-y-6 rounded-lg bg-white p-6 shadow-md dark:bg-zinc-800 dark:shadow-lg"
       >
+        {/* 대표 이미지 업로드 추가 */}
+        <FormItem>
+          <FormLabel>대표 이미지</FormLabel>
+          <FormControl>
+            <PostFileUploader
+              uploadPath="project-board"
+              onUploadSuccess={handleImageUploadSuccess}
+            />
+          </FormControl>
+          {projectBoardImages.length > 0 && (
+            <div className="mt-2">
+              <p className="text-sm text-gray-500">
+                업로드된 이미지: {projectBoardImages.length}개
+              </p>
+            </div>
+          )}
+        </FormItem>
+
         {/* 프로젝트 제목 */}
         <FormField
           control={form.control}

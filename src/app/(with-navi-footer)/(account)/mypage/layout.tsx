@@ -1,10 +1,8 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { usePathname } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 
 export default function MyPageLayout({
   content,
@@ -12,41 +10,21 @@ export default function MyPageLayout({
   content: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { data: session, status } = useSession();
 
   if (!content) {
     redirect('/mypage/projects');
   }
 
   return (
-    <div className="border-b pt-44">
-      <div className="container mx-auto px-6 md:px-12">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-24 w-24">
-              <AvatarImage
-                src={session?.user.image || '/images/default-profile.jpg'}
-                alt="User Avatar"
-              />
-              <AvatarFallback>
-                {session?.user.name.charAt(4) || 'USER'}
-              </AvatarFallback>
-            </Avatar>
-            <span className="text-2xl font-bold tracking-tight">
-              {status === 'loading'
-                ? '로딩 중...'
-                : session?.user.name || '유저 이름'}
-            </span>
-          </div>
-        </div>
-
+    <div className="border-b pt-24">
+      <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 md:px-8">
         {/* 탭 메뉴 */}
-        <div className="mt-8 flex gap-4 border-b">
+        <div className="flex flex-wrap gap-3 border-b pb-2">
           {[
-            { name: '프로젝트 공고', path: '/mypage/projects' },
-            { name: '족보', path: '/mypage/secret' },
-            { name: '프로젝트 신청 내역', path: '/mypage/applications' },
+            { name: '내 프로젝트 공고', path: '/mypage/projects' },
+            { name: '프로젝트 신청 목록', path: '/mypage/applications' },
             { name: '프로젝트 성과', path: '/mypage/promotions' },
+            { name: '업로드한 족보 목록', path: '/mypage/secret' },
           ].map((tab) => (
             <Link
               key={tab.path}
@@ -61,10 +39,9 @@ export default function MyPageLayout({
             </Link>
           ))}
         </div>
+        {/* 탭 콘텐츠 (병렬 슬롯) */}
+        <div className="pt-6">{content}</div>
       </div>
-
-      {/* 탭 콘텐츠 (병렬 슬롯) */}
-      <div className="container mx-auto p-6 px-6 md:px-12">{content}</div>
     </div>
   );
 }

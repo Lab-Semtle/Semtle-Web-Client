@@ -139,10 +139,6 @@ export default function SecretTab() {
   return (
     <div className="flex min-h-screen flex-col">
       <main className="container mx-auto flex-grow p-6">
-        <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
-          업로드한 족보 목록
-        </h1>
-
         {/* 총 게시물 개수 표시 */}
         <p className="mb-6 flex items-center text-lg text-gray-700 dark:text-gray-300">
           <List className="mr-2 h-5 w-5 text-gray-500 dark:text-gray-400" />총

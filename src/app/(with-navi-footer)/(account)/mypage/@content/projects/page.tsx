@@ -77,10 +77,6 @@ export default function ProjectsTab() {
   return (
     <div className="flex min-h-screen flex-col">
       <main className="container mx-auto flex-grow p-6">
-        <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
-          내 프로젝트 공고
-        </h1>
-
         {loading ? (
           <p className="text-center text-lg font-semibold">로딩 중...</p>
         ) : error ? (

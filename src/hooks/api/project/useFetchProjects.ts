@@ -19,7 +19,7 @@ interface ProjectCard1 {
   category: string;
   relatedFields?: string[];
   deadline: string;
-  image?: string | null;
+  image: string | undefined;
 }
 
 export function useFetchProjects(

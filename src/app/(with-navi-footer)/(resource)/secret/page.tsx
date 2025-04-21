@@ -12,10 +12,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import PostCard from '@/components/common/PostCard';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import PageHeading from '@/components/common/PageHeading';
+import CardList1 from '@/components/card/CardList1';
 
 export default function SecretPage() {
   const router = useRouter();
@@ -30,6 +30,11 @@ export default function SecretPage() {
     }, 300);
     return () => clearTimeout(timer);
   }, [searchTerm]);
+
+  // // 임시 - 로그인 없이 족보페이지 뚫는법
+  // useEffect(() => {
+  //   fetchPosts(currentPage, debouncedSearchTerm);
+  // }, [fetchPosts, currentPage, debouncedSearchTerm]);
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -88,27 +93,39 @@ export default function SecretPage() {
       </div>
 
       {/* 게시물 목록 */}
-      <section className="mx-auto mb-12 mt-8 grid max-w-[900px] grid-cols-1 place-items-center gap-x-9 gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <section className="mt-12">
         {secretPost.posts.length === 0 ? (
           <p className="text-center text-xl font-semibold text-gray-500">
             검색 결과가 없습니다.
           </p>
         ) : (
-          secretPost.posts.map((post) => (
-            <PostCard
-              key={post.board_id}
-              id={post.board_id}
-              title={post.title}
-              writer={post.writer}
-              image_url={post.imageUrl}
-              created_at={post.createdAt}
-            />
-          ))
+          // <PostCard
+          //   key={post.board_id}
+          //   id={post.board_id}
+          //   title={post.title}
+          //   writer={post.writer}
+          //   image_url={post.imageUrl}
+          //   created_at={post.createdAt}
+          // />
+          <CardList1
+            items={secretPost.posts.map((post) => ({
+              id: post.board_id,
+              title: post.title,
+              description: post.content,
+              author: post.writer,
+              date: new Date(post.createdAt).toLocaleDateString(),
+              imageUrl: post.imageUrl,
+              link: `/secret/${post.board_id}`,
+              key: post.board_id,
+            }))}
+            loading={loading}
+            error={false}
+          />
         )}
       </section>
 
       {/* 페이지네이션 */}
-      <section className="mb-12">
+      <section className="mt-12">
         <Pagination>
           <PaginationContent>
             <PaginationItem>

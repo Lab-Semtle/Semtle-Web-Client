@@ -11,7 +11,7 @@ interface CardItem1 {
   description: string;
   author: string;
   date: string;
-  category: string;
+  category?: string;
   imageUrl?: string;
   link?: string;
 }
@@ -95,10 +95,11 @@ const CardList1 = ({
                   {/* 콘텐츠 컨테이너 */}
                   <div className="w-full lg:col-span-3">
                     <blockquote>
-                      <p className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                        {item.category}
-                      </p>
-
+                      {item.category && (
+                        <p className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                          {item.category}
+                        </p>
+                      )}
                       <h3 className="mb-1 text-lg font-bold lg:text-xl">
                         {item.title}
                       </h3>

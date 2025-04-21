@@ -8,6 +8,7 @@ type Post = {
   board_id: number;
   title: string;
   writer: string;
+  content: string;
   createdAt: string;
   images?: string[];
   imageUrl?: string;

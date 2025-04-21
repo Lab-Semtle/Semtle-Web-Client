@@ -85,9 +85,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           (res.data.fileUrl ?? []).map(async (url: string, index: number) => ({
             file_id: index,
             file_url: await fetchNcpPresignedUrl(url),
-            file_name: `첨부파일-${index + 1}`,
+            file_name: res.data.file_name,
             file_type: url.split('.').pop() ?? 'unknown',
-            file_size: '알 수 없음',
+            file_size: res.data.file_size,
           })),
         );
 

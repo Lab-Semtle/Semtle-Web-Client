@@ -37,6 +37,7 @@ export function useFetchSecretPosts() {
 
         // ✅ 개발 환경일 경우 mock 데이터 사용
         if (process.env.NODE_ENV === 'development') {
+          // 이 if 문은 main 브랜치 병합 전에 삭제
           const mockPosts: Post[] = Array.from({ length: 30 }, (_, i) => ({
             board_id: i + 1,
             title: `예시 족보 게시물 ${i + 1}`,
@@ -47,10 +48,22 @@ export function useFetchSecretPosts() {
             content: '테스트 게시물',
           }));
 
+          // ✅ 검색어 필터링 적용 (제목, 작성자, 내용 포함)
+          const filtered = searchKeyword
+            ? mockPosts.filter((post) =>
+                [post.title]
+                  .join(' ')
+                  .toLowerCase()
+                  .includes(searchKeyword.toLowerCase()),
+              )
+            : mockPosts;
+
+          const paginated = filtered.slice((page - 1) * 8, page * 8);
+
           const mockData: SecretPost = {
             total_posts: mockPosts.length,
             total_pages: Math.ceil(mockPosts.length / 8), // 페이지당 8개 기준
-            posts: mockPosts.slice((page - 1) * 8, page * 8),
+            posts: paginated,
           };
 
           setSecretPost(mockData);

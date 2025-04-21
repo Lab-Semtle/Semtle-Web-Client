@@ -7,8 +7,10 @@ import { Button } from '@/components/ui/button';
 import {
   Pagination,
   PaginationContent,
-  PaginationPrevious,
+  PaginationItem,
+  PaginationLink,
   PaginationNext,
+  PaginationPrevious,
 } from '@/components/ui/pagination';
 import FilterBar from '@/components/common/FilterBar';
 import ProjectCard1 from '@/components/common/ProjectCard1';
@@ -98,7 +100,7 @@ export default function ProjectBoardPage() {
       return;
     }
 
-    if (!isAuthenticated) {
+    if (isAuthenticated) {
       console.warn('[handleCreateProject] 세션 정보 없음:', session);
       if (typeof window !== 'undefined') {
         alert('로그인이 필요합니다.');
@@ -203,14 +205,29 @@ export default function ProjectBoardPage() {
             {totalPages > 1 && (
               <Pagination>
                 <PaginationContent>
-                  <PaginationPrevious
-                    className={`hover:cursor-pointer ${currentPage === 1 ? 'pointer-events-none opacity-50' : ''}`}
-                    onClick={() => handlePageChange(currentPage - 1)}
-                  />
-                  <PaginationNext
-                    className={`hover:cursor-pointer ${currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}`}
-                    onClick={() => handlePageChange(currentPage + 1)}
-                  />
+                  <PaginationItem>
+                    <PaginationPrevious
+                      className={`${currentPage === 1 ? 'pointer-events-none opacity-50' : 'hover:cursor-pointer'}`}
+                      onClick={() => handlePageChange(currentPage - 1)}
+                    />
+                  </PaginationItem>
+                  {[...Array(totalPages)].map((_, index) => (
+                    <PaginationItem key={index}>
+                      <PaginationLink
+                        href="#"
+                        isActive={currentPage === index + 1}
+                        onClick={() => handlePageChange(index + 1)}
+                      >
+                        {index + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem>
+                    <PaginationNext
+                      className={`${currentPage === totalPages ? 'pointer-events-none opacity-50' : 'hover:cursor-pointer'}`}
+                      onClick={() => handlePageChange(currentPage + 1)}
+                    />
+                  </PaginationItem>
                 </PaginationContent>
               </Pagination>
             )}

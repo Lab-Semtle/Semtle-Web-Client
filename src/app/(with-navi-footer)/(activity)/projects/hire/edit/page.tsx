@@ -51,6 +51,11 @@ const CreateProjectPage = () => {
         return;
       }
 
+      if (data.startDate >= data.endDate) {
+        toast.error('프로젝트 종료일이 시작일보다 앞서고 있습니다.');
+        return;
+      }
+
       // 프로젝트 유형
       const projectTypeCategory =
         PROJECT_TYPE_MAP[data.category as keyof typeof PROJECT_TYPE_MAP];

@@ -12,7 +12,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import PostCard from '@/components/common/PostCard';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import PageHeading from '@/components/common/PageHeading';
@@ -32,27 +31,27 @@ export default function SecretPage() {
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // 임시 - 로그인 없이 족보페이지 뚫는법
+  // // 임시 - 로그인 없이 족보페이지 뚫는법
+  // useEffect(() => {
+  //   fetchPosts(currentPage, debouncedSearchTerm);
+  // }, [fetchPosts, currentPage, debouncedSearchTerm]);
+
   useEffect(() => {
-    fetchPosts(currentPage, debouncedSearchTerm);
-  }, [fetchPosts, currentPage, debouncedSearchTerm]);
+    if (status === 'authenticated') {
+      fetchPosts(currentPage, debouncedSearchTerm);
+    }
+  }, [fetchPosts, currentPage, debouncedSearchTerm, status]);
 
-  // useEffect(() => {
-  //   if (status === 'authenticated') {
-  //     fetchPosts(currentPage, debouncedSearchTerm);
-  //   }
-  // }, [fetchPosts, currentPage, debouncedSearchTerm, status]);
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      alert('로그인이 필요합니다.');
+      router.push('/signin');
+    }
+  }, [status, router]);
 
-  // useEffect(() => {
-  //   if (status === 'unauthenticated') {
-  //     alert('로그인이 필요합니다.');
-  //     router.push('/signin');
-  //   }
-  // }, [status, router]);
-
-  // if (loading) {
-  //   return <p className="text-center text-lg font-semibold">로딩중...</p>;
-  // }
+  if (loading) {
+    return <p className="text-center text-lg font-semibold">로딩중...</p>;
+  }
 
   const totalPages = secretPost.total_pages;
 

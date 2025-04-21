@@ -1,7 +1,6 @@
-// /hooks/api/project/useFetchProjects.ts
-
 import { useEffect, useState } from 'react';
 import { API_ROUTES } from '@/constants/ApiRoutes';
+import { fetchNcpPresignedUrl } from '@/hooks/api/useFetchNcpPresignedUrls';
 
 interface ApiProject {
   projectBoardId: number;
@@ -10,6 +9,7 @@ interface ApiProject {
   projectTypeCategoryName: string;
   relationFieldCategoryName: string[];
   projectRecruitingEndTime: string;
+  projectBoardImage?: string; // 문자열로 변경
 }
 
 interface ProjectCard1 {
@@ -19,14 +19,14 @@ interface ProjectCard1 {
   category: string;
   relatedFields?: string[];
   deadline: string;
-  image?: string;
+  image: string | undefined;
 }
 
 export function useFetchProjects(
   page: number = 0,
   size: number = 10,
-  projectType?: string,
-  relationType?: string,
+  projectType?: string, // 프로젝트 타입(카테고리) 필터 추가
+  relationType?: string, // 관련 분야 필터 추가
 ) {
   const [projects, setProjects] = useState<ProjectCard1[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -37,27 +37,6 @@ export function useFetchProjects(
       try {
         setLoading(true);
 
-        // ✅ 로컬 개발환경: 목데이터 12개
-        if (process.env.NODE_ENV === 'development') {
-          const mockProjects: ProjectCard1[] = Array.from(
-            { length: 24 },
-            (_, i) => ({
-              id: i + 1,
-              title: `예시 프로젝트 ${i + 1}`,
-              author: `작성자 ${i + 1}`,
-              category: i % 2 === 0 ? '프론트엔드' : '백엔드',
-              relatedFields:
-                i % 3 === 0 ? ['React', 'Next.js'] : ['Node.js', 'Express'],
-              deadline: '2025-04-01',
-              image: '/logo/semtle-logo-bg-square-v2022.png',
-            }),
-          );
-
-          setProjects(mockProjects);
-          return;
-        }
-
-        // 🔁 실제 API 호출
         const apiUrl = API_ROUTES.GET_PROJECT_LIST(
           page,
           size,
@@ -68,23 +47,68 @@ export function useFetchProjects(
         const json = await response.json();
 
         if (json.success && json.data?.content) {
-          const transformedProjects = json.data.content.map(
-            (item: ApiProject) => ({
-              id: item.projectBoardId,
-              title: item.title,
-              author: item.writerName,
-              category: item.projectTypeCategoryName,
-              relatedFields:
-                item.relationFieldCategoryName.length > 0
-                  ? item.relationFieldCategoryName
-                  : undefined,
-              deadline: new Date(item.projectRecruitingEndTime)
-                .toISOString()
-                .split('T')[0],
-              image: '/logo/semtle-logo-bg-square-v2022.png',
-            }),
+          // 각 프로젝트에 대해 이미지 URL을 가져오는 Promise 배열 생성
+          const projectPromises = json.data.content.map(
+            async (item: ApiProject) => {
+              try {
+                const image = item.projectBoardImage;
+
+                if (image) {
+                  const presignedUrl = await fetchNcpPresignedUrl(image);
+                  console.log('Presigned URL:', presignedUrl);
+                  return {
+                    id: item.projectBoardId,
+                    title: item.title,
+                    author: item.writerName,
+                    category: item.projectTypeCategoryName,
+                    relatedFields:
+                      item.relationFieldCategoryName.length > 0
+                        ? item.relationFieldCategoryName
+                        : undefined,
+                    deadline: new Date(item.projectRecruitingEndTime)
+                      .toISOString()
+                      .split('T')[0],
+                    image:
+                      presignedUrl || '/logo/semtle-logo-bg-square-v2022.png',
+                  };
+                }
+                return {
+                  id: item.projectBoardId,
+                  title: item.title,
+                  author: item.writerName,
+                  category: item.projectTypeCategoryName,
+                  relatedFields:
+                    item.relationFieldCategoryName.length > 0
+                      ? item.relationFieldCategoryName
+                      : undefined,
+                  deadline: new Date(item.projectRecruitingEndTime)
+                    .toISOString()
+                    .split('T')[0],
+                  image: '/logo/semtle-logo-bg-square-v2022.png',
+                };
+              } catch (error) {
+                console.error('이미지 URL 가져오기 실패:', error);
+                return {
+                  id: item.projectBoardId,
+                  title: item.title,
+                  author: item.writerName,
+                  category: item.projectTypeCategoryName,
+                  relatedFields:
+                    item.relationFieldCategoryName.length > 0
+                      ? item.relationFieldCategoryName
+                      : undefined,
+                  deadline: new Date(item.projectRecruitingEndTime)
+                    .toISOString()
+                    .split('T')[0],
+                  image: '/logo/semtle-logo-bg-square-v2022.png',
+                };
+              }
+            },
           );
 
+          // 모든 프로젝트의 이미지 URL을 동시에 가져오기
+          const transformedProjects = await Promise.all(projectPromises);
+          console.log('처리된 프로젝트 데이터:', transformedProjects);
           setProjects(transformedProjects);
         } else {
           setError(true);

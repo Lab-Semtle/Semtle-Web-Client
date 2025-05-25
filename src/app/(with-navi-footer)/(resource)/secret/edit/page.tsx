@@ -34,6 +34,13 @@ export default function SecretEditPage() {
         fileUrl: formData.getAll('filePaths') as string[],
       };
 
+      if (!(requestBody.imageUrl.length > 0 && (requestBody.imageUrl[0].endsWith('.jpg')
+        || requestBody.imageUrl[0].endsWith('.png')
+        || requestBody.imageUrl[0].endsWith('.jpeg')))){
+          alert('이미지 파일이 jpg, png, jpeg 형식이어야 합니다.');
+          throw new Error('Invalid image format');
+      }
+
       const response = await fetch(API_ROUTES.CREATE_ARCHIVE, {
         method: 'POST',
         headers: {

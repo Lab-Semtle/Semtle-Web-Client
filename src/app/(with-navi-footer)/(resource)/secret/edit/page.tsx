@@ -34,6 +34,24 @@ export default function SecretEditPage() {
         fileUrl: formData.getAll('filePaths') as string[],
       };
 
+      // 이미지의 확장자 유효성 검사, jpg, png, jpeg 형식만 허용
+      if (Array.isArray(requestBody.imageUrl) && requestBody.imageUrl.length > 0) {
+        const isAllValid = requestBody.imageUrl.every((url) => {
+          const lowerUrl = url.toLowerCase();
+          return (
+            lowerUrl.endsWith('.jpg') ||
+            lowerUrl.endsWith('.jpeg') ||
+            lowerUrl.endsWith('.png')
+          );
+        });
+
+        if (!isAllValid) {
+          console.log(requestBody.imageUrl);
+          alert('모든 이미지 파일은 jpg, png, jpeg 형식이어야 합니다.');
+          throw new Error('Invalid image format');
+        }
+      }
+
       const response = await fetch(API_ROUTES.CREATE_ARCHIVE, {
         method: 'POST',
         headers: {

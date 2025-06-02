@@ -28,6 +28,26 @@ export default function ActivityPostPage() {
   const params = useParams();
   const router = useRouter();
 
+  const [hasPrev, setHasPrev] = useState(true);
+  const [hasNext, setHasNext] = useState(true);
+
+  const checkAdjacentPosts = useCallback(async (id: number) => {
+    if (!id || isNaN(id)) return;
+
+    try {
+      const [prevRes, nextRes] = await Promise.all([
+        fetch(API_ROUTES.GET_ACTIVITY_DETAIL(id - 1)),
+        fetch(API_ROUTES.GET_ACTIVITY_DETAIL(id + 1)),
+      ]);
+
+      setHasPrev(prevRes.ok);
+      setHasNext(nextRes.ok);
+    } catch {
+      setHasPrev(false);
+      setHasNext(false);
+    }
+  }, []);
+
   /**
    * ✅ `fetchPost`를 `useCallback`으로 감싸서 의존성 문제 해결
    */
@@ -36,11 +56,7 @@ export default function ActivityPostPage() {
       try {
         const response = await fetch(API_ROUTES.GET_ACTIVITY_DETAIL(id));
         if (!response.ok) {
-          if (response.status === 404) {
-            alert('해당 게시물이 존재하지 않습니다.');
-          } else {
-            alert('게시물을 불러오는 중 오류가 발생했습니다.');
-          }
+          alert('게시물을 불러오는 중 오류 발생');
           router.push('/activities');
           return;
         }
@@ -51,31 +67,39 @@ export default function ActivityPostPage() {
             ? await fetchNcpPresignedUrl(data.images[0])
             : '/placeholder.svg';
 
-          setPost({
-            ...data,
-            imageUrl,
-          });
+          const newPost = { ...data, imageUrl };
+          setPost(newPost);
+          checkAdjacentPosts(newPost.board_id); // ✅ fetch 성공 후에 호출
         } else {
-          alert('게시물을 불러오는 데 실패했습니다.');
+          alert('데이터 없음');
           router.push('/activities');
         }
       } catch (error) {
         console.error(error);
-        alert('서버 오류가 발생했습니다.');
+        alert('서버 오류');
         router.push('/activities');
       } finally {
         setLoading(false);
       }
     },
-    [router], // ✅ 의존성 배열에 router 추가
+    [router, checkAdjacentPosts],
   );
 
   useEffect(() => {
     if (params.id) {
+      const numId = Number(params.id);
       setLoading(true);
-      fetchPost(Number(params.id));
+      fetchPost(numId);
     }
-  }, [params.id, fetchPost]); // ✅ `fetchPost`를 의존성 배열에 추가
+  }, [params.id, fetchPost]);
+
+  // ✅ post.board_id가 확정된 이후에만 checkAdjacentPosts 실행
+  useEffect(() => {
+    if (post) {
+      checkAdjacentPosts(post.board_id);
+    }
+  }, [post, checkAdjacentPosts]);
+  // ✅ `fetchPost`를 의존성 배열에 추가
 
   if (loading) {
     return <div className="text-center text-lg">로딩 중...</div>;
@@ -148,7 +172,11 @@ export default function ActivityPostPage() {
 
               <div className="flex items-center justify-center">
                 <div className="flex gap-5">
-                  <Button onClick={handlePrevious}>
+                  <Button
+                    onClick={handlePrevious}
+                    disabled={!hasPrev}
+                    className={!hasPrev ? 'cursor-not-allowed opacity-50' : ''}
+                  >
                     <ArrowLeft className="mr-1 h-4 w-4" />
                     이전
                   </Button>
@@ -156,7 +184,11 @@ export default function ActivityPostPage() {
                     <ListFilter className="mr-1 h-4 w-4" />
                     목록
                   </Button>
-                  <Button onClick={handleNext}>
+                  <Button
+                    onClick={handleNext}
+                    disabled={!hasNext}
+                    className={!hasNext ? 'cursor-not-allowed opacity-50' : ''}
+                  >
                     다음
                     <ArrowRight className="ml-1 h-4 w-4" />
                   </Button>

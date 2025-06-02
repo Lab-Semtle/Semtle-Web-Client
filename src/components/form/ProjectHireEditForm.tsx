@@ -42,18 +42,30 @@ const RELATION_FIELD_MAP = {
   기타: { id: 6, name: '기타' },
 } as const;
 
-const formSchema = z.object({
-  projectTitle: z.string().min(1, '프로젝트 제목을 입력해주세요.'),
-  startDate: z.string().min(1, '시작 날짜를 선택해주세요.'),
-  endDate: z.string().min(1, '종료 날짜를 선택해주세요.'),
-  contact: z.string().optional(),
-  category: z.string().min(1, '프로젝트 유형을 선택해주세요.'),
-  relatedField: z
-    .array(z.string())
-    .min(1, '관련 분야를 최소 1개 선택해주세요.'),
-  content: z.string().min(1, '내용을 입력해주세요.'),
-  images: z.array(z.string()).optional(),
-});
+const formSchema = z
+  .object({
+    projectTitle: z.string().min(1, '프로젝트 제목을 입력해주세요.'),
+    startDate: z.string().min(1, '시작 날짜를 선택해주세요.'),
+    endDate: z.string().min(1, '종료 날짜를 선택해주세요.'),
+    contact: z.string().optional(),
+    category: z.string().min(1, '프로젝트 유형을 선택해주세요.'),
+    relatedField: z
+      .array(z.string())
+      .min(1, '관련 분야를 최소 1개 선택해주세요.'),
+    content: z.string().min(1, '내용을 입력해주세요.'),
+    images: z.array(z.string()).optional(),
+  })
+  .refine(
+    (data) => {
+      const start = new Date(data.startDate);
+      const end = new Date(data.endDate);
+      return start <= end;
+    },
+    {
+      path: ['endDate'], // 에러를 표시할 필드
+      message: '종료 날짜는 시작 날짜보다 같거나 나중이어야 합니다.',
+    },
+  );
 
 type ProjectData = z.infer<typeof formSchema>;
 

@@ -51,7 +51,7 @@ export type User = {
 
 export default function AdminUsersPage() {
   const { toast } = useToast();
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const { members, totalPages, isLoading, error, refetch } = useFetchMembers(
     page,
     10,
